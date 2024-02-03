@@ -13,6 +13,7 @@
         <module>DiscordExtension</module>
         <module>RestWeb</module>
         <module>ExampleExtension</module>
+        <module>AutoMessages</module>
     </modules>
 
 

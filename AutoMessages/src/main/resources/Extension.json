@@ -1,0 +1,8 @@
+{
+  "mainClass": "me.indian.automessages.AutoMessagesExtension",
+  "version": "1.0",
+  "name": "AutoMessagesExtension",
+  "author": "IndianPL",
+  "authors": [],
+  "description": "Rozszerzenie dodające automatyczne wiadomości na czacie co dany czas"
+}

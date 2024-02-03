@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.extension.rest.RestWebsite",
+  "mainClass": "me.indian.rest.RestWebsite",
   "version": "1.0",
   "name": "RestWebsite",
   "author": "IndianPL",

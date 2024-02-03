@@ -1,4 +1,4 @@
-package me.indian.extension.discord.util;
+package me.indian.discord.util;
 
 import java.util.List;
 import net.dv8tion.jda.api.entities.Activity;

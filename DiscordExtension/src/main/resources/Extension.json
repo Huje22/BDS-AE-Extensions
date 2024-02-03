@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.extension.discord.DiscordExtension",
+  "mainClass": "me.indian.discord.DiscordExtension",
   "version": "1.0",
   "name": "DiscordExtension",
   "author": "IndianPL",

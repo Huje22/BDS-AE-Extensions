@@ -9,8 +9,8 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>me.indian.example</groupId>
-    <artifactId>ExampleExtension</artifactId>
+    <groupId>me.indian.automessages</groupId>
+    <artifactId>AutoMessages</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -28,7 +28,6 @@
         </dependency>
     </dependencies>
 
-
     <build>
         <defaultGoal>clean package</defaultGoal>
         <finalName>${project.name}-${project.version}</finalName>
@@ -40,4 +39,5 @@
             </resource>
         </resources>
     </build>
+
 </project>
