@@ -5,7 +5,7 @@ import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.DiscordLogChannelType;
+import me.indian.extension.discord.DiscordLogChannelType;
 import me.indian.bds.logger.Logger;
 import me.indian.extension.rest.Request;
 import me.indian.bds.server.ServerProcess;
@@ -61,7 +61,7 @@ public class CommandPostRequest implements Request {
             }
 
             this.logger.debug("&b" + ip + "&r używa poprawnie endpointu&1 COMMAND");
-            this.logger.print(command, this.bdsAutoEnable.getDiscordHelper().getDiscordJDA(), DiscordLogChannelType.CONSOLE);
+            this.logger.print(command);
 
             ctx.contentType(ContentType.APPLICATION_JSON).status(HttpURLConnection.HTTP_OK)
                     .result("Ostatnia linia z konsoli: " + this.serverProcess.commandAndResponse(command));

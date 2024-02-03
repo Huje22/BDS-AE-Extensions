@@ -1,8 +1,8 @@
 {
-  "mainClass": "me.indian.example.ExampleExtension",
+  "mainClass": "me.indian.extension.discord.DiscordExtension",
   "version": "1.0",
-  "name": "ExampleExtension",
+  "name": "DiscordExtension",
   "author": "IndianPL",
   "authors": [],
-  "description": "Przykladowe rozserzenie dla BDS-Auto-Enable"
+  "description": "Łączy Minecraft z Discord"
 }

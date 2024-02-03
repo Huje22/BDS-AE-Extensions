@@ -3,7 +3,7 @@ package me.indian.extension.rest.request.key;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.jda.DiscordJDA;
+import me.indian.extension.discord.jda.DiscordJDA;
 import me.indian.bds.logger.Logger;
 import me.indian.extension.rest.Request;
 import me.indian.bds.util.GsonUtil;
@@ -23,14 +23,12 @@ public class BackupRequest implements Request {
     private final RestWebsite restWebsite;
     private final Logger logger;
     private final Javalin app;
-    private final DiscordJDA discordJDA;
     private final BackupModule backupModule;
 
     public BackupRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
         this.logger = bdsAutoEnable.getLogger();
         this.app = this.restWebsite.getApp();
-        this.discordJDA = bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.backupModule = bdsAutoEnable.getWatchDog().getBackupModule();
     }
 
@@ -48,7 +46,6 @@ public class BackupRequest implements Request {
                 if (filename.equalsIgnoreCase(fileName)) {
 
                     this.logger.info("&b" + ip + "&r pobiera&3 " + filename);
-                    this.discordJDA.writeConsole("`" + ip + "` pobiera `" + filename + "`");
 
                     final File file = new File(path.toString());
                     ctx.res().setHeader("Content-Disposition", "attachment; filename=" + filename + ".zip");

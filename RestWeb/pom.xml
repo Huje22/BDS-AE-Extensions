@@ -6,11 +6,12 @@
     <parent>
         <groupId>me.indian.bds.extensions</groupId>
         <artifactId>BDS-AE-Extensions</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <groupId>me.indian.bds.rest</groupId>
     <artifactId>RestWeb</artifactId>
+    <version>1.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -27,11 +28,13 @@
             <systemPath>${project.basedir}/../libs/BDS-Auto-Enable-1.0.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.8</version>
-            <scope>compile</scope>
+            <groupId>me.indian.bds.discord</groupId>
+            <artifactId>DiscordExtension</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../libs/DiscordExtension-1.0.jar</systemPath>
         </dependency>
+
         <dependency>
             <groupId>io.javalin</groupId>
             <artifactId>javalin</artifactId>

@@ -4,8 +4,8 @@ import com.google.gson.JsonSyntaxException;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.DiscordHelper;
-import me.indian.bds.discord.jda.DiscordJDA;
+import me.indian.extension.discord.DiscordExtension;
+import me.indian.extension.discord.jda.DiscordJDA;
 import me.indian.bds.logger.Logger;
 import me.indian.extension.rest.Request;
 import me.indian.bds.server.ServerProcess;
@@ -22,7 +22,7 @@ public class DiscordMessagePostRequest implements Request {
     private final Logger logger;
     private final ServerProcess serverProcess;
     private final Javalin app;
-    private final DiscordHelper discordHelper;
+    private final DiscordExtension discordExtension;
     private final DiscordJDA discordJDA;
 
     public DiscordMessagePostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
@@ -31,8 +31,8 @@ public class DiscordMessagePostRequest implements Request {
         this.logger = this.bdsAutoEnable.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.app = this.restWebsite.getApp();
-        this.discordHelper = this.bdsAutoEnable.getDiscordHelper();
-        this.discordJDA = this.discordHelper.getDiscordJDA();
+        this.discordExtension = this.restWebsite.getDiscordExtension();
+        this.discordJDA = this.discordExtension.getDiscordJDA();
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DiscordMessagePostRequest implements Request {
                 return;
             }
 
-            if (!this.discordHelper.isBotEnabled()) {
+            if (!this.discordExtension.isBotEnabled()) {
                 ctx.status(HttpStatus.SERVICE_UNAVAILABLE).result("Bot jest wyłączony");
                 return;
             }

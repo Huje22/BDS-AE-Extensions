@@ -6,12 +6,13 @@
 
     <groupId>me.indian.bds.extensions</groupId>
     <artifactId>BDS-AE-Extensions</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>DiscordExtension</module>
         <module>RestWeb</module>
+        <module>ExampleExtension</module>
     </modules>
 
 
