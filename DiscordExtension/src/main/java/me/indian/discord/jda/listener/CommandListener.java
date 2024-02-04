@@ -256,7 +256,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             for (final String player : players) {
                                 if (counter != 24) {
                                     embed.addField(player,
-                                            "> Czas gry: **" + DateUtil.formatTime(this.statsManager.getPlayTimeByName(player), "days hours minutes seconds")
+                                            "> Czas gry: **" + DateUtil.formatTime(this.statsManager.getPlayTimeByName(player), List.of('d', 'h', 'm', 's'))
                                                     + "**  \n> Śmierci:** " + this.statsManager.getDeathsByName(player) + "**",
                                             true);
                                     counter++;
@@ -296,7 +296,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
                         final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
                         final String totalUpTime = "Łączny czas działania servera: "
-                                + DateUtil.formatTime(serverStats.getTotalUpTime(), "days hours minutes seconds ");
+                                + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's'));
 
                         final MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Top 100 Czasu gry")
@@ -619,13 +619,13 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .withEmoji(Emoji.fromUnicode("🗑️")));
             }
 
-            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile(), true) + "`");
+            description.add("Nazwa: `" + fileName + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile(), true) + "`");
         }
 
         return new EmbedBuilder()
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
-                        "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`\n" +
+                        "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's')) + "`\n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 2 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)

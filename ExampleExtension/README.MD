@@ -18,7 +18,7 @@ pokazane poniżej
         <artifactId>BDS-Auto-Enable</artifactId>
         <version>1.0</version>
         <scope>system</scope>
-        <systemPath>${project.basedir}/libs/BDS-Auto-Enable-1.0.jar</systemPath>
+        <systemPath>${project.basedir}/libs/BDS-Auto-Enable-0.0.1.jar</systemPath>
     </dependency>
     <!--        Inne zależności     -->
 </dependencies>

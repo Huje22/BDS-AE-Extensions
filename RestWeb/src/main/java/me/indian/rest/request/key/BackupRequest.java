@@ -41,7 +41,7 @@ public class BackupRequest implements Request {
             final String ip = ctx.ip();
 
             for (final Path path : this.backupModule.getBackups()) {
-                final String fileName = path.getFileName().toString().replaceAll(".zip", "");
+                final String fileName = path.getFileName().toString();
                 if (filename.equalsIgnoreCase(fileName)) {
 
                     this.logger.info("&b" + ip + "&r pobiera&3 " + filename);
@@ -66,7 +66,7 @@ public class BackupRequest implements Request {
             }
 
             final List<String> backupsNames = this.backupModule.getBackupsNames();
-            backupsNames.replaceAll(name -> name.replaceAll(".zip", ""));
+            backupsNames.replaceAll(name -> name);
 
             final String currentUrl = ctx.req().getRequestURL().toString().replaceAll(filename, "");
             ctx.status(HttpStatus.NOT_FOUND).contentType("application/json").result("Dostępne Backupy to: \n"

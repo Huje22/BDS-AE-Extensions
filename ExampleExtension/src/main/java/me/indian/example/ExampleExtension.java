@@ -23,7 +23,9 @@ public class ExampleExtension extends Extension {
 
         //Tworzenie poleceń
         final CommandManager commandManager = bdsAutoEnable.getCommandManager();
-       commandManager.registerCommand(new ExampleCommand());
+
+        //Przekazujemy w konstruktorze `this` czyli aktualną klase
+        commandManager.registerCommand(new ExampleCommand(this));
 
         //Tworzenie configu
         try {
