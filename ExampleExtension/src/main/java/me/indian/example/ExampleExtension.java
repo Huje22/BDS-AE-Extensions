@@ -13,13 +13,14 @@ public class ExampleExtension extends Extension {
 
     private Config config;
 
-
     @Override
     public void onEnable() {
 
         final BDSAutoEnable bdsAutoEnable = this.getBdsAutoEnable();
         final Logger logger = this.getBdsAutoEnable().getLogger();
 
+
+        //TODO: Dodać przykład jak pingowac inny server
 
         //Tworzenie poleceń
         final CommandManager commandManager = bdsAutoEnable.getCommandManager();
