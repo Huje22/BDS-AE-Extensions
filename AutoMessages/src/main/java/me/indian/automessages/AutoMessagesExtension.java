@@ -1,10 +1,7 @@
 package me.indian.automessages;
 
 import me.indian.automessages.config.AutoMessagesConfig;
-import me.indian.bds.AutoMessages;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.command.CommandManager;
-import me.indian.bds.event.EventManager;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
