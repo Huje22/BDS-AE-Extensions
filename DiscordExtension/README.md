@@ -2,6 +2,8 @@
 
 ## Obsługa Discord
 
+//TODO: Uaktualnić to
+
 W `Discord.yml` który znajduje się w folderze `katalog z jar/BDS-Auto-Enable/config`. <br>
 
 Aby aplikacja miała dostęp do informacji o graczu musisz
