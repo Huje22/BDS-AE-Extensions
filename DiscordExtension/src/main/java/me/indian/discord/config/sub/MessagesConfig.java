@@ -14,7 +14,7 @@ public class MessagesConfig extends OkaeriConfig {
     @Comment({"<message> - wiadomość gracza"})
 
     @CustomKey("ChatMessageFormat")
-    private String chatMessageFormat = "<role><player> »» <message>";
+    private String chatMessageFormat = "<role> <player> »» <message>";
 
     @Comment({""})
     @Comment({"Część wyświetlona gdy ktoś odpowie na czyjąś wiadomość"})

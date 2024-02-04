@@ -1,10 +1,8 @@
 package me.indian.discord.command;
 
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
-import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.jda.DiscordJDA;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Member;
@@ -13,18 +11,12 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class DiscordCommand extends Command {
 
-    private final DiscordExtension discordExtension;
-    private final BDSAutoEnable bdsAutoEnable;
-    private final DiscordConfig discordConfig;
     private final DiscordJDA discordJDA;
     private final TextChannel textChannel;
 
     public DiscordCommand(final DiscordExtension discordExtension) {
         super("discord", "Komenda do zarządzania Discord ");
-        this.discordExtension= discordExtension;
-        this.bdsAutoEnable = this.discordExtension.getBdsAutoEnable();
-        this.discordConfig = this.discordExtension.getConfig();
-        this.discordJDA = this.discordExtension.getDiscordJDA();
+        this.discordJDA = discordExtension.getDiscordJDA();
         this.textChannel = this.discordJDA.getTextChannel();
 
         this.addOption("help", "Lista poleceń");

@@ -6,6 +6,9 @@ import eu.okaeri.configs.annotation.Comment;
 public class MessagesOptionsConfig extends OkaeriConfig {
 
     @Comment({""})
+    @Comment({"Formatować czat jeśli to możliwe?"})
+    private boolean formatChat = true;
+    @Comment({""})
     @Comment({"Wysyłać wiadomość o zrobieniu backup"})
     private boolean sendBackupMessage = false;
 
@@ -54,6 +57,11 @@ public class MessagesOptionsConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Wysyłać wiadomość o restarcie servera"})
     private boolean sendRestartMessage = true;
+
+
+    public boolean isFormatChat() {
+        return this.formatChat;
+    }
 
     public boolean isSendBackupMessage() {
         return this.sendBackupMessage;

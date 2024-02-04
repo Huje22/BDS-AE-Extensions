@@ -62,7 +62,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private PackModule packModule;
     private LinkingManager linkingManager;
 
-
     public CommandListener(final DiscordJDA discordJDA, final DiscordExtension discordExtension) {
         this.discordJDA = discordJDA;
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();

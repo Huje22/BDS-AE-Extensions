@@ -45,12 +45,14 @@ public class PlayerEventListener extends Listener {
     @Override
     public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
         final String playerName = event.getPlayerName();
-        final String role = "";
+        final String message = event.getMessage();
 
-        if (this.linkingManager.isLinked(playerName)) {
+        String role = "";
+
+        if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat() && this.linkingManager.isLinked(playerName)) {
             final Member member = this.linkingManager.getMember(playerName);
             if (member != null) {
-                this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong()));
+                role = this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong()));
             }
         }
 
@@ -60,7 +62,15 @@ public class PlayerEventListener extends Listener {
                 .replaceAll("<role>", role);
 
 
-        return new PlayerChatResponse(format);
+        if (!event.isMuted()) {
+            this.discordJDA.sendPlayerMessage(playerName, message);
+        }
+
+        if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat()) {
+            return new PlayerChatResponse(format);
+        }
+
+        return null;
     }
 
     @Override

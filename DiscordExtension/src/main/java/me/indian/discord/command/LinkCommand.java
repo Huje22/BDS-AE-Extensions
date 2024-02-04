@@ -10,12 +10,10 @@ import me.indian.discord.jda.manager.LinkingManager;
 public class LinkCommand extends Command {
 
     private final DiscordExtension discordExtension;
-    private final BDSAutoEnable bdsAutoEnable;
 
     public LinkCommand(final DiscordExtension discordExtension) {
         super("link", "Połącz konta Discord i Minecraft");
         this.discordExtension = discordExtension;
-        this.bdsAutoEnable = this.discordExtension.getBdsAutoEnable();
     }
 
     @Override
