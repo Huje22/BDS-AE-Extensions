@@ -65,7 +65,7 @@ public class PlayerEventListener extends Listener {
         if (!event.isMuted()) {
             this.discordJDA.sendPlayerMessage(playerName, message);
         }
-
+//TODO: Gdy użytkownik jest wyciszony na discord nie wysyłaj także wiadomości w Minecraft 
         if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat()) {
             return new PlayerChatResponse(format);
         }
