@@ -41,9 +41,8 @@ public class ServerListener extends Listener {
     public void onServerRestart(final ServerRestartEvent event) {
         final String reason = event.getReason();
 
-        //TODO Poprawić 
         if(reason == null ) return;
-        if ( reason.contains("Niska ilość tps")) {
+        if (reason.contains("Niska ilość tps")) {
             this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
                     + " (Teraz: **" + this.tps + "** Ostatnie: **" + this.lastTPS + "**)");
         } else {

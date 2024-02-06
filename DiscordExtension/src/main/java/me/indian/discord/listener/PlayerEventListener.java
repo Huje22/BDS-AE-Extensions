@@ -1,5 +1,6 @@
 package me.indian.discord.listener;
 
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
@@ -15,12 +16,14 @@ import net.dv8tion.jda.api.entities.Member;
 public class PlayerEventListener extends Listener {
 
     private final DiscordExtension discordExtension;
+    private final BDSAutoEnable bdsAutoEnable;
     private final DiscordConfig discordConfig;
     private final DiscordJDA discordJDA;
     private final LinkingManager linkingManager;
 
     public PlayerEventListener(final DiscordExtension discordExtension) {
         this.discordExtension = discordExtension;
+        this.bdsAutoEnable = this.discordExtension.getBdsAutoEnable();
         this.discordConfig = this.discordExtension.getConfig();
         this.discordJDA = this.discordExtension.getDiscordJDA();
         this.linkingManager = this.discordJDA.getLinkingManager();
@@ -47,12 +50,15 @@ public class PlayerEventListener extends Listener {
         final String playerName = event.getPlayerName();
         final String message = event.getMessage();
 
+        boolean appHandled = event.isAppHandled();
+        boolean memberMutedOnDiscord = false;
         String role = "";
 
         if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat() && this.linkingManager.isLinked(playerName)) {
             final Member member = this.linkingManager.getMember(playerName);
             if (member != null) {
                 role = this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong()));
+                memberMutedOnDiscord = member.isTimedOut();
             }
         }
 
@@ -62,12 +68,19 @@ public class PlayerEventListener extends Listener {
                 .replaceAll("<role>", role);
 
 
-        if (!event.isMuted()) {
+        if (appHandled) {
+            if (!event.isMuted() && !memberMutedOnDiscord) {
+                this.discordJDA.sendPlayerMessage(playerName, message);
+            }
+            if (memberMutedOnDiscord) {
+                this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerName, "&cZostałeś wyciszony na discord!");
+            }
+
+            if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat()) {
+                return new PlayerChatResponse(format, memberMutedOnDiscord);
+            }
+        } else {
             this.discordJDA.sendPlayerMessage(playerName, message);
-        }
-//TODO: Gdy użytkownik jest wyciszony na discord nie wysyłaj także wiadomości w Minecraft 
-        if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat()) {
-            return new PlayerChatResponse(format);
         }
 
         return null;
