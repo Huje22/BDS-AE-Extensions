@@ -5,6 +5,7 @@ import me.indian.bds.command.CommandManager;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.BedrockQuery;
 import me.indian.example.command.ExampleCommand;
 import me.indian.example.config.Config;
 import me.indian.example.listener.ServerListener;
@@ -61,6 +62,19 @@ public class ExampleExtension extends Extension {
         logger.info(this.getDescription());
         logger.info(this.getAuthor());
 
+        //Możesz także z łatwoscią pozyskać informacie z guery innego servera bedrock
+        final BedrockQuery query = BedrockQuery.create("play.skyblockpe.com", 19132);
+
+        if(query.online()) {
+            logger.info("&aMOTD:&b " + query.motd());
+            logger.info("&aProtocol Version:&b " + query.protocol());
+            logger.info("&aMinecraft Version:&b " + query.minecraftVersion());
+            logger.info("&aPlayer Count:&b " + query.playerCount());
+            logger.info("&aMax Players:&b " + query.maxPlayers());
+            logger.info("&aMap Name:&b " + query.mapName());
+            logger.info("&aGamemode:&b " + query.gamemode());
+            logger.info("&aEdycja:&b " + query.edition());
+        }
 
         //Wysyłanie wiadomości do konsoli aplikacji
         logger.info("Włączono ROZSERZENIE");
