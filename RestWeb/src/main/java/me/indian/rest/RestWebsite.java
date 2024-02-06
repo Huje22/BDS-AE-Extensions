@@ -69,11 +69,8 @@ public class RestWebsite extends Extension {
         final Extension extension = this.bdsAutoEnable.getExtensionLoader().getExtension("DiscordExtension");
         if (extension != null) {
             this.discordExtension = (DiscordExtension) extension;
-        }
-
-        if (this.discordExtension != null) {
             this.logger.info("Znaleziono&b " + extension.getName());
-            this.requests.add(new DiscordMessagePostRequest(this, this.bdsAutoEnable));
+            this.requests.add(new DiscordMessagePostRequest(this, this.discordExtension, this.bdsAutoEnable));
         }
 
         try {
@@ -125,8 +122,19 @@ public class RestWebsite extends Extension {
         this.limiter.incrementCounter(ctx, this.config.getRateLimit());
     }
 
+    public void incorrectJsonMessage(final Context ctx, final String json) {
+        this.incorrectJsonMessage(ctx, json, null);
+    }
+
     public void incorrectJsonMessage(final Context ctx) {
-        this.incorrectJsonMessage(ctx, null);
+        this.incorrectJsonMessage(ctx, (Exception) null);
+    }
+
+    public void incorrectJsonMessage(final Context ctx, final String json, final @Nullable Exception exception) {
+        final String ip = ctx.ip();
+
+        this.logger.debug("&b" + ip + "&r wysła niepoprawny json&1 " + json.replaceAll("\n", ""), exception);
+        ctx.status(HttpStatus.BAD_REQUEST).result("Niepoprawny Json! " + json.replaceAll("\n", ""));
     }
 
     public void incorrectJsonMessage(final Context ctx, final @Nullable Exception exception) {
@@ -175,10 +183,5 @@ public class RestWebsite extends Extension {
 
     public Javalin getApp() {
         return this.app;
-    }
-
-    @Nullable
-    public DiscordExtension getDiscordExtension() {
-        return this.discordExtension;
     }
 }

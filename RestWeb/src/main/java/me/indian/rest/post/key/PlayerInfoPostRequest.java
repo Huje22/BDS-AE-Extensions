@@ -1,6 +1,6 @@
 package me.indian.rest.post.key;
 
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import me.indian.bds.BDSAutoEnable;
@@ -20,6 +20,7 @@ public class PlayerInfoPostRequest implements Request {
     private final Logger logger;
     private final ServerProcess serverProcess;
     private final Javalin app;
+    private final Gson gson;
 
     public PlayerInfoPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
@@ -27,6 +28,7 @@ public class PlayerInfoPostRequest implements Request {
         this.logger = this.bdsAutoEnable.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.app = this.restWebsite.getApp();
+        this.gson = GsonUtil.getGson();
     }
 
     @Override
@@ -44,8 +46,8 @@ public class PlayerInfoPostRequest implements Request {
 
             try {
                 playerPostData = GsonUtil.getGson().fromJson(requestBody, PlayerPostData.class);
-            } catch (final JsonSyntaxException jsonSyntaxException) {
-                this.restWebsite.incorrectJsonMessage(ctx, jsonSyntaxException);
+            } catch (final Exception exception) {
+                this.restWebsite.incorrectJsonMessage(ctx, exception);
                 return;
             }
 

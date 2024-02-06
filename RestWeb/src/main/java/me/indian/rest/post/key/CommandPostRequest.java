@@ -1,6 +1,6 @@
 package me.indian.rest.post.key;
 
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
@@ -21,6 +21,7 @@ public class CommandPostRequest implements Request {
     private final Logger logger;
     private final ServerProcess serverProcess;
     private final Javalin app;
+    private final Gson gson;
 
     public CommandPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
@@ -28,6 +29,7 @@ public class CommandPostRequest implements Request {
         this.logger = this.bdsAutoEnable.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.app = this.restWebsite.getApp();
+        this.gson = GsonUtil.getGson();
     }
 
     @Override
@@ -38,19 +40,19 @@ public class CommandPostRequest implements Request {
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();
-            final CommandPostData commandPostData;
+            final CommandPostData data;
 
             try {
-                commandPostData = GsonUtil.getGson().fromJson(requestBody, CommandPostData.class);
-            } catch (final JsonSyntaxException jsonSyntaxException) {
-                this.restWebsite.incorrectJsonMessage(ctx, jsonSyntaxException);
+                data = GsonUtil.getGson().fromJson(requestBody, CommandPostData.class);
+            } catch (final Exception exception) {
+                this.restWebsite.incorrectJsonMessage(ctx, exception);
                 return;
             }
 
-            final String command = commandPostData.command();
+            final String command = data.command();
 
             if (command == null) {
-                this.restWebsite.incorrectJsonMessage(ctx);
+                this.restWebsite.incorrectJsonMessage(ctx, GsonUtil.getGson().toJson(data));
                 return;
             }
 

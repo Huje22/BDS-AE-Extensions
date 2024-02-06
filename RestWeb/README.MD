@@ -79,14 +79,14 @@ POST /discord/message/{api-key}
 ```json
 {
   "name": "REST API",
-  "message": "Wysyłam wiadomość na discord!"
+  "message": "Wysyłam wiadomość na discord!",
+  "messageType": "WEBHOOK"
 }
-
 ```
 #### Przykład wysłania JSON z poziomu konsoli
 
 ```
-curl -X POST -H "Content-Type: application/json" -d "{ \"name\": \"REST API\",\"message\": \"Wysyłam wiadomość na discord!\"}" http://localhost:PORT/command/KLUCZ_API
+curl -X POST -H "Content-Type: application/json" -d "{ \"name\": \"REST API\",\"message\": \"Wysyłam wiadomość na discord!\",\"messageType\":\"WEBHOOK\"}" http://localhost:PORT/discord/message/KLUCZ_API
 ```
 
 ---
