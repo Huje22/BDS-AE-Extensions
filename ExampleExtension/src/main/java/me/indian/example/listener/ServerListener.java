@@ -15,9 +15,10 @@ public class ServerListener extends Listener {
         final String message = event.getMessage();
 
 
-        //'onPlayerChat' zwraca 'PlayerChatResponse' aby wiedzieć jaki format ma być wiadomości na czacie
+        //'onPlayerChat' zwraca 'PlayerChatResponse' aby wiedzieć jaki format ma być wiadomości na czacie, i czy anulować wysyłanie wiadomości
         // Gdy są one przez aplikacje 'event.isAppHandled()'
-        return new PlayerChatResponse(playerName + " >> " + message);
+
+        return new PlayerChatResponse(playerName + " >> " + message, false);
     }
 
     @Override
