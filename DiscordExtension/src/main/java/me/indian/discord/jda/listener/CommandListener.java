@@ -153,6 +153,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             }
 
                             if (this.linkingManager.linkAccount(code, id)) {
+
+                                //TODO: Dodać info 'discordJDA.log();' o połączeniu kont
+
                                 linkingEmbed.setDescription("Połączono konto z nickiem: **" + this.linkingManager.getNameByID(id) + "**" + this.hasEnoughHours(member));
                                 event.getHook().editOriginalEmbeds(linkingEmbed.build()).queue();
                                 this.serverProcess.tellrawToPlayer(this.linkingManager.getNameByID(id),
