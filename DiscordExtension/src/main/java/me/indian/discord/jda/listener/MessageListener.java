@@ -29,6 +29,8 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class MessageListener extends ListenerAdapter implements JDAListener {
 
@@ -37,6 +39,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private final Logger logger;
     private final DiscordConfig discordConfig;
     private final MessagesConfig messagesConfig;
+    private final Lock sendToMinecraftLock;
     private TextChannel textChannel;
     private TextChannel consoleChannel;
     private ServerProcess serverProcess;
@@ -47,6 +50,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         this.logger = this.bdsAutoEnable.getLogger();
         this.discordConfig = discordExtension.getConfig();
         this.messagesConfig = discordExtension.getMessagesConfig();
+        this.sendToMinecraftLock = new ReentrantLock();
     }
 
     @Override
@@ -165,26 +169,33 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
         if (!this.messagesConfig.isSendDiscordToMinecraft() || this.isMaxLength(message)) return;
+        this.sendToMinecraftLock.lock();
 
-        final Role role = this.discordJDA.getHighestRole(author.getIdLong());
-        String msg = this.messagesConfig.getDiscordToMinecraftMessage()
-                .replaceAll("<name>", this.discordJDA.getUserName(member, author))
-                .replaceAll("<msg>", this.generateRawMessage(message))
-                .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
-                .replaceAll("<role>", this.discordJDA.getColoredRole(role));
+        try {
+            final Role role = this.discordJDA.getHighestRole(author.getIdLong());
+            String msg = this.messagesConfig.getDiscordToMinecraftMessage()
+                    .replaceAll("<name>", this.discordJDA.getUserName(member, author))
+                    .replaceAll("<msg>", this.generateRawMessage(message))
+                    .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
+                    .replaceAll("<role>", this.discordJDA.getColoredRole(role));
 
-        if (edited) {
-            msg += this.messagesConfig.getEdited();
+            if (edited) {
+                msg += this.messagesConfig.getEdited();
+            }
+            if (message.isWebhookMessage()) {
+                msg += this.messagesConfig.getWebhook();
+            }
+
+            msg = MessageUtil.fixMessage(msg);
+
+            if (this.serverProcess.isEnabled()) this.serverProcess.tellrawToAll(msg);
+            this.logger.info(msg);
+            this.discordJDA.writeConsole(ConsoleColors.removeColors(msg));
+        } catch (final Exception exception) {
+            this.logger.error("Nie udało się wysłać wiadomości z Discord do Minecraft", exception);
+        } finally {
+            this.sendToMinecraftLock.unlock();
         }
-        if (message.isWebhookMessage()) {
-            msg += this.messagesConfig.getWebhook();
-        }
-
-        msg = MessageUtil.fixMessage(msg);
-
-        if (this.serverProcess.isEnabled()) this.serverProcess.tellrawToAll(msg);
-        this.logger.info(msg);
-        this.discordJDA.writeConsole(ConsoleColors.removeColors(msg));
     }
 
     private boolean isMaxLength(final Message message) {
@@ -207,24 +218,28 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             rawMessage += this.messagesConfig.getAttachment();
         if (members.isEmpty()) {
             for (final User user : message.getMentions().getUsers()) {
-                if (user != null)
+                if (user != null) {
                     rawMessage = rawMessage.replaceAll("<@" + user.getIdLong() + ">", "@" + this.discordJDA.getUserName(null, user));
+                }
             }
         } else {
             for (final Member member : members) {
-                if (member != null)
+                if (member != null) {
                     rawMessage = rawMessage.replaceAll("<@" + member.getIdLong() + ">", "@" + this.discordJDA.getUserName(member, member.getUser()));
+                }
             }
         }
 
         for (final GuildChannel guildChannel : message.getMentions().getChannels()) {
-            if (guildChannel != null)
+            if (guildChannel != null) {
                 rawMessage = rawMessage.replaceAll("<#" + guildChannel.getIdLong() + ">", "#" + guildChannel.getName());
+            }
         }
 
         for (final Role role : message.getMentions().getRoles()) {
-            if (role != null)
+            if (role != null) {
                 rawMessage = rawMessage.replaceAll("<@&" + role.getIdLong() + ">", this.discordJDA.getColoredRole(role) + "&r");
+            }
         }
 
         //Daje to aby określić czy wiadomość nadal jest pusta
@@ -243,11 +258,11 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""))
                 .replaceAll("<author>", this.discordJDA.getUserName(member, author));
 
-        if (author.equals(this.discordJDA.getJda().getSelfUser()))
+        if (author.equals(this.discordJDA.getJda().getSelfUser())) {
             return this.messagesConfig.getBotReplyStatement()
                     .replaceAll("<msg>", this.generateRawMessage(messageReference)
                             .replaceAll("\\*\\*", ""));
-
+        }
 
         return replyStatement;
     }

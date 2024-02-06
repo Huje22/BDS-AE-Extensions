@@ -65,7 +65,7 @@ public class PlayerEventListener extends Listener {
         final String format = this.messagesConfig.getChatMessageFormat()
                 .replaceAll("<player>", playerName)
                 .replaceAll("<message>", event.getMessage())
-                .replaceAll("<role>", role);
+                .replaceAll("<role>", role.trim());
 
 
         if (appHandled) {
