@@ -5,8 +5,6 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 import me.indian.discord.config.sub.BotConfig;
-import me.indian.discord.config.sub.MessagesConfig;
-import me.indian.discord.config.sub.MessagesOptionsConfig;
 import me.indian.discord.config.sub.WebHookConfig;
 
 @Header("################################################################")
@@ -24,16 +22,6 @@ public class DiscordConfig extends OkaeriConfig {
     @CustomKey("Bot")
     private BotConfig botConfig = new BotConfig();
 
-    @Comment({""})
-    @Comment({"Ustawienia Wiadomości"})
-    @CustomKey("MessagesOptions")
-    private MessagesOptionsConfig messagesOptionsConfig = new MessagesOptionsConfig();
-
-    @Comment({""})
-    @Comment({"Konfiguracja dostępnych wiadomości "})
-    @CustomKey("Messages")
-    private MessagesConfig messagesConfig = new MessagesConfig();
-
     public WebHookConfig getWebHookConfig() {
         return this.webHookConfig;
     }
@@ -42,11 +30,4 @@ public class DiscordConfig extends OkaeriConfig {
         return this.botConfig;
     }
 
-    public MessagesOptionsConfig getMessagesOptionsConfig() {
-        return this.messagesOptionsConfig;
-    }
-
-    public MessagesConfig getMessagesConfig() {
-        return this.messagesConfig;
-    }
 }

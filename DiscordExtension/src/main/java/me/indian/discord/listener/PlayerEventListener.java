@@ -8,7 +8,7 @@ import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.discord.DiscordExtension;
-import me.indian.discord.config.DiscordConfig;
+import me.indian.discord.config.MessagesConfig;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import net.dv8tion.jda.api.entities.Member;
@@ -17,14 +17,14 @@ public class PlayerEventListener extends Listener {
 
     private final DiscordExtension discordExtension;
     private final BDSAutoEnable bdsAutoEnable;
-    private final DiscordConfig discordConfig;
+    private final MessagesConfig messagesConfig;
     private final DiscordJDA discordJDA;
     private final LinkingManager linkingManager;
 
     public PlayerEventListener(final DiscordExtension discordExtension) {
         this.discordExtension = discordExtension;
         this.bdsAutoEnable = this.discordExtension.getBdsAutoEnable();
-        this.discordConfig = this.discordExtension.getConfig();
+        this.messagesConfig = this.discordExtension.getMessagesConfig();
         this.discordJDA = this.discordExtension.getDiscordJDA();
         this.linkingManager = this.discordJDA.getLinkingManager();
     }
@@ -49,12 +49,12 @@ public class PlayerEventListener extends Listener {
     public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
         final String playerName = event.getPlayerName();
         final String message = event.getMessage();
+        final boolean appHandled = event.isAppHandled();
 
-        boolean appHandled = event.isAppHandled();
         boolean memberMutedOnDiscord = false;
         String role = "";
 
-        if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat() && this.linkingManager.isLinked(playerName)) {
+        if (!event.isMuted() && this.messagesConfig.isFormatChat() && this.linkingManager.isLinked(playerName)) {
             final Member member = this.linkingManager.getMember(playerName);
             if (member != null) {
                 role = this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong()));
@@ -62,7 +62,7 @@ public class PlayerEventListener extends Listener {
             }
         }
 
-        final String format = this.discordConfig.getMessagesConfig().getChatMessageFormat()
+        final String format = this.messagesConfig.getChatMessageFormat()
                 .replaceAll("<player>", playerName)
                 .replaceAll("<message>", event.getMessage())
                 .replaceAll("<role>", role);
@@ -76,7 +76,7 @@ public class PlayerEventListener extends Listener {
                 this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerName, "&cZostałeś wyciszony na discord!");
             }
 
-            if (!event.isMuted() && this.discordConfig.getMessagesOptionsConfig().isFormatChat()) {
+            if (!event.isMuted() && this.messagesConfig.isFormatChat()) {
                 return new PlayerChatResponse(format, memberMutedOnDiscord);
             }
         } else {

@@ -9,6 +9,7 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.watchdog.module.PackModule;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
+import me.indian.discord.config.MessagesConfig;
 import me.indian.discord.config.sub.BotConfig;
 import me.indian.discord.embed.component.Field;
 import me.indian.discord.embed.component.Footer;
@@ -56,6 +57,7 @@ public class DiscordJDA {
     private final Logger logger;
     private final AppConfigManager appConfigManager;
     private final DiscordConfig discordConfig;
+    private final MessagesConfig messagesConfig;
     private final BotConfig botConfig;
     private final long serverID, channelID, consoleID, logID;
     private final List<JDAListener> listeners;
@@ -72,6 +74,7 @@ public class DiscordJDA {
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordConfig = this.discordExtension.getConfig();
+        this.messagesConfig = this.discordExtension.getMessagesConfig();
         this.botConfig = this.discordConfig.getBotConfig();
         this.serverID = this.botConfig.getServerID();
         this.channelID = this.botConfig.getChannelID();
@@ -266,7 +269,11 @@ public class DiscordJDA {
     public String getRoleColor(final Role role) {
         if (role == null) return "";
         final Color col = role.getColor();
-        return ConsoleColors.getMinecraftColorFromRGB(col.getRed(), col.getGreen(), col.getBlue());
+        final int red = (col == null ? -1 : col.getRed());
+        final int green = (col == null ? -1 : col.getGreen());
+        final int blue = (col == null ? -1 : col.getBlue());
+
+        return ConsoleColors.getMinecraftColorFromRGB(red, green ,blue);
     }
 
     public String getColoredRole(final Role role) {
@@ -494,7 +501,7 @@ public class DiscordJDA {
     }
 
     public void log(final String title, final String message, final Footer footer) {
-        this.log(title, message, (List<Field>) null, footer);
+        this.log(title, message, null, footer);
     }
 
     public void writeConsole(final String message) {
@@ -509,20 +516,20 @@ public class DiscordJDA {
     }
 
     public void sendJoinMessage(final String playerName) {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendJoinMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));
+        if (this.messagesConfig.isSendJoinMessage()) {
+            this.sendMessage(this.messagesConfig.getJoinMessage().replaceAll("<name>", playerName));
         }
     }
 
     public void sendLeaveMessage(final String playerName) {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendLeaveMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
+        if (this.messagesConfig.isSendLeaveMessage()) {
+            this.sendMessage(this.messagesConfig.getLeaveMessage().replaceAll("<name>", playerName));
         }
     }
 
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendPlayerMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getMinecraftToDiscordMessage()
+        if (this.messagesConfig.isSendMinecraftToDiscordMessage()) {
+            this.sendMessage(this.messagesConfig.getMinecraftToDiscordMessage()
                     .replaceAll("<name>", playerName)
                     .replaceAll("<msg>", playerMessage.replaceAll("\\\\", ""))
                     .replaceAll("@everyone", "/everyone/")
@@ -532,8 +539,8 @@ public class DiscordJDA {
     }
 
     public void sendDeathMessage(final String playerName, final String deathMessage) {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendDeathMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getDeathMessage()
+        if (this.messagesConfig.isSendDeathMessage()) {
+            this.sendMessage(this.messagesConfig.getDeathMessage()
                     .replaceAll("<name>", playerName)
                     .replaceAll("<deathMessage>", deathMessage.replaceAll("\\\\", ""))
             );
@@ -541,72 +548,36 @@ public class DiscordJDA {
     }
 
     public void sendDisabledMessage() {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendDisabledMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getDisabledMessage());
-        }
-    }
-
-    public void sendDisablingMessage() {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendDisablingMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getDisablingMessage());
-        }
-    }
-
-    public void sendProcessEnabledMessage() {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendProcessEnabledMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getProcessEnabledMessage());
+        if (this.messagesConfig.isSendDisabledMessage()) {
+            this.sendMessage(this.messagesConfig.getDisabledMessage());
         }
     }
 
     public void sendEnabledMessage() {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendEnabledMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getEnabledMessage());
-        }
-    }
-
-    public void sendDestroyedMessage() {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendDestroyedMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getDestroyedMessage());
+        if (this.messagesConfig.isSendEnabledMessage()) {
+            this.sendMessage(this.messagesConfig.getEnabledMessage());
         }
     }
 
     public void sendBackupDoneMessage() {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendBackupMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getBackupDoneMessage());
+        if (this.messagesConfig.isSendBackupMessage()) {
+            this.sendMessage(this.messagesConfig.getBackupDoneMessage());
         }
     }
 
     public void sendBackupFailMessage(final Exception exception) {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendBackupFailMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getBackupFailMessage());
-        }
-    }
-
-    public void sendAppRamAlert() {
-        if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
-            this.sendMessage(this.getOwnerMention() + this.discordConfig.getMessagesConfig().getAppRamAlter());
-        }
-    }
-
-    public void sendMachineRamAlert() {
-        if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
-            this.sendMessage(this.getOwnerMention() + this.discordConfig.getMessagesConfig().getMachineRamAlter());
+        if (this.messagesConfig.isSendBackupFailMessage()) {
+            this.sendMessage(this.messagesConfig.getBackupFailMessage().replaceAll("<exception>", MessageUtil.getStackTraceAsString(exception)));
         }
     }
 
     public void sendServerUpdateMessage(final String version) {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendServerUpdateMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getServerUpdate()
+        if (this.messagesConfig.isSendServerUpdateMessage()) {
+            this.sendMessage(this.messagesConfig.getServerUpdate()
                     .replaceAll("<version>", version)
                     .replaceAll("<current>", this.appConfigManager.getVersionManagerConfig().getVersion())
 
             );
-        }
-    }
-
-    public void sendRestartMessage() {
-        if (this.discordConfig.getMessagesOptionsConfig().isSendRestartMessage()) {
-            this.sendMessage(this.discordConfig.getMessagesConfig().getRestartMessage());
         }
     }
 

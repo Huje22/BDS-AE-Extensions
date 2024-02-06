@@ -9,6 +9,7 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
+import me.indian.discord.config.MessagesConfig;
 import me.indian.discord.config.sub.LinkingConfig;
 import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
@@ -35,6 +36,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final DiscordConfig discordConfig;
+    private final MessagesConfig messagesConfig;
     private TextChannel textChannel;
     private TextChannel consoleChannel;
     private ServerProcess serverProcess;
@@ -44,6 +46,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
         this.logger = this.bdsAutoEnable.getLogger();
         this.discordConfig = discordExtension.getConfig();
+        this.messagesConfig = discordExtension.getMessagesConfig();
     }
 
     @Override
@@ -161,25 +164,25 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
-        if (!this.serverProcess.isEnabled() || this.isMaxLength(message)) return;
+        if (!this.messagesConfig.isSendDiscordToMinecraft() || this.isMaxLength(message)) return;
 
         final Role role = this.discordJDA.getHighestRole(author.getIdLong());
-        String msg = this.discordConfig.getMessagesConfig().getDiscordToMinecraftMessage()
+        String msg = this.messagesConfig.getDiscordToMinecraftMessage()
                 .replaceAll("<name>", this.discordJDA.getUserName(member, author))
                 .replaceAll("<msg>", this.generateRawMessage(message))
                 .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                 .replaceAll("<role>", this.discordJDA.getColoredRole(role));
 
         if (edited) {
-            msg += this.discordConfig.getMessagesConfig().getEdited();
+            msg += this.messagesConfig.getEdited();
         }
         if (message.isWebhookMessage()) {
-            msg += this.discordConfig.getMessagesConfig().getWebhook();
+            msg += this.messagesConfig.getWebhook();
         }
 
         msg = MessageUtil.fixMessage(msg);
 
-        this.serverProcess.tellrawToAll(msg);
+        if (this.serverProcess.isEnabled()) this.serverProcess.tellrawToAll(msg);
         this.logger.info(msg);
         this.discordJDA.writeConsole(ConsoleColors.removeColors(msg));
     }
@@ -201,7 +204,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         String rawMessage = MessageUtil.fixMessage(message.getContentRaw());
 
         if (!message.getAttachments().isEmpty())
-            rawMessage += this.discordConfig.getMessagesConfig().getAttachment();
+            rawMessage += this.messagesConfig.getAttachment();
         if (members.isEmpty()) {
             for (final User user : message.getMentions().getUsers()) {
                 if (user != null)
@@ -236,12 +239,12 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final Member member = messageReference.getMember();
         final User author = messageReference.getAuthor();
 
-        final String replyStatement = this.discordConfig.getMessagesConfig().getReplyStatement()
+        final String replyStatement = this.messagesConfig.getReplyStatement()
                 .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""))
                 .replaceAll("<author>", this.discordJDA.getUserName(member, author));
 
         if (author.equals(this.discordJDA.getJda().getSelfUser()))
-            return this.discordConfig.getMessagesConfig().getBotReplyStatement()
+            return this.messagesConfig.getBotReplyStatement()
                     .replaceAll("<msg>", this.generateRawMessage(messageReference)
                             .replaceAll("\\*\\*", ""));
 

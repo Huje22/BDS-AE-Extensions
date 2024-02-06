@@ -9,6 +9,7 @@ import me.indian.discord.command.DiscordCommand;
 import me.indian.discord.command.LinkCommand;
 import me.indian.discord.command.UnlinkCommand;
 import me.indian.discord.config.DiscordConfig;
+import me.indian.discord.config.MessagesConfig;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import me.indian.discord.jda.manager.StatsChannelsManager;
@@ -24,30 +25,32 @@ public class DiscordExtension extends Extension {
 
     private BDSAutoEnable bdsAutoEnable;
     private DiscordConfig config;
-    private  Logger logger;
-    private  DiscordJDA discordJDA;
-    private  WebHook webHook;
+    private MessagesConfig messagesConfig;
+    private Logger logger;
+    private DiscordJDA discordJDA;
+    private WebHook webHook;
     private boolean botEnabled, webhookEnabled;
 
 
     @Override
     public void onEnable() {
         this.bdsAutoEnable = this.getBdsAutoEnable();
-        this.config = this.createConfig(DiscordConfig.class , "config" );
+        this.config = this.createConfig(DiscordConfig.class, "config");
+        this.messagesConfig = this.createConfig(MessagesConfig.class, "Messages");
 
         this.logger = this.bdsAutoEnable.getLogger();
 
         this.botEnabled = this.getConfig().getBotConfig().isEnable();
         this.webhookEnabled = this.getConfig().getWebHookConfig().isEnable();
 
-        this.discordJDA = new DiscordJDA( this);
-        this.webHook = new WebHook( this);
+        this.discordJDA = new DiscordJDA(this);
+        this.webHook = new WebHook(this);
 
         this.discordJDA.init();
 
         final CommandManager commandManager = this.bdsAutoEnable.getCommandManager();
 
-        if(this.botEnabled){
+        if (this.botEnabled) {
             commandManager.registerCommand(new DiscordCommand(this));
             commandManager.registerCommand(new LinkCommand(this));
             commandManager.registerCommand(new UnlinkCommand(this));
@@ -64,24 +67,27 @@ public class DiscordExtension extends Extension {
     public void onDisable() {
         this.startShutdown();
         if (this.config != null) this.config.save();
+        if(this.messagesConfig != null) this.messagesConfig.save();
         this.shutdown();
     }
-
 
     public DiscordConfig getConfig() {
         return this.config;
     }
 
-    public void startShutdown() {
+    public MessagesConfig getMessagesConfig() {
+        return this.messagesConfig;
+    }
+
+    private void startShutdown() {
         final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
         final StatsChannelsManager statsChannelsManager = this.discordJDA.getStatsChannelsManager();
 
         if (linkingManager != null) linkingManager.saveLinkedAccounts();
         if (statsChannelsManager != null) statsChannelsManager.onShutdown();
-
     }
 
-    public void shutdown() {
+    private void shutdown() {
         final JDA jda = this.discordJDA.getJda();
         if (jda != null) {
             if (jda.getStatus() == JDA.Status.CONNECTED) {
