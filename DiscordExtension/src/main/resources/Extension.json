@@ -4,6 +4,5 @@
   "name": "DiscordExtension",
   "author": "IndianPL",
   "authors": [],
-  "description": "Łączy Minecraft z Discord",
-  "dependencies": ["RestWebsite"]
+  "description": "Łączy Minecraft z Discord"
 }

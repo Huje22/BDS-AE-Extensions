@@ -3,6 +3,8 @@
   "version": "1.0",
   "name": "ExampleExtension",
   "author": "IndianPL",
-  "authors": [],
-  "description": "Przykladowe rozserzenie dla BDS-Auto-Enable"
+  "description": "Przykladowe rozserzenie dla BDS-Auto-Enable",
+  "authors": ["IndianPL"],
+  "dependencies": [],
+  "softDependencies": []
 }

@@ -4,5 +4,6 @@
   "name": "RestWebsite",
   "author": "IndianPL",
   "authors": [],
-  "description": "Strona RestAPI dla BDS-Auto-Enable"
+  "description": "Strona RestAPI dla BDS-Auto-Enable",
+  "softDependencies": ["DiscordExtension"]
 }
