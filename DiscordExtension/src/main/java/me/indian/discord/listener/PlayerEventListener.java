@@ -51,6 +51,15 @@ public class PlayerEventListener extends Listener {
         final String message = event.getMessage();
         final boolean appHandled = event.isAppHandled();
 
+        if(event.isMuted()){
+  this.discordJDA.log("Wyciszenie w Minecraft",
+                                "Wiadomość została nie wysłana z powodu wyciszenia w Minecraft, jej treść to:\n```" +
+                                        rawMessage + "```",
+                                new Footer(playerName));
+         
+        }
+
+        
         boolean memberMutedOnDiscord = false;
         String role = "";
 
@@ -75,6 +84,10 @@ public class PlayerEventListener extends Listener {
             }
             if (memberMutedOnDiscord) {
                 this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerName, "&cZostałeś wyciszony na discord!");
+           this.discordJDA.log("Wyciszenie na Discord",
+                                "Wiadomość została usunięta z powodu wyciszenia na Discord, jej treść to:\n```" +
+                                        rawMessage + "```",
+                                new Footer(playerName));
             }
 
             if (!event.isMuted() && this.messagesConfig.isFormatChat()) {
