@@ -69,6 +69,7 @@ public class PlayerEventListener extends Listener {
 
 
         if (appHandled) {
+            //TODO: Wypisać kiedy event jest anulowany .log
             if (!event.isMuted() && !memberMutedOnDiscord) {
                 this.discordJDA.sendPlayerMessage(playerName, message);
             }
