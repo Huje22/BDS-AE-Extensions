@@ -51,12 +51,13 @@ public class PlayerEventListener extends Listener {
         final String message = event.getMessage();
         final boolean appHandled = event.isAppHandled();
 
-        if(event.isMuted()){
+        if(event.isMuted() && appHandled){
   this.discordJDA.log("Wyciszenie w Minecraft",
                                 "Wiadomość została nie wysłana z powodu wyciszenia w Minecraft, jej treść to:\n```" +
                                         rawMessage + "```",
                                 new Footer(playerName));
-         
+
+            return null;
         }
 
         
