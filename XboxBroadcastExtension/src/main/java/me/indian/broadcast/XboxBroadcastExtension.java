@@ -34,6 +34,8 @@ public class XboxBroadcastExtension extends Extension {
 
         this.updateSessionInfo(this.sessionInfo);
 
+        //TODO: Dodaj komendy i dodaj "launch on ServerStart" czy cos takiego
+
         try {
             this.createSession();
         } catch (final Exception exception) {

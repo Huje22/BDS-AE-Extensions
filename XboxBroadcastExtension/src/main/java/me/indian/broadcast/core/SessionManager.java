@@ -46,7 +46,7 @@ public class SessionManager extends SessionManagerCore {
      */
     public SessionManager(final String cache, final Logger logger) {
         super(cache, logger);
-        this.scheduledThreadPool = Executors.newScheduledThreadPool(5, new ThreadUtil("MCXboxBroadcast Thread"));
+        this.scheduledThreadPool = Executors.newScheduledThreadPool(5, new ThreadUtil("MCXboxBroadcast"));
         this.subSessionManagers = new HashMap<>();
     }
 
