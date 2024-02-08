@@ -2,9 +2,11 @@ package me.indian.broadcast;
 
 
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.command.CommandManager;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.BedrockQuery;
+import me.indian.broadcast.command.XboxBroadcastCommand;
 import me.indian.broadcast.config.ExtensionConfig;
 import me.indian.broadcast.core.SessionInfo;
 import me.indian.broadcast.core.SessionManager;
@@ -17,37 +19,43 @@ import java.util.concurrent.TimeUnit;
 public class XboxBroadcastExtension extends Extension {
 
     private BDSAutoEnable bdsAutoEnable;
+    private String cacheLocation;
     private ExtensionConfig config;
     private Logger logger;
     private SessionInfo sessionInfo;
-    public SessionManager sessionManager;
+    private SessionManager sessionManager;
 
     @Override
     public void onEnable() {
         this.bdsAutoEnable = this.getBdsAutoEnable();
+        this.cacheLocation = this.getDataFolder() + File.separator + "cache";
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.createConfig(ExtensionConfig.class, "config");
-        this.sessionManager = new SessionManager(this.getDataFolder() + File.separator + "cache", this.logger);
+        this.sessionManager = new SessionManager(this.cacheLocation, this.logger);
         this.sessionInfo = this.config.getSession().getSessionInfo();
-
-        System.out.println(this.sessionInfo);
 
         this.updateSessionInfo(this.sessionInfo);
 
-        //TODO: Dodaj komendy i dodaj "launch on ServerStart" czy cos takiego
+
+        final CommandManager commandManager = this.bdsAutoEnable.getCommandManager();
+        commandManager.registerCommand(new XboxBroadcastCommand(this));
 
         try {
             this.createSession();
         } catch (final Exception exception) {
             exception.printStackTrace();
         }
+    }
 
+    @Override
+    public void onDisable() {
+        this.sessionManager.shutdown();
     }
 
     public void restart() {
         try {
             this.sessionManager.shutdown();
-            this.sessionManager = new SessionManager("./cache", this.logger);
+            this.sessionManager = new SessionManager(this.cacheLocation, this.logger);
             this.createSession();
         } catch (final SessionCreationException | SessionUpdateException exception) {
             this.logger.error("Failed to restart session", exception);
@@ -65,9 +73,11 @@ public class XboxBroadcastExtension extends Extension {
                 try {
                     // Update the session
                     this.sessionManager.updateSession(this.sessionInfo);
-                    this.sessionManager.logger().info("Updated session!");
+                    this.sessionManager.logger().info("&aZaktualizowano sesje&b " + this.sessionManager.getSessionId());
+
+
                 } catch (final SessionUpdateException exception) {
-                    this.sessionManager.logger().error("Failed to update session", exception);
+                    this.sessionManager.logger().error("&cNie udało się zaktualizować sesji", exception);
                 }
             }
         }, this.config.getSession().getUpdateInterval(), this.config.getSession().getUpdateInterval(), TimeUnit.SECONDS);
@@ -75,7 +85,6 @@ public class XboxBroadcastExtension extends Extension {
 
     private void updateSessionInfo(final SessionInfo sessionInfo) {
         if (this.config.getSession().isQueryServer()) {
-            System.out.println(this.sessionInfo);
 
             final BedrockQuery query = BedrockQuery.create(sessionInfo.getIp(), sessionInfo.getPort());
 
@@ -88,5 +97,25 @@ public class XboxBroadcastExtension extends Extension {
                 sessionInfo.setMaxPlayers(query.maxPlayers());
             }
         }
+    }
+
+    public String getCacheLocation() {
+        return this.cacheLocation;
+    }
+
+    public ExtensionConfig getConfig() {
+        return this.config;
+    }
+
+    public Logger getLogger() {
+        return this.logger;
+    }
+
+    public SessionInfo getSessionInfo() {
+        return this.sessionInfo;
+    }
+
+    public SessionManager getSessionManager() {
+        return this.sessionManager;
     }
 }

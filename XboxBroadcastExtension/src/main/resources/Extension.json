@@ -1,6 +1,6 @@
 {
   "mainClass": "me.indian.broadcast.XboxBroadcastExtension",
-  "version": "1.0",
+  "version": "1.0-Beta",
   "name": "XboxBroadcastExtension",
   "author": "IndianPL",
   "authors": [],

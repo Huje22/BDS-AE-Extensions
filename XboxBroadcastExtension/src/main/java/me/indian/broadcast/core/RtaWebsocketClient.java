@@ -64,7 +64,7 @@ public class RtaWebsocketClient extends WebSocketClient {
             } catch (final Exception ignored) {
             }
         } else {
-            this.logger.debug("Websocket message: " + message);
+            this.logger.debug("Wiadomość WebSocket: " + message);
         }
     }
 
@@ -73,7 +73,7 @@ public class RtaWebsocketClient extends WebSocketClient {
      */
     @Override
     public void onClose(final int code, final String reason, final boolean remote) {
-        this.logger.debug("Websocket disconnected: " + reason + " (" + code + ")");
+        this.logger.debug("Websocket odłączone: " + reason + " (" + code + ")");
     }
 
     /**

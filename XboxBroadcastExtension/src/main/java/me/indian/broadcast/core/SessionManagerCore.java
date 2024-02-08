@@ -3,16 +3,6 @@ package me.indian.broadcast.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.mizosoft.methanol.Methanol;
-import me.indian.bds.logger.Logger;
-import me.indian.broadcast.core.exceptions.SessionCreationException;
-import me.indian.broadcast.core.exceptions.SessionUpdateException;
-import me.indian.broadcast.core.models.auth.SISUAuthenticationResponse;
-import me.indian.broadcast.core.models.auth.XboxTokenInfo;
-import me.indian.broadcast.core.models.session.CreateHandleRequest;
-import me.indian.broadcast.core.models.session.CreateHandleResponse;
-import me.indian.broadcast.core.models.session.SessionRef;
-import me.indian.broadcast.core.models.session.SocialSummaryResponse;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -26,6 +16,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.logger.Logger;
+import me.indian.broadcast.core.exceptions.SessionCreationException;
+import me.indian.broadcast.core.exceptions.SessionUpdateException;
+import me.indian.broadcast.core.models.auth.SISUAuthenticationResponse;
+import me.indian.broadcast.core.models.auth.XboxTokenInfo;
+import me.indian.broadcast.core.models.session.CreateHandleRequest;
+import me.indian.broadcast.core.models.session.CreateHandleResponse;
+import me.indian.broadcast.core.models.session.SessionRef;
+import me.indian.broadcast.core.models.session.SocialSummaryResponse;
 
 /**
  * Simple manager to authenticate and create sessions on Xbox
@@ -151,25 +150,25 @@ public abstract class SessionManagerCore {
      */
     public void init() throws SessionCreationException, SessionUpdateException {
         if (this.initialized) {
-            throw new SessionCreationException("Already initialized!");
+            throw new SessionCreationException("Już zainicjowane!");
         }
 
-        this.logger.info("Starting SessionManager...");
+        this.logger.info("Uruchamiam menedżera sesji...");
 
         // Make sure we are logged in
         final XboxTokenInfo tokenInfo = this.getXboxToken();
-        this.logger.info("Successfully authenticated as " + tokenInfo.gamertag() + " (" + tokenInfo.userXUID() + ")");
+        this.logger.info("Pomyślnie uwierzytelniono jako&b " + tokenInfo.gamertag() + "&r (&d" + tokenInfo.userXUID() + "&r)");
 
         if (this.handleFriendship()) {
-            this.logger.info("Waiting for friendship to be processed...");
+            this.logger.info("Oczekiwanie na przetworzenie przyjaźni...");
             try {
                 Thread.sleep(5000); // TODO Do a real callback not just wait
             } catch (final InterruptedException e) {
-                this.logger.error("Failed to wait for friendship to be processed", e);
+                this.logger.error("Nie udało się poczekać na przetworzenie przyjaźni", e);
             }
         }
 
-        this.logger.info("Creating Xbox LIVE session...");
+        this.logger.info("Tworzenie sesji Xbox LIVE...");
 
         // Create the session
         this.createSession();
@@ -178,7 +177,7 @@ public abstract class SessionManagerCore {
         this.updatePresence();
 
         // Let the user know we are done
-        this.logger.info("Creation of Xbox LIVE session was successful!");
+        this.logger.info("&aUtworzenie sesji Xbox LIVE powiodło się!");
 
         this.initialized = true;
     }
@@ -194,7 +193,7 @@ public abstract class SessionManagerCore {
      * Setup a new session and its prerequisites
      *
      * @throws SessionCreationException If the initial creation of the session fails
-     * @throws SessionUpdateException   If the updating of the session information fails
+     * @ If the updating of the session information fails
      */
     private void createSession() throws SessionCreationException, SessionUpdateException {
         // Get the token for authentication
@@ -216,7 +215,7 @@ public abstract class SessionManagerCore {
                 // Update the current session connection ID
                 this.sessionInfo.setConnectionId(connectionId);
             } catch (final InterruptedException | ExecutionException e) {
-                throw new SessionCreationException("Unable to get connectionId for session: " + e.getMessage());
+                throw new SessionCreationException("Nie można uzyskać identyfikatora połączenia dla sesji: " + e.getMessage());
             }
         }
 
@@ -272,7 +271,7 @@ public abstract class SessionManagerCore {
     /**
      * Update the session information using the stored information
      *
-     * @throws SessionUpdateException If the update fails
+     * @ If the update fails
      */
     protected abstract void updateSession() throws SessionUpdateException;
 
@@ -282,7 +281,7 @@ public abstract class SessionManagerCore {
      * @param url  The url to send the PUT request containing the session data
      * @param data The data to update the session with
      * @return The response body from the request
-     * @throws SessionUpdateException If the update fails
+     * @ If the update fails
      */
     protected String updateSessionInternal(final String url, final Object data) throws SessionUpdateException {
         final HttpRequest createSessionRequest;
@@ -295,7 +294,7 @@ public abstract class SessionManagerCore {
                     .PUT(HttpRequest.BodyPublishers.ofString(Constants.OBJECT_MAPPER.writeValueAsString(data)))
                     .build();
         } catch (final JsonProcessingException e) {
-            throw new SessionUpdateException("Unable to update session information, error parsing json: " + e.getMessage());
+            throw new SessionUpdateException("Nie można zaktualizować informacji o sesji, błąd podczas analizy JSON: " + e.getMessage());
         }
 
         final HttpResponse<String> createSessionResponse;
@@ -320,11 +319,11 @@ public abstract class SessionManagerCore {
     protected void checkConnection() {
         if (this.rtaWebsocket != null && !this.rtaWebsocket.isOpen()) {
             try {
-                this.logger.info("Connection to websocket lost, re-creating session...");
+                this.logger.info("Utracono połączenie z websocketem, ponowne tworzenie sesji...");
                 this.createSession();
-                this.logger.info("Re-connected!");
+                this.logger.info("Połączono ponownie!");
             } catch (final SessionCreationException | SessionUpdateException e) {
-                this.logger.error("Session is dead and hit exception trying to re-create it", e);
+                this.logger.error("Sesja jest martwa i wystąpił wyjątek, próbując ją odtworzyć", e);
             }
         }
     }

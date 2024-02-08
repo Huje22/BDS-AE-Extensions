@@ -2,20 +2,8 @@ package me.indian.broadcast.core;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.broadcast.config.FriendSyncConfig;
-import me.indian.broadcast.core.exceptions.SessionCreationException;
-import me.indian.broadcast.core.exceptions.SessionUpdateException;
-import me.indian.broadcast.core.models.session.CreateSessionRequest;
-import me.indian.broadcast.core.models.session.CreateSessionResponse;
-
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,15 +12,25 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.stream.Stream;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.broadcast.config.FriendSyncConfig;
+import me.indian.broadcast.core.exceptions.SessionCreationException;
+import me.indian.broadcast.core.exceptions.SessionUpdateException;
+import me.indian.broadcast.core.models.session.CreateSessionRequest;
+import me.indian.broadcast.core.models.session.CreateSessionResponse;
 
 /**
  * Simple manager to authenticate and create sessions on Xbox
  */
 public class SessionManager extends SessionManagerCore {
     private final ScheduledExecutorService scheduledThreadPool;
+    private final ExecutorService service;
     private final Map<String, SubSessionManager> subSessionManagers;
 
     private FriendSyncConfig friendSyncConfig;
@@ -46,7 +44,9 @@ public class SessionManager extends SessionManagerCore {
      */
     public SessionManager(final String cache, final Logger logger) {
         super(cache, logger);
-        this.scheduledThreadPool = Executors.newScheduledThreadPool(5, new ThreadUtil("MCXboxBroadcast"));
+        final ThreadFactory factory = new ThreadUtil("MCXboxBroadcast");
+        this.scheduledThreadPool = Executors.newScheduledThreadPool(5, factory);
+        this.service = Executors.newScheduledThreadPool(2, factory);
         this.subSessionManagers = new HashMap<>();
     }
 
@@ -74,10 +74,8 @@ public class SessionManager extends SessionManagerCore {
      *
      * @param sessionInfo      The session information to use
      * @param friendSyncConfig The friend sync configuration to use
-     * @throws SessionCreationException If the session failed to create either because it already exists or some other reason
-     * @throws SessionUpdateException   If the session data couldn't be set due to some issue
      */
-    public void init(final SessionInfo sessionInfo, final FriendSyncConfig friendSyncConfig) throws SessionCreationException, SessionUpdateException {
+    public void init(final SessionInfo sessionInfo, final FriendSyncConfig friendSyncConfig) throws SessionUpdateException, SessionCreationException {
         // Set the internal session information based on the session info
         this.sessionInfo = new ExpandedSessionInfo("", "", sessionInfo);
 
@@ -101,8 +99,8 @@ public class SessionManager extends SessionManagerCore {
                 subSessionManager.init();
                 subSessionManager.friendManager().initAutoFriend(friendSyncConfig);
                 this.subSessionManagers.put(subSession, subSessionManager);
-            } catch (final SessionCreationException | SessionUpdateException e) {
-                this.logger.error("Failed to create sub-session " + subSession, e);
+            } catch (final Exception e) {
+                this.logger.error("Nie udało się utworzyć sesji podrzędnej&b " + subSession, e);
                 // TODO Retry creation after 30s or so
             }
         }
@@ -118,7 +116,7 @@ public class SessionManager extends SessionManagerCore {
      * Update the current session with new information
      *
      * @param sessionInfo The information to update the session with
-     * @throws SessionUpdateException If the update failed
+     * @ If the update failed
      */
     public void updateSession(final SessionInfo sessionInfo) throws SessionUpdateException {
         this.sessionInfo.updateSessionInfo(sessionInfo);
@@ -137,11 +135,11 @@ public class SessionManager extends SessionManagerCore {
             // Restart if we have 28/30 session members
             final int players = sessionResponse.members().size();
             if (players >= 28) {
-                this.logger.info("Restarting session due to " + players + "/30 players");
+                this.logger.info("Restartowanie sesji z powodu " + players + "/30 graczy");
                 this.restart();
             }
         } catch (final JsonProcessingException e) {
-            throw new SessionUpdateException("Failed to parse session response: " + e.getMessage());
+            this.logger.error("Nie udało się przeanalizować odpowiedzi sesji ", e);
         }
     }
 
@@ -160,68 +158,36 @@ public class SessionManager extends SessionManagerCore {
     }
 
     /**
-     * Dump the current and last session responses to json files
-     */
-    public void dumpSession() {
-        this.logger.info("Dumping current and last session responses");
-        try {
-            final FileWriter file = new FileWriter(this.cache + "/lastSessionResponse.json");
-            file.write(this.lastSessionResponse);
-            file.close();
-        } catch (final IOException e) {
-            this.logger.error("Error dumping last session: " + e.getMessage());
-        }
-
-        final HttpRequest createSessionRequest = HttpRequest.newBuilder()
-                .uri(URI.create(Constants.CREATE_SESSION + this.sessionInfo.getSessionId()))
-                .header("Content-Type", "application/json")
-                .header("Authorization", this.getTokenHeader())
-                .header("x-xbl-contract-version", "107")
-                .GET()
-                .build();
-
-        try {
-            final HttpResponse<String> createSessionResponse = this.httpClient.send(createSessionRequest, HttpResponse.BodyHandlers.ofString());
-
-            final FileWriter file = new FileWriter(this.cache + "/currentSessionResponse.json");
-            file.write(createSessionResponse.body());
-            file.close();
-        } catch (final IOException | InterruptedException e) {
-            this.logger.error("Error dumping current session: " + e.getMessage());
-        }
-
-        this.logger.info("Dumped session responses to 'lastSessionResponse.json' and 'currentSessionResponse.json'");
-    }
-
-    /**
      * Create a sub-session for the given ID
      *
      * @param id The ID of the sub-session to create
      */
     public void addSubSession(final String id) {
-        // Make sure we don't already have that ID
-        if (this.subSessionManagers.containsKey(id)) {
-            this.logger.error("Sub-session already exists with that ID");
-            return;
-        }
+        this.service.execute(() -> {
+            // Make sure we don't already have that ID
+            if (this.subSessionManagers.containsKey(id)) {
+                this.logger.error("Podsesja o tym identyfikatorze już istnieje");
+                return;
+            }
 
-        // Create the sub-session manager
-        try {
-            final SubSessionManager subSessionManager = new SubSessionManager(id, this, Paths.get(this.cache, id).toString(), this.logger);
-            subSessionManager.init();
-            subSessionManager.friendManager().initAutoFriend(this.friendSyncConfig);
-            this.subSessionManagers.put(id, subSessionManager);
-        } catch (final SessionCreationException | SessionUpdateException e) {
-            this.logger.error("Failed to create sub-session", e);
-            return;
-        }
+            // Create the sub-session manager
+            try {
+                final SubSessionManager subSessionManager = new SubSessionManager(id, this, Paths.get(this.cache, id).toString(), this.logger);
+                subSessionManager.init();
+                subSessionManager.friendManager().initAutoFriend(this.friendSyncConfig);
+                this.subSessionManagers.put(id, subSessionManager);
+            } catch (final Exception e) {
+                this.logger.error("Nie udało się utworzyć sesji podrzędnej", e);
+                return;
+            }
 
-        // Update the list of sub-sessions
-        try {
-            Files.write(Paths.get(this.cache, "sub_sessions.json"), Constants.OBJECT_MAPPER.writeValueAsBytes(this.subSessionManagers.keySet()));
-        } catch (final IOException e) {
-            this.logger.error("Failed to update sub-session list", e);
-        }
+            // Update the list of sub-sessions
+            try {
+                Files.write(Paths.get(this.cache, "sub_sessions.json"), Constants.OBJECT_MAPPER.writeValueAsBytes(this.subSessionManagers.keySet()));
+            } catch (final IOException exception) {
+                this.logger.error("Nie udało się zaktualizować listy podsesji", exception);
+            }
+        });
     }
 
     /**
@@ -232,7 +198,7 @@ public class SessionManager extends SessionManagerCore {
     public void removeSubSession(final String id) {
         // Make sure we have that ID
         if (!this.subSessionManagers.containsKey(id)) {
-            this.logger.error("Sub-session does not exist with that ID");
+            this.logger.error("Podsesja nie istnieje o tym identyfikatorze");
             return;
         }
 
@@ -246,17 +212,17 @@ public class SessionManager extends SessionManagerCore {
                     .forEach(File::delete);
             Paths.get(this.cache, id).toFile().delete();
         } catch (final IOException e) {
-            this.logger.error("Failed to delete sub-session cache folder", e);
+            this.logger.error("Nie udało się usunąć folderu pamięci podręcznej sesji podrzędnej", e);
         }
 
         // Update the list of sub-sessions
         try {
             Files.write(Paths.get(this.cache, "sub_sessions.json"), Constants.OBJECT_MAPPER.writeValueAsBytes(this.subSessionManagers.keySet()));
         } catch (final IOException e) {
-            this.logger.error("Failed to update sub-session list", e);
+            this.logger.error("Nie udało się zaktualizować listy podsesji", e);
         }
 
-        this.logger.info("Removed sub-session with ID " + id);
+        this.logger.info("Usunięto podsesję z identyfikatorem:&b " + id);
     }
 
     /**
@@ -264,25 +230,24 @@ public class SessionManager extends SessionManagerCore {
      */
     public void listSessions() {
         final List<String> messages = new ArrayList<>();
-        this.logger.info("Loading status of sessions...");
 
-        messages.add("Primary Session:");
-        messages.add(" - Gamertag: " + this.getXboxToken().gamertag());
-        messages.add("   Following: " + this.socialSummary().targetFollowingCount() + "/1000");
+        messages.add("Sesja podstawowa:");
+        messages.add(" - TagGracza:&b " + this.getXboxToken().gamertag());
+        messages.add("   Obserwujący:&b " + this.socialSummary().targetFollowingCount() + "/1000");
 
         if (!this.subSessionManagers.isEmpty()) {
-            messages.add("Sub-sessions:");
+            messages.add("Podsesje:");
             for (final Map.Entry<String, SubSessionManager> subSession : this.subSessionManagers.entrySet()) {
                 messages.add(" - ID: " + subSession.getKey());
-                messages.add("   Gamertag: " + subSession.getValue().getXboxToken().gamertag());
-                messages.add("   Following: " + subSession.getValue().socialSummary().targetFollowingCount() + "/1000");
+                messages.add("   TagGracza:&b " + subSession.getValue().getXboxToken().gamertag());
+                messages.add("   Obserwujący:&b " + subSession.getValue().socialSummary().targetFollowingCount() + "/1000");
             }
         } else {
-            messages.add("No sub-sessions");
+            messages.add("Brak podsesji");
         }
 
-        for (final String message : messages) {
-            this.logger.info(message);
+        for (final String s : messages) {
+            this.logger.info(s);
         }
     }
 
@@ -302,7 +267,11 @@ public class SessionManager extends SessionManagerCore {
         if (this.restartCallback != null) {
             this.restartCallback.run();
         } else {
-            this.logger.error("No restart callback set");
+            this.logger.error("Nie ustawiono wywołania zwrotnego ponownego uruchomienia");
         }
+    }
+
+    public Map<String, SubSessionManager> getSubSessionManagers() {
+        return this.subSessionManagers;
     }
 }

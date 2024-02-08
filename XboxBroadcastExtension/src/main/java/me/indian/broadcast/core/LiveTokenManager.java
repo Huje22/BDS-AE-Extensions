@@ -2,6 +2,7 @@ package me.indian.broadcast.core;
 
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.broadcast.core.exceptions.LiveAuthenticationException;
 import me.indian.broadcast.core.models.auth.LiveDeviceCodeResponse;
 import me.indian.broadcast.core.models.auth.LiveTokenCache;
@@ -149,13 +150,14 @@ public class LiveTokenManager {
             final long expireTime = System.currentTimeMillis() + (codeResponse.expires_in * 1000L);
 
             // Log the authentication code and link
-            this.logger.info("To sign in, use a web browser to open the page " + codeResponse.verification_uri + " and enter the code " + codeResponse.user_code + " to authenticate.");
+
+            this.logger.info("Aby się zalogować, użyj przeglądarki internetowej, otwórz stronę " + codeResponse.verification_uri + " i zaloguj w celu uwierzytelnienia.");
 
             // Loop until the token expires or the user finishes authentication
             while (System.currentTimeMillis() < expireTime) {
                 try {
                     // Sleep the thread for the token fetch interval
-                    Thread.sleep(codeResponse.interval * 1000L);
+                    ThreadUtil.sleep(codeResponse.interval);
 
                     // Create the token request payload
                     final HttpRequest tokenRequest = HttpRequest.newBuilder()
@@ -187,7 +189,7 @@ public class LiveTokenManager {
 
             // If we have got here and the completable future isn't done then complete with an exception
             if (!completableFuture.isDone()) {
-                completableFuture.completeExceptionally(new LiveAuthenticationException("Device code token expired before user finished authentication"));
+                completableFuture.completeExceptionally(new LiveAuthenticationException("Token kodu urządzenia wygasł przed zakończeniem uwierzytelniania użytkownika"));
             }
 
             return null;
