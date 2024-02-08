@@ -9,6 +9,7 @@
         <module name="AutoMessages" />
         <module name="DiscordExtension" />
         <module name="RestWeb" />
+        <module name="XboxBroadcastExtension" />
         <module name="ExampleExtension" />
       </profile>
     </annotationProcessing>

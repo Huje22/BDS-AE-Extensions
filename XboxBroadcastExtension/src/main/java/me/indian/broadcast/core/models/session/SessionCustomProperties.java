@@ -1,0 +1,25 @@
+package me.indian.broadcast.core.models.session;
+
+import java.util.List;
+
+public record SessionCustomProperties(
+        int BroadcastSetting,
+        boolean CrossPlayDisabled,
+        String Joinability,
+        boolean LanGame,
+        int MaxMemberCount,
+        int MemberCount,
+        boolean OnlineCrossPlatformGame,
+        List<Connection> SupportedConnections,
+        int TitleId,
+        int TransportLayer,
+        String levelId,
+        String hostName,
+        String ownerId,
+        String rakNetGUID,
+        String worldName,
+        String worldType,
+        int protocol,
+        String version
+) {
+}
