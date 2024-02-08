@@ -7,8 +7,10 @@ import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
+import me.indian.bds.util.DateUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.MessagesConfig;
+import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import net.dv8tion.jda.api.entities.Member;
@@ -51,16 +53,14 @@ public class PlayerEventListener extends Listener {
         final String message = event.getMessage();
         final boolean appHandled = event.isAppHandled();
 
-        if(event.isMuted() && appHandled){
-  this.discordJDA.log("Wyciszenie w Minecraft",
-                                "Wiadomość została nie wysłana z powodu wyciszenia w Minecraft, jej treść to:\n```" +
-                                        rawMessage + "```",
-                                new Footer(playerName));
-
+        if (event.isMuted() && appHandled) {
+            this.discordJDA.log("Wyciszenie w Minecraft",
+                    "Wiadomość została nie wysłana z powodu wyciszenia w Minecraft, jej treść to:\n```" +
+                            message + "```",
+                    new Footer(playerName + " " + DateUtil.getTimeHMS()));
             return null;
         }
 
-        
         boolean memberMutedOnDiscord = false;
         String role = "";
 
@@ -79,16 +79,15 @@ public class PlayerEventListener extends Listener {
 
 
         if (appHandled) {
-            //TODO: Wypisać kiedy event jest anulowany .log
             if (!event.isMuted() && !memberMutedOnDiscord) {
                 this.discordJDA.sendPlayerMessage(playerName, message);
             }
             if (memberMutedOnDiscord) {
                 this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerName, "&cZostałeś wyciszony na discord!");
-           this.discordJDA.log("Wyciszenie na Discord",
-                                "Wiadomość została usunięta z powodu wyciszenia na Discord, jej treść to:\n```" +
-                                        rawMessage + "```",
-                                new Footer(playerName));
+                this.discordJDA.log("Wyciszenie na Discord",
+                        "Wiadomość została usunięta z powodu wyciszenia na Discord, jej treść to:\n```" +
+                                message + "```",
+                        new Footer(playerName + " " + DateUtil.getTimeHMS()));
             }
 
             if (!event.isMuted() && this.messagesConfig.isFormatChat()) {

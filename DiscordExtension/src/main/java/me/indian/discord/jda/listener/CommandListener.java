@@ -20,6 +20,7 @@ import me.indian.bds.watchdog.module.PackModule;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.sub.BotConfig;
+import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -27,6 +28,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -93,6 +95,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
         final Member member = event.getMember();
         if (member == null) return;
+        final User author = member.getUser();
 
         this.service.execute(() -> {
             //Robie to na paru wątkach gdyby jakieś polecenie miało zblokować ten od JDA
@@ -153,8 +156,11 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             }
 
                             if (this.linkingManager.linkAccount(code, id)) {
+                                final String memberName = this.discordJDA.getUserName(member, author);
+                                this.discordJDA.log("Połączenie kont",
+                                        "Użytkownik **" + memberName + "** połączył konta",
+                                        new Footer(memberName + " " + DateUtil.getTimeHMS(), member.getEffectiveAvatarUrl()));
 
-                                //TODO: Dodać info 'discordJDA.log();' o połączeniu kont
 
                                 linkingEmbed.setDescription("Połączono konto z nickiem: **" + this.linkingManager.getNameByID(id) + "**" + this.hasEnoughHours(member));
                                 event.getHook().editOriginalEmbeds(linkingEmbed.build()).queue();
