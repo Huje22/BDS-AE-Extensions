@@ -59,7 +59,7 @@ public class DiscordJDA {
     private final DiscordConfig discordConfig;
     private final MessagesConfig messagesConfig;
     private final BotConfig botConfig;
-    private final long serverID, channelID, consoleID, logID;
+    private final long serverID, channelID, logID; /* consoleID */
     private final List<JDAListener> listeners;
     private final Map<String, Pattern> mentionPatternCache;
     private JDA jda;
@@ -68,7 +68,7 @@ public class DiscordJDA {
     private StatsChannelsManager statsChannelsManager;
     private LinkingManager linkingManager;
 
-    public DiscordJDA( final DiscordExtension discordExtension) {
+    public DiscordJDA(final DiscordExtension discordExtension) {
         this.discordExtension = discordExtension;
         this.bdsAutoEnable = this.discordExtension.getBdsAutoEnable();
         this.logger = this.bdsAutoEnable.getLogger();
@@ -78,7 +78,7 @@ public class DiscordJDA {
         this.botConfig = this.discordConfig.getBotConfig();
         this.serverID = this.botConfig.getServerID();
         this.channelID = this.botConfig.getChannelID();
-        this.consoleID = this.botConfig.getConsoleID();
+//        this.consoleID = this.botConfig.getConsoleID();
         this.logID = this.botConfig.getLogID();
         this.listeners = new ArrayList<>();
         this.mentionPatternCache = new HashMap<>();
@@ -86,6 +86,7 @@ public class DiscordJDA {
 
         this.listeners.add(new CommandListener(this, this.discordExtension));
         this.listeners.add(new MessageListener(this, this.discordExtension));
+//        this.listeners.add(new ConsoleListener(this, this.discordExtension));
         this.listeners.add(new MentionPatternCacheListener(this, this.mentionPatternCache));
 
     }
@@ -139,14 +140,13 @@ public class DiscordJDA {
             this.logChannel = this.guild.getTextChannelById(this.logID);
 
             if (this.logChannel == null) {
-                this.logger.debug("(log) Nie można odnaleźć kanału z ID &b " + this.consoleID);
+                this.logger.debug("(log) Nie można odnaleźć kanału z ID &b " + this.logID);
             }
 
-            this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
-
-            if (this.consoleChannel == null) {
-                this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
-            }
+//            this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
+//            if (this.consoleChannel == null) {
+//                this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
+//            }
 
             this.linkingManager = new LinkingManager(this.discordExtension, this);
             this.statsChannelsManager = new StatsChannelsManager(this.discordExtension, this);
@@ -155,7 +155,6 @@ public class DiscordJDA {
             for (final JDAListener listener : this.listeners) {
                 try {
                     listener.init();
-                    listener.initServerProcess(this.bdsAutoEnable.getServerProcess());
                     this.jda.addEventListener(listener);
                     this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
                 } catch (final Exception exception) {

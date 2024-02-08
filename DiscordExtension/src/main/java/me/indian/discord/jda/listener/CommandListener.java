@@ -57,9 +57,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private final BotConfig botConfig;
     private final List<Button> backupButtons, difficultyButtons, statsButtons;
     private final ExecutorService service;
+    private final ServerProcess serverProcess;
     private JDA jda;
     private StatsManager statsManager;
-    private ServerProcess serverProcess;
     private BackupModule backupModule;
     private PackModule packModule;
     private LinkingManager linkingManager;
@@ -75,6 +75,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.difficultyButtons = new ArrayList<>();
         this.statsButtons = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(3, new ThreadUtil("Discord Command Listener"));
+        this.serverProcess = this.bdsAutoEnable.getServerProcess();
     }
 
     @Override
@@ -84,11 +85,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
         this.packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
         this.linkingManager = this.discordJDA.getLinkingManager();
-    }
-
-    @Override
-    public void initServerProcess(final ServerProcess serverProcess) {
-        this.serverProcess = serverProcess;
     }
 
     @Override

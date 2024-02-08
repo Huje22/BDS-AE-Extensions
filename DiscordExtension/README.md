@@ -2,8 +2,6 @@
 
 ## Obsługa Discord
 
-//TODO: Uaktualnić to
-
 W `Discord.yml` który znajduje się w folderze `katalog z jar/BDS-Auto-Enable/config`. <br>
 
 Aby aplikacja miała dostęp do informacji o graczu musisz
@@ -13,11 +11,9 @@ posiadać [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-E
 
 ### WEBHOOK
 
-Tutaj będą się pojawiać jakieś mnieisze informacje (aktualnie tylko crashe servera)
+<u>_**AKTUALNIE NIE UŻYWANE**_</u>
 
 #### Jak zacząć
-
-[//]: # (* Możesz także ustawić `consoleUrl` wtedy zajrzyj do `Log.yml`)
 
 * Pierw musisz utworzyć webhook na kanale , tu
   znajdziesz [poradnik](https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks)

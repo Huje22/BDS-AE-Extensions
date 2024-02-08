@@ -1,6 +1,5 @@
 package me.indian.discord.jda.listener;
 
-import me.indian.bds.server.ServerProcess;
 import me.indian.discord.jda.DiscordJDA;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
@@ -39,11 +38,6 @@ public class MentionPatternCacheListener extends ListenerAdapter implements JDAL
 
     @Override
     public void init() {
-
-    }
-
-    @Override
-    public void initServerProcess(final ServerProcess serverProcess) {
 
     }
 }

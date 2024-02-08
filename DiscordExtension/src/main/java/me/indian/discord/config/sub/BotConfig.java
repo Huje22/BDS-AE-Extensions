@@ -50,9 +50,9 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"ID kanału z logami"})
     private long logID = 1L;
 
-    @Comment({""})
-    @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
-    private long consoleID = 1L;
+//    @Comment({""})
+//    @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
+//    private long consoleID = 1L;
 
     @Comment({""})
     @Comment({""})
@@ -122,9 +122,9 @@ public class BotConfig extends OkaeriConfig {
         return this.logID;
     }
 
-    public long getConsoleID() {
-        return this.consoleID;
-    }
+//    public long getConsoleID() {
+//        return this.consoleID;
+//    }
 
     public List<CacheFlag> getEnableCacheFlag() {
         return this.enableCacheFlag;

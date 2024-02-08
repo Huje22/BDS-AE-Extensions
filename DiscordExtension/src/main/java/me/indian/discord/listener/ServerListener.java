@@ -31,7 +31,7 @@ public class ServerListener extends Listener {
         this.lastTPS = event.getLastTps();
 
         if (this.tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + this.tps + "** TPS");
-        if (this.lastTPS <= 8 && tps <= 8) {
+        if (this.lastTPS <= 8 && this.tps <= 8) {
             this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
                     + " (Teraz: **" + this.tps + "** Ostatnie: **" + this.lastTPS + "**)");
         }

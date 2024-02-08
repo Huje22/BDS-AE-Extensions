@@ -15,7 +15,6 @@ import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
@@ -40,9 +39,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private final DiscordConfig discordConfig;
     private final MessagesConfig messagesConfig;
     private final Lock sendToMinecraftLock;
+    private final ServerProcess serverProcess;
     private TextChannel textChannel;
-    private TextChannel consoleChannel;
-    private ServerProcess serverProcess;
 
     public MessageListener(final DiscordJDA DiscordJDA, final DiscordExtension discordExtension) {
         this.discordJDA = DiscordJDA;
@@ -51,17 +49,12 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         this.discordConfig = discordExtension.getConfig();
         this.messagesConfig = discordExtension.getMessagesConfig();
         this.sendToMinecraftLock = new ReentrantLock();
+        this.serverProcess = this.bdsAutoEnable.getServerProcess();
     }
 
     @Override
     public void init() {
         this.textChannel = this.discordJDA.getTextChannel();
-        this.consoleChannel = this.discordJDA.getConsoleChannel();
-    }
-
-    @Override
-    public void initServerProcess(final ServerProcess serverProcess) {
-        this.serverProcess = serverProcess;
     }
 
     @Override
@@ -148,22 +141,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             }
 
             this.sendMessage(member, author, message, false);
-        }
-
-        if (event.getChannel().asTextChannel() == this.consoleChannel) {
-            if (!this.serverProcess.isEnabled()) return;
-            if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                this.serverProcess.sendToConsole(rawMessage);
-                this.logger.print("[" + DateUtil.getDate() + " DISCORD] " +
-                        this.discordJDA.getUserName(member, author) +
-                        " (" + author.getIdLong() + ") -> " +
-                        rawMessage);
-            } else {
-                event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
-                    msg.delete().queueAfter(5, TimeUnit.SECONDS);
-                    message.delete().queueAfter(4, TimeUnit.SECONDS);
-                });
-            }
         }
     }
 
