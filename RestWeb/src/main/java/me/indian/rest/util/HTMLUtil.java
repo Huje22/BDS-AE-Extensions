@@ -20,7 +20,7 @@ public final class HTMLUtil {
                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
                  <meta charset="utf-8">
                   <body>
-                <a target="_blank" class="guzik" href="https://github.com/Huje22/Bds-Auto-Enable/blob/main/RestAPI.MD">Dostępne EndPointy</a><br>
+                <a target="_blank" class="guzik" href="https://github.com/Huje22/BDS-AE-Extensions/blob/master/RestWeb/README.MD">Dostępne EndPointy</a><br>
                  <a target="_blank" class="guzik" href="minecraft://?addExternalServer=Huje22|127.0.0.1:19132">Kliknij aby dołączyć na server!</a><br>
                          Ta Strona odświeża się co 1min<br>
                          <br>
