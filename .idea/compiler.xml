@@ -8,7 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="AutoMessages" />
         <module name="DiscordExtension" />
-        <module name="RestWeb" />
+        <module name="RestWebsite" />
         <module name="XboxBroadcastExtension" />
         <module name="ExampleExtension" />
       </profile>

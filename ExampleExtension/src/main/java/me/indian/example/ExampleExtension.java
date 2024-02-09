@@ -18,7 +18,7 @@ public class ExampleExtension extends Extension {
     public void onEnable() {
 
         final BDSAutoEnable bdsAutoEnable = this.getBdsAutoEnable();
-        final Logger logger = this.getBdsAutoEnable().getLogger();
+        final Logger logger = this.getLogger();
 
 
         //TODO: Dodać przykład jak pingowac inny server

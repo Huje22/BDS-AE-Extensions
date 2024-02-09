@@ -1,11 +1,16 @@
 package me.indian.broadcast;
 
 
+import java.io.File;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.BedrockQuery;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.broadcast.command.XboxBroadcastCommand;
 import me.indian.broadcast.config.ExtensionConfig;
 import me.indian.broadcast.core.SessionInfo;
@@ -13,38 +18,40 @@ import me.indian.broadcast.core.SessionManager;
 import me.indian.broadcast.core.exceptions.SessionCreationException;
 import me.indian.broadcast.core.exceptions.SessionUpdateException;
 
-import java.io.File;
-import java.util.concurrent.TimeUnit;
-
 public class XboxBroadcastExtension extends Extension {
 
     private BDSAutoEnable bdsAutoEnable;
     private String cacheLocation;
     private ExtensionConfig config;
     private Logger logger;
-    private SessionInfo sessionInfo;
+    private ExecutorService service;
     private SessionManager sessionManager;
+    private SessionInfo sessionInfo;
 
     @Override
     public void onEnable() {
         this.bdsAutoEnable = this.getBdsAutoEnable();
         this.cacheLocation = this.getDataFolder() + File.separator + "cache";
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = this.getLogger();
         this.config = this.createConfig(ExtensionConfig.class, "config");
-        this.sessionManager = new SessionManager(this.cacheLocation, this.logger);
+        this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("XboxBroadcastExtension"));
+        this.sessionManager = new SessionManager(this.cacheLocation, this.service, this.logger);
         this.sessionInfo = this.config.getSession().getSessionInfo();
 
-        this.updateSessionInfo(this.sessionInfo);
 
+        this.updateSessionInfo(this.sessionInfo);
 
         final CommandManager commandManager = this.bdsAutoEnable.getCommandManager();
         commandManager.registerCommand(new XboxBroadcastCommand(this));
 
-        try {
-            this.createSession();
-        } catch (final Exception exception) {
-            exception.printStackTrace();
-        }
+
+        this.service.execute(() -> {
+            try {
+                this.createSession();
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się utworzyć sesji na starcie", exception);
+            }
+        });
     }
 
     @Override
@@ -53,13 +60,15 @@ public class XboxBroadcastExtension extends Extension {
     }
 
     public void restart() {
-        try {
-            this.sessionManager.shutdown();
-            this.sessionManager = new SessionManager(this.cacheLocation, this.logger);
-            this.createSession();
-        } catch (final SessionCreationException | SessionUpdateException exception) {
-            this.logger.error("Failed to restart session", exception);
-        }
+        this.service.execute(() -> {
+            try {
+                this.sessionManager.shutdown();
+                this.sessionManager = new SessionManager(this.cacheLocation, this.service, this.logger);
+                this.createSession();
+            } catch (final SessionCreationException | SessionUpdateException exception) {
+                this.logger.error("Failed to restart session", exception);
+            }
+        });
     }
 
     private void createSession() throws SessionCreationException, SessionUpdateException {
@@ -73,7 +82,7 @@ public class XboxBroadcastExtension extends Extension {
                 try {
                     // Update the session
                     this.sessionManager.updateSession(this.sessionInfo);
-                    this.sessionManager.logger().info("&aZaktualizowano sesje&b " + this.sessionManager.getSessionId());
+                    this.sessionManager.logger().info("&aZaktualizowano sesje!");
 
 
                 } catch (final SessionUpdateException exception) {
@@ -105,10 +114,6 @@ public class XboxBroadcastExtension extends Extension {
 
     public ExtensionConfig getConfig() {
         return this.config;
-    }
-
-    public Logger getLogger() {
-        return this.logger;
     }
 
     public SessionInfo getSessionInfo() {

@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
 import java.util.stream.Stream;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ThreadUtil;
@@ -32,7 +31,6 @@ public class SessionManager extends SessionManagerCore {
     private final ScheduledExecutorService scheduledThreadPool;
     private final ExecutorService service;
     private final Map<String, SubSessionManager> subSessionManagers;
-
     private FriendSyncConfig friendSyncConfig;
     private Runnable restartCallback;
 
@@ -42,11 +40,10 @@ public class SessionManager extends SessionManagerCore {
      * @param cache  The directory to store the cached tokens in
      * @param logger The logger to use for outputting messages
      */
-    public SessionManager(final String cache, final Logger logger) {
+    public SessionManager(final String cache, final ExecutorService service, final Logger logger) {
         super(cache, logger);
-        final ThreadFactory factory = new ThreadUtil("MCXboxBroadcast");
-        this.scheduledThreadPool = Executors.newScheduledThreadPool(5, factory);
-        this.service = Executors.newScheduledThreadPool(2, factory);
+        this.scheduledThreadPool = Executors.newScheduledThreadPool(5, new ThreadUtil("MCXboxBroadcast"));
+        this.service = service;
         this.subSessionManagers = new HashMap<>();
     }
 

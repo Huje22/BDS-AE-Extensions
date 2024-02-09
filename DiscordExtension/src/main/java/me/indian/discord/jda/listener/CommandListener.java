@@ -67,7 +67,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     public CommandListener(final DiscordJDA discordJDA, final DiscordExtension discordExtension) {
         this.discordJDA = discordJDA;
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = discordExtension.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordConfig = discordExtension.getConfig();
         this.botConfig = this.discordConfig.getBotConfig();
@@ -112,7 +112,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                 return;
                             }
 
-                            this.bdsAutoEnable.getLogger().print(command);
+                            this.logger.print(command);
                             this.discordJDA.writeConsole(command);
 
                             final MessageEmbed embed = new EmbedBuilder()

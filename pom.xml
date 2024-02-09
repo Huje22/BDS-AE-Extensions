@@ -10,10 +10,10 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>AutoMessages</module>
         <module>DiscordExtension</module>
         <module>RestWeb</module>
         <module>ExampleExtension</module>
-        <module>AutoMessages</module>
         <module>XboxBroadcastExtension</module>
     </modules>
 

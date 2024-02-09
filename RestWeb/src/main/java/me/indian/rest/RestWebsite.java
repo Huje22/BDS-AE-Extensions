@@ -47,7 +47,7 @@ public class RestWebsite extends Extension {
         this.bdsAutoEnable = this.getBdsAutoEnable();
         this.app = Javalin.create();
         this.limiter = new RateLimiter(TimeUnit.MINUTES);
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = this.getLogger();
         this.config = this.createConfig(RestApiConfig.class, "config");
         this.requests = new ArrayList<>();
         this.htmlFile = new File(this.getDataFolder(), "Website.html");

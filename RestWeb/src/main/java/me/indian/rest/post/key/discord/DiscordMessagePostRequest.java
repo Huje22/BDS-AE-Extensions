@@ -31,7 +31,7 @@ public class DiscordMessagePostRequest implements Request {
         this.discordExtension = discordExtension;
         this.discordJDA = this.discordExtension.getDiscordJDA();
         this.webHook = this.discordExtension.getWebHook();
-        this.logger = bdsAutoEnable.getLogger();
+        this.logger = this.restWebsite.getLogger(); ;
         this.app = this.restWebsite.getApp();
         this.gson = GsonUtil.getGson();
     }

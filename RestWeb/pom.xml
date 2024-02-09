@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>me.indian.bds.rest</groupId>
-    <artifactId>RestWeb</artifactId>
+    <artifactId>RestWebsite</artifactId>
     <version>1.0</version>
 
     <properties>

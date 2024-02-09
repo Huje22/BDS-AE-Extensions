@@ -38,7 +38,7 @@ public class DiscordExtension extends Extension {
         this.config = this.createConfig(DiscordConfig.class, "config");
         this.messagesConfig = this.createConfig(MessagesConfig.class, "Messages");
 
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = this.getLogger();
 
         this.botEnabled = this.getConfig().getBotConfig().isEnable();
         this.webhookEnabled = this.getConfig().getWebHookConfig().isEnable();

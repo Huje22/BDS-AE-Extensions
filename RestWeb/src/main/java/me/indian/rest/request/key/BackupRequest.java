@@ -26,7 +26,7 @@ public class BackupRequest implements Request {
 
     public BackupRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
-        this.logger = bdsAutoEnable.getLogger();
+        this.logger = restWebsite.getLogger();
         this.app = this.restWebsite.getApp();
         this.backupModule = bdsAutoEnable.getWatchDog().getBackupModule();
     }
@@ -66,7 +66,6 @@ public class BackupRequest implements Request {
             }
 
             final List<String> backupsNames = this.backupModule.getBackupsNames();
-            backupsNames.replaceAll(name -> name);
 
             final String currentUrl = ctx.req().getRequestURL().toString().replaceAll(filename, "");
             ctx.status(HttpStatus.NOT_FOUND).contentType("application/json").result("Dostępne Backupy to: \n"

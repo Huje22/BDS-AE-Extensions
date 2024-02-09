@@ -47,7 +47,7 @@ public class LinkingManager {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.linkingConfig = this.discordExtension.getConfig().getBotConfig().getLinkingConfig();
         this.discordJDA = DiscordJDA;
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = this.discordExtension.getLogger();
         this.linkedAccountsJson = new File(this.discordExtension.getDataFolder(), "linkedAccounts.json");
         this.createJson();
         this.linkedAccounts = this.loadLinkedAccounts();

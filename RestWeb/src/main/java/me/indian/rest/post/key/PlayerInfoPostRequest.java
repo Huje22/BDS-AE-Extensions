@@ -25,7 +25,7 @@ public class PlayerInfoPostRequest implements Request {
     public PlayerInfoPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
         this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = this.restWebsite.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.app = this.restWebsite.getApp();
         this.gson = GsonUtil.getGson();

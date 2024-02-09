@@ -36,7 +36,7 @@ public class WebHook {
     private boolean block;
 
     public WebHook(final DiscordExtension discordExtension) {
-        this.logger = discordExtension.getBdsAutoEnable().getLogger();
+        this.logger = discordExtension.getLogger();
         final DiscordConfig discordConfig = discordExtension.getConfig();
         this.discordHelper = discordExtension;
         this.name = discordConfig.getWebHookConfig().getName();

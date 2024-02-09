@@ -11,7 +11,7 @@ public class XboxBroadcastCommand extends Command {
     private final SessionManager sessionManager;
 
     public XboxBroadcastCommand(final XboxBroadcastExtension xboxBroadcastExtension) {
-        super("xbox", "Zarządzanie Rozserzeniem");
+        super("xbox", "Zarządzanie Rozszerzeniem");
         this.xboxBroadcastExtension = xboxBroadcastExtension;
         this.sessionManager = this.xboxBroadcastExtension.getSessionManager();
 

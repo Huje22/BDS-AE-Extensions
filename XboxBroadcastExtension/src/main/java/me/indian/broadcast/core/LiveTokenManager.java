@@ -1,13 +1,5 @@
 package me.indian.broadcast.core;
 
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.broadcast.core.exceptions.LiveAuthenticationException;
-import me.indian.broadcast.core.models.auth.LiveDeviceCodeResponse;
-import me.indian.broadcast.core.models.auth.LiveTokenCache;
-import me.indian.broadcast.core.models.auth.LiveTokenResponse;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.http.HttpClient;
@@ -20,6 +12,13 @@ import java.nio.file.Paths;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.broadcast.core.exceptions.LiveAuthenticationException;
+import me.indian.broadcast.core.models.auth.LiveDeviceCodeResponse;
+import me.indian.broadcast.core.models.auth.LiveTokenCache;
+import me.indian.broadcast.core.models.auth.LiveTokenResponse;
 
 /**
  * Handle authentication against Microsoft/Live servers and caching of the received tokens
@@ -62,7 +61,7 @@ public class LiveTokenManager {
             try {
                 this.refreshToken();
             } catch (final Exception e) {
-                this.logger.error("Failed to refresh Live token", e);
+                this.logger.error("Nie udało się odświeżyć tokena&b Xbox Live", e);
                 return false;
             }
         }

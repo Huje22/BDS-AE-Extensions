@@ -46,7 +46,7 @@ public class AutoMessagesExtension extends Extension {
         if (autoMessagesConfig.isEnabled()) {
             timer.scheduleAtFixedRate(autoMessages, 0, MathUtil.secondToMillis(autoMessagesConfig.getTime()));
         } else {
-            bdsAutoEnable.getLogger().debug("&aAutomessages jest&c wyłączone");
+             this.getLogger().debug("&aAutomessages jest&c wyłączone");
         }
     }
 }

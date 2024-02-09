@@ -408,7 +408,8 @@ public abstract class SessionManagerCore {
         }
 
         // Schedule the next presence update
-        this.logger.debug("Presence update successful, scheduling presence update in " + heartbeatAfter + " seconds");
+        this.logger.debug("Aktualizacja obecności udana, planowanie aktualizacji obecności za&a " + heartbeatAfter + "&b sekund");
+
         this.scheduledThread().schedule(this::updatePresence, heartbeatAfter, TimeUnit.SECONDS);
     }
 

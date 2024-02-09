@@ -71,7 +71,7 @@ public class DiscordJDA {
     public DiscordJDA(final DiscordExtension discordExtension) {
         this.discordExtension = discordExtension;
         this.bdsAutoEnable = this.discordExtension.getBdsAutoEnable();
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = this.discordExtension.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordConfig = this.discordExtension.getConfig();
         this.messagesConfig = this.discordExtension.getMessagesConfig();

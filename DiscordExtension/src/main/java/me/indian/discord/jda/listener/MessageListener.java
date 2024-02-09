@@ -45,7 +45,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     public MessageListener(final DiscordJDA DiscordJDA, final DiscordExtension discordExtension) {
         this.discordJDA = DiscordJDA;
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = discordExtension.getLogger();
         this.discordConfig = discordExtension.getConfig();
         this.messagesConfig = discordExtension.getMessagesConfig();
         this.sendToMinecraftLock = new ReentrantLock();
