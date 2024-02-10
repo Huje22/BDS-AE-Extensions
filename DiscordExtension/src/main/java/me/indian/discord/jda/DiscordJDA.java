@@ -179,9 +179,7 @@ public class DiscordJDA {
                     Commands.slash("unlink", "Rozłącza konto Discord z kontem nickiem Minecraft")
                             .addOption(OptionType.STRING, "name", "Nick użytkownika którego konto ma zostać rozłączone", false),
                     Commands.slash("ip", "Informacje o ip ustawione w config"),
-                    Commands.slash("playtime", "Top 100 graczy z największą ilością przegranego czasu"),
-                    Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci"),
-                    Commands.slash("block", "Top 100 graczy z największym wykopaniem i postawieniem bloków"),
+                    Commands.slash("top", "Topka graczy w różnych kategoriach"),
                     Commands.slash("server", "Informacje o danym serwerze")
                             .addOption(OptionType.STRING, "ip", "Adres IP servera", true)
                             .addOption(OptionType.INTEGER, "port", "Port servera", false)

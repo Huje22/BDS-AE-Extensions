@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -277,24 +279,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         event.getHook().editOriginalEmbeds(embed.build()).queue();
                     }
 
-                    case "block" ->{
-                        if (!this.packModule.isLoaded()) {
-                            event.getHook().editOriginal("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").queue();
-                            return;
-                        }
-
-                        final List<String> blockTop = StatusUtil.getTopBlock(true, 100);
-                        final MessageEmbed embed = new EmbedBuilder()
-                                .setTitle("Top 100 graczy z największym wykopaniem i postawieniem bloków")
-                                .setDescription((blockTop.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(blockTop)))
-                                .setColor(Color.BLUE)
-                                .build();
-
-                        //TODO: Dopracuj to
-
-                        event.getHook().editOriginalEmbeds(embed).queue();
-                    }
-
                     case "backup" -> {
                         if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isEnabled()) {
                             event.getHook().editOriginal("Backupy są wyłączone")
@@ -310,39 +294,25 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         }
                     }
 
-                    case "playtime" -> {
+
+                    case "top" -> {
                         if (!this.packModule.isLoaded()) {
                             event.getHook().editOriginal("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").queue();
                             return;
                         }
-                        final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
-                        final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
-                        final String totalUpTime = "Łączny czas działania servera: "
-                                + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's'));
 
-                        final MessageEmbed embed = new EmbedBuilder()
-                                .setTitle("Top 100 graczy z największą ilością przegranego czasu")
-                                .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
-                                .setColor(Color.BLUE)
-                                .setFooter(totalUpTime)
-                                .build();
+                        final EmbedBuilder embed = new EmbedBuilder()
+                                .setTitle("Statystyki graczy")
+                                .setColor(Color.BLUE);
 
-                        event.getHook().editOriginalEmbeds(embed).queue();
-                    }
 
-                    case "deaths" -> {
-                        if (!this.packModule.isLoaded()) {
-                            event.getHook().editOriginal("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").queue();
-                            return;
-                        }
-                        final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
-                        final MessageEmbed embed = new EmbedBuilder()
-                                .setTitle("Top 100 graczy z największą ilością śmierc")
-                                .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
-                                .setColor(Color.BLUE)
-                                .build();
-
-                        event.getHook().editOriginalEmbeds(embed).queue();
+                        event.getHook().editOriginalEmbeds(embed.build())
+                                .setActionRow(ActionRow.of(
+                                        Button.primary("playtime", "Czas gry").withEmoji(Emoji.fromUnicode("⏰")),
+                                        Button.primary("deaths", "Śmierci").withEmoji(Emoji.fromUnicode("☠️")),
+                                        Button.primary("blocks", "Bloki").withEmoji(Emoji.fromFormatted("<:kilof:1064228602759102464>"))
+                                ).getComponents())
+                                .queue();
                     }
 
                     case "difficulty" -> {
@@ -399,7 +369,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 }
             } catch (final Exception exception) {
                 this.logger.error("Wystąpił błąd przy próbie wykonania&b " + event.getName() + "&r przez&e " + member.getNickname(), exception);
-                event.getHook().editOriginal("Wystąpił błąd " + exception).queue();
+                event.getHook().editOriginal("Wystąpił błąd\n ```" + MessageUtil.getStackTraceAsString(exception) + "```").queue();
             }
         });
     }
@@ -410,6 +380,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         if (member == null) return;
 
         event.deferReply().setEphemeral(true).queue();
+
+        this.serverTopButton(event);
 
         if (!member.hasPermission(Permission.ADMINISTRATOR)) {
             event.getHook().editOriginal("Nie masz permisji!").queue();
@@ -439,7 +411,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         return linked;
     }
 
-    private String hasEnoughHours(final Member member){
+    private String hasEnoughHours(final Member member) {
         String hoursMessage = "";
         final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
         final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
@@ -452,6 +424,14 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         }
 
         return hoursMessage;
+    }
+
+    private void serverTopButton(final ButtonInteractionEvent event) {
+        switch (event.getComponentId()) {
+            case "playtime" -> event.getHook().editOriginalEmbeds(this.getPlaytimeEmbed()).queue();
+            case "deaths" -> event.getHook().editOriginalEmbeds(this.getDeathsEmbed()).queue();
+            case "blocks" -> event.getHook().editOriginalEmbeds(this.getTopBlockEmbed()).queue();
+        }
     }
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
@@ -562,6 +542,63 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .queue();
     }
 
+    private MessageEmbed getPlaytimeEmbed() {
+        final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
+        final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
+        final String totalUpTime = "Łączny czas działania servera: "
+                + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's'));
+
+        return new EmbedBuilder()
+                .setTitle("Top 100 graczy z największą ilością przegranego czasu")
+                .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
+                .setColor(Color.BLUE)
+                .setFooter(totalUpTime)
+                .build();
+    }
+
+    private MessageEmbed getDeathsEmbed() {
+        final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
+        return new EmbedBuilder()
+                .setTitle("Top 100 graczy z największą ilością śmierc")
+                .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
+                .setColor(Color.BLUE)
+                .build();
+    }
+
+    public MessageEmbed getTopBlockEmbed() {
+        final EmbedBuilder embed = new EmbedBuilder()
+                .setTitle("Top 25 wykopanych i postawionych bloków")
+                .setColor(Color.BLUE);
+
+        final Map<String, Long> brokenMap = this.statsManager.getBlockBroken();
+        final Map<String, Long> placedMap = this.statsManager.getBlockPlaced();
+
+        final Map<String, Long> combinedMap = new HashMap<>(brokenMap);
+
+        placedMap.forEach((key, value) ->
+                combinedMap.merge(key, value, Long::sum)
+        );
+
+        final List<Map.Entry<String, Long>> sortedCombinedEntries = combinedMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(25)
+                .toList();
+
+        int place = 1;
+        int counter = 0;
+        for (final Map.Entry<String, Long> entry : sortedCombinedEntries) {
+            if (counter != 25) {
+                embed.addField(place + ". " + entry.getKey(), "> Wykopane: **" + brokenMap.getOrDefault(entry.getKey(), 0L) + "** \n" +
+                                "> Postawione: **" + placedMap.getOrDefault(entry.getKey(), 0L) + "**",
+                        true);
+
+                counter++;
+            }
+            place++;
+        }
+        return embed.build();
+    }
+
     private MessageEmbed getStatsEmbed() {
         this.statsButtons.clear();
 
@@ -654,11 +691,11 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .build();
     }
 
-    private MessageEmbed getServerInfoEmbed(final String adres, final int port) {
-        final BedrockQuery query = BedrockQuery.create(adres, port);
+    private MessageEmbed getServerInfoEmbed(final String address, final int port) {
+        final BedrockQuery query = BedrockQuery.create(address, port);
         final EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setTitle("Server info")
-                .setFooter(adres + ":" + port)
+                .setFooter(address + ":" + port)
                 .setColor(Color.BLUE);
 
         if (query.online()) {
@@ -674,7 +711,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     true);
             embedBuilder.addField("Edycja", query.edition(), true);
         } else {
-            embedBuilder.setDescription("Nie można uzyskać informacji o serwerze ``" + adres + ":" + port + "``");
+            embedBuilder.setDescription("Nie można uzyskać informacji o serwerze ``" + address + ":" + port + "``");
         }
 
         return embedBuilder.build();
