@@ -1,12 +1,21 @@
 package me.indian.discord.jda.listener;
 
+import java.awt.Color;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
-import me.indian.bds.server.manager.StatsManager;
+import me.indian.bds.server.manager.stats.StatsManager;
 import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.server.properties.Gamemode;
 import me.indian.bds.util.BedrockQuery;
@@ -36,16 +45,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-
-import java.awt.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
@@ -278,6 +277,24 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         event.getHook().editOriginalEmbeds(embed.build()).queue();
                     }
 
+                    case "block" ->{
+                        if (!this.packModule.isLoaded()) {
+                            event.getHook().editOriginal("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").queue();
+                            return;
+                        }
+
+                        final List<String> blockTop = StatusUtil.getTopBlock(true, 100);
+                        final MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("Top 100 graczy z największym wykopaniem i postawieniem bloków")
+                                .setDescription((blockTop.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(blockTop)))
+                                .setColor(Color.BLUE)
+                                .build();
+
+                        //TODO: Dopracuj to
+
+                        event.getHook().editOriginalEmbeds(embed).queue();
+                    }
+
                     case "backup" -> {
                         if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isEnabled()) {
                             event.getHook().editOriginal("Backupy są wyłączone")
@@ -304,7 +321,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                 + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's'));
 
                         final MessageEmbed embed = new EmbedBuilder()
-                                .setTitle("Top 100 Czasu gry")
+                                .setTitle("Top 100 graczy z największą ilością przegranego czasu")
                                 .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
                                 .setColor(Color.BLUE)
                                 .setFooter(totalUpTime)
@@ -320,7 +337,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         }
                         final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
                         final MessageEmbed embed = new EmbedBuilder()
-                                .setTitle("Top 100 ilości śmierci")
+                                .setTitle("Top 100 graczy z największą ilością śmierc")
                                 .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
                                 .setColor(Color.BLUE)
                                 .build();

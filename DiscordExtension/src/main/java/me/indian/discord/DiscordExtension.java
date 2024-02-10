@@ -49,18 +49,17 @@ public class DiscordExtension extends Extension {
         this.discordJDA.init();
 
         final CommandManager commandManager = this.bdsAutoEnable.getCommandManager();
+        final EventManager eventManager = this.bdsAutoEnable.getEventManager();
 
         if (this.botEnabled) {
             commandManager.registerCommand(new DiscordCommand(this));
             commandManager.registerCommand(new LinkCommand(this));
             commandManager.registerCommand(new UnlinkCommand(this));
+
+            eventManager.registerListener(new BackupListener(this));
+            eventManager.registerListener(new PlayerEventListener(this));
+            eventManager.registerListener(new ServerListener(this));
         }
-
-        final EventManager eventManager = this.bdsAutoEnable.getEventManager();
-
-        eventManager.registerListener(new BackupListener(this));
-        eventManager.registerListener(new PlayerEventListener(this));
-        eventManager.registerListener(new ServerListener(this));
     }
 
     @Override
