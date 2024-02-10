@@ -559,7 +559,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private MessageEmbed getDeathsEmbed() {
         final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
         return new EmbedBuilder()
-                .setTitle("Top 100 graczy z największą ilością śmierc")
+                .setTitle("Top 100 graczy z największą ilością śmierci")
                 .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
                 .setColor(Color.BLUE)
                 .build();
