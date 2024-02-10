@@ -3,6 +3,7 @@ package me.indian.rest.post.key;
 import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
+import java.net.HttpURLConnection;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -10,8 +11,7 @@ import me.indian.bds.util.GsonUtil;
 import me.indian.rest.Request;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.component.PlayerPostData;
-
-import java.net.HttpURLConnection;
+import me.indian.rest.util.APIKeyUtil;
 
 public class PlayerInfoPostRequest implements Request {
 
@@ -35,7 +35,10 @@ public class PlayerInfoPostRequest implements Request {
     public void init() {
         this.app.post("/playerInfo/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            if (!this.restWebsite.isCorrectApiKey(ctx)) return;
+            if (!APIKeyUtil.isPowerfulKey(ctx)) {
+                ctx.status(HttpStatus.UNAUTHORIZED);
+                return;
+            }
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();

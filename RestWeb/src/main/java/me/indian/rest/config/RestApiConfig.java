@@ -5,9 +5,6 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 
-import java.util.Arrays;
-import java.util.List;
-
 @Header("################################################################")
 @Header("#           Ustawienia Strony z RestAPI                        #")
 @Header("################################################################")
@@ -34,7 +31,7 @@ public class RestApiConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Klucze api które możesz rozdać użytkownikom rest api aby mogli: pobierać backupy , więcej wkrótce "})
     @CustomKey("ApiKeys")
-    private List<String> apiKeys = Arrays.asList("kOpsAjdfads", "KYFgvHVY");
+    private APIKeyConfig apiKeyConfig = new APIKeyConfig();
 
     public boolean isEnabled() {
         return this.enabled;
@@ -48,7 +45,11 @@ public class RestApiConfig extends OkaeriConfig {
         return this.rateLimit;
     }
 
-    public List<String> getApiKeys() {
-        return this.apiKeys;
+    public APIKeyConfig getAPIKeys() {
+        return this.apiKeyConfig;
+    }
+
+    public void setApiKeyConfig(final APIKeyConfig apiKeyConfig) {
+        this.apiKeyConfig = apiKeyConfig;
     }
 }

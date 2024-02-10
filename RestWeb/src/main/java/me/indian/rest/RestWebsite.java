@@ -5,10 +5,17 @@ import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.util.RateLimiter;
+import java.io.File;
+import java.io.FileWriter;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
@@ -18,17 +25,9 @@ import me.indian.rest.post.key.PlayerInfoPostRequest;
 import me.indian.rest.post.key.discord.DiscordMessagePostRequest;
 import me.indian.rest.request.StatsRequest;
 import me.indian.rest.request.key.BackupRequest;
+import me.indian.rest.util.APIKeyUtil;
 import me.indian.rest.util.HTMLUtil;
 import org.jetbrains.annotations.Nullable;
-
-import java.io.File;
-import java.io.FileWriter;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class RestWebsite extends Extension {
 
@@ -40,12 +39,11 @@ public class RestWebsite extends Extension {
     private List<Request> requests;
     private File htmlFile;
     private String htmlFileContent;
-    private DiscordExtension discordExtension;
 
     @Override
     public void onLoad() {
         this.bdsAutoEnable = this.getBdsAutoEnable();
-        this.app = Javalin.create();
+        this.app = Javalin.create(config -> config.router.ignoreTrailingSlashes = true);
         this.limiter = new RateLimiter(TimeUnit.MINUTES);
         this.logger = this.getLogger();
         this.config = this.createConfig(RestApiConfig.class, "config");
@@ -66,12 +64,15 @@ public class RestWebsite extends Extension {
             this.logger.debug("&bRest API&r jest wyłączone");
             return;
         }
+
         final Extension extension = this.bdsAutoEnable.getExtensionLoader().getExtension("DiscordExtension");
         if (extension != null) {
-            this.discordExtension = (DiscordExtension) extension;
-            this.logger.info("Znaleziono&b " + extension.getName());
-            this.requests.add(new DiscordMessagePostRequest(this, this.discordExtension, this.bdsAutoEnable));
+            final DiscordExtension discordExtension = (DiscordExtension) extension;
+            this.logger.debug("Znaleziono&b " + extension.getName());
+            this.requests.add(new DiscordMessagePostRequest(this, discordExtension, this.bdsAutoEnable));
         }
+
+        APIKeyUtil.init(this);
 
         try {
             this.app.start(this.config.getPort());
@@ -104,19 +105,6 @@ public class RestWebsite extends Extension {
         if (this.app != null) this.app.stop();
     }
 
-    public boolean isCorrectApiKey(final Context ctx) {
-        final String apiKey = ctx.pathParam("api-key");
-        final String ip = ctx.ip();
-
-        if (!this.config.getApiKeys().contains(apiKey)) {
-            ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
-                    .result(GsonUtil.getGson().toJson("Klucz API \"" + apiKey + "\" nie jest obsługiwany"));
-
-            this.logger.debug("&b" + ip + "&r używa niepoprawnego klucza autoryzacji&c " + apiKey);
-            return false;
-        }
-        return true;
-    }
 
     public void addRateLimit(final Context ctx) {
         this.limiter.incrementCounter(ctx, this.config.getRateLimit());
@@ -183,5 +171,9 @@ public class RestWebsite extends Extension {
 
     public Javalin getApp() {
         return this.app;
+    }
+
+    public RestApiConfig getConfig() {
+        return this.config;
     }
 }

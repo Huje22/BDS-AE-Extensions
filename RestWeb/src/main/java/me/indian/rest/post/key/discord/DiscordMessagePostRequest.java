@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
+import java.net.HttpURLConnection;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
@@ -13,8 +14,7 @@ import me.indian.discord.webhook.WebHook;
 import me.indian.rest.Request;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.component.discord.DiscordMessagePostData;
-
-import java.net.HttpURLConnection;
+import me.indian.rest.util.APIKeyUtil;
 
 public class DiscordMessagePostRequest implements Request {
 
@@ -40,7 +40,7 @@ public class DiscordMessagePostRequest implements Request {
     public void init() {
         this.app.post("/discord/message/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            if (!this.restWebsite.isCorrectApiKey(ctx)) return;
+            if (!APIKeyUtil.isDiscordKey(ctx)) return;
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();
@@ -64,7 +64,6 @@ public class DiscordMessagePostRequest implements Request {
                         ctx.status(HttpStatus.SERVICE_UNAVAILABLE).contentType(ContentType.TEXT_PLAIN).result("Webhook jest wyłączony");
                         return;
                     }
-
                     this.webHook.sendMessage(data.message());
                 }
 
@@ -83,9 +82,7 @@ public class DiscordMessagePostRequest implements Request {
                 }
             }
 
-
             this.logger.debug("&b" + ip + "&r używa poprawnie endpointu&1 DISCORD/MESSAGE");
-
             ctx.status(HttpURLConnection.HTTP_NO_CONTENT);
         });
     }
