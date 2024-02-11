@@ -294,7 +294,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         }
                     }
 
-
                     case "top" -> {
                         if (!this.packModule.isLoaded()) {
                             event.getHook().editOriginal("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").queue();
@@ -308,7 +307,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                         event.getHook().editOriginalEmbeds(embed.build())
                                 .setActionRow(ActionRow.of(
-                                        Button.primary("playtime", "Czas gry").withEmoji(Emoji.fromUnicode("⏰")),
+                                        Button.primary("playtime", "Czas gry").withEmoji(Emoji.fromFormatted("<a:animated_clock:562493945058164739>")),
                                         Button.primary("deaths", "Śmierci").withEmoji(Emoji.fromUnicode("☠️")),
                                         Button.primary("blocks", "Bloki").withEmoji(Emoji.fromFormatted("<:kilof:1064228602759102464>"))
                                 ).getComponents())
