@@ -3,16 +3,6 @@ package me.indian.discord.webhook;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.discord.DiscordExtension;
-import me.indian.discord.config.DiscordConfig;
-import me.indian.discord.embed.component.Field;
-import me.indian.discord.embed.component.Footer;
-
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -23,6 +13,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.discord.DiscordExtension;
+import me.indian.discord.config.DiscordConfig;
+import me.indian.discord.embed.component.Field;
+import me.indian.discord.embed.component.Footer;
 
 public class WebHook {
 
@@ -217,13 +216,9 @@ public class WebHook {
         if (this.discordHelper.isWebhookEnabled()) {
             try {
                 while (this.block) {
-                    this.logger.alert("Czekanie na możliwość wysłania requestów do discord");
+                    this.logger.alert("Czekanie na możliwość wysłania requestów do discord, następna próba za&a 10&b sekund");
                     ThreadUtil.sleep(10);
                 }
-//            while (this.requests == 9) {
-//                this.logger.alert("Czekanie na możliwość wysłania requestów do discord");
-//                ThreadUtil.sleep(21);
-//            }
 
                 this.logger.info("Zamykanie wątków Webhooku");
                 this.service.shutdown();

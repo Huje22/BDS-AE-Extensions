@@ -19,8 +19,6 @@ import me.indian.discord.listener.ServerListener;
 import me.indian.discord.webhook.WebHook;
 import net.dv8tion.jda.api.JDA;
 
-import java.util.concurrent.TimeUnit;
-
 public class DiscordExtension extends Extension {
 
     private BDSAutoEnable bdsAutoEnable;
@@ -68,6 +66,7 @@ public class DiscordExtension extends Extension {
         if (this.config != null) this.config.save();
         if(this.messagesConfig != null) this.messagesConfig.save();
         this.shutdown();
+        this.logger.info("OkeKkK");
     }
 
     public DiscordConfig getConfig() {
@@ -87,21 +86,24 @@ public class DiscordExtension extends Extension {
     }
 
     private void shutdown() {
+        this.webHook.shutdown();
+
         final JDA jda = this.discordJDA.getJda();
         if (jda != null) {
             if (jda.getStatus() == JDA.Status.CONNECTED) {
                 try {
+                    this.logger.info("Wyłączanie bota...");
                     jda.shutdown();
-                    if (!jda.awaitShutdown(10L, TimeUnit.SECONDS)) {
+                    if (jda.awaitShutdown()) {
                         this.logger.info("Wyłączono bota");
+                    } else {
+                        this.logger.error("Nie udało się wyłączyć bota");
                     }
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można wyłączyć bota", exception);
                 }
             }
         }
-
-        this.webHook.shutdown();
     }
 
     public DiscordJDA getDiscordJDA() {
