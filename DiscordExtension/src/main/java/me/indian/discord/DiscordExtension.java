@@ -66,7 +66,6 @@ public class DiscordExtension extends Extension {
         if (this.config != null) this.config.save();
         if(this.messagesConfig != null) this.messagesConfig.save();
         this.shutdown();
-        this.logger.info("OkeKkK");
     }
 
     public DiscordConfig getConfig() {
