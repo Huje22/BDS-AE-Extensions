@@ -5,11 +5,11 @@ import eu.okaeri.configs.annotation.Comment;
 
 public class ExtensionConfig extends OkaeriConfig {
 
-    @Comment("Configuration for session")
+    @Comment("Konfiguracja dla sesji")
     private SessionConfig session = new SessionConfig();
 
     @Comment({""})
-    @Comment("Configuration for friend synchronization")
+    @Comment("Konfiguracja dla synchronizacji znajomych")
     private FriendSyncConfig friendSync = new FriendSyncConfig();
 
 
@@ -20,5 +20,4 @@ public class ExtensionConfig extends OkaeriConfig {
     public FriendSyncConfig getFriendSync() {
         return this.friendSync;
     }
-
 }

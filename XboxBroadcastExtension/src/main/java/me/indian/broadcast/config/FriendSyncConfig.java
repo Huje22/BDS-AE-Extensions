@@ -7,17 +7,17 @@ import eu.okaeri.configs.annotation.Comment;
 public class FriendSyncConfig extends OkaeriConfig {
 
     @Comment({""})
-    @Comment({"The amount of time in seconds to check for follower changes"})
-    @Comment({"This can be no lower than 20 due to xbox rate limits"})
-    @Comment({"unless you turn off auto-unfollow which then you can use 10"})
+    @Comment({"Ilość czasu w sekundach na sprawdzanie zmian w obserwujących"})
+    @Comment({"Ta wartość nie może być niższa niż 20 z powodu limitów prędkości Xboxa"})
+    @Comment({"chyba że wyłączysz automatyczne przestawanie obserwowania, wtedy możesz użyć 10"})
     private int updateInterval = 20;
 
     @Comment({""})
-    @Comment({"Should we automatically follow people that follow us"})
+    @Comment({"Czy powinniśmy automatycznie obserwować osoby, które nas obserwują"})
     private boolean autoFollow = false;
 
     @Comment({""})
-    @Comment({"Should we automatically unfollow people that no longer follow us"})
+    @Comment({"Czy powinniśmy automatycznie przestawać obserwować osoby, które nas już nie obserwują"})
     private boolean autoUnfollow = false;
 
 

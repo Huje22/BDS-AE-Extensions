@@ -8,16 +8,17 @@ public class SessionConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"UWAGA: Sesia aktualizuje się tylko wtedy gdy server jest włączony"})
-    @Comment("The amount of time in seconds to update session information")
-    @Comment("Warning: This can be no lower than 20 due to xbox rate limits")
+    @Comment("Ilość czasu w sekundach na aktualizację informacji o sesji")
+    @Comment("Ostrzeżenie: Ta wartość nie może być mniejsza niż 20 ze względu na limity prędkości Xboxa")
     private int updateInterval = 30;
 
     @Comment({""})
-    @Comment("Should we query the bedrock server to sync the session information")
+    @Comment("Czy powinniśmy zapytać serwer Bedrock, aby zsynchronizować informacje o sesji")
+    @Comment("Inaczej weźmiemy informacje z serwera zarzadzanego przez aplikacje")
     private boolean queryServer = true;
 
     @Comment({""})
-    @Comment("The data to broadcast over xbox live, this is the default if querying is enabled")
+    @Comment("Dane do rozgłaszania w usłudze Xbox Live, to jest domyślne, jeśli zapytania są włączone")
     private SessionInfo sessionInfo = new SessionInfo();
 
     public int getUpdateInterval() {
