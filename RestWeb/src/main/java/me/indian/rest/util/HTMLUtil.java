@@ -1,7 +1,7 @@
 package me.indian.rest.util;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.server.manager.StatsManager;
+import me.indian.bds.server.manager.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
 
 import java.util.List;

@@ -83,6 +83,7 @@ public class ExampleExtension extends Extension {
     @Override
     public void onDisable() {
         //Akcje wykonywane przy zamykaniu aplikacji
+        if (this.config != null) this.config.save();
     }
 
     public Config getConfig() {
