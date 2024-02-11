@@ -9,6 +9,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.broadcast.command.XboxBroadcastCommand;
@@ -57,6 +58,7 @@ public class XboxBroadcastExtension extends Extension {
     @Override
     public void onDisable() {
         this.sessionManager.shutdown();
+        if (this.config != null) this.config.save();
     }
 
     public void restart() {
@@ -94,7 +96,6 @@ public class XboxBroadcastExtension extends Extension {
 
     private void updateSessionInfo(final SessionInfo sessionInfo) {
         if (this.config.getSession().isQueryServer()) {
-
             final BedrockQuery query = BedrockQuery.create(sessionInfo.getIp(), sessionInfo.getPort());
 
             if (query.online()) {
@@ -105,6 +106,15 @@ public class XboxBroadcastExtension extends Extension {
                 sessionInfo.setPlayers(query.playerCount());
                 sessionInfo.setMaxPlayers(query.maxPlayers());
             }
+        } else {
+            final ServerProperties serverProperties = this.bdsAutoEnable.getServerProperties();
+
+            sessionInfo.setHostName(serverProperties.getMOTD());
+            sessionInfo.setWorldName(serverProperties.getRealWorldName());
+            sessionInfo.setVersion(this.bdsAutoEnable.getVersionManager().getLoadedVersion());
+            sessionInfo.setProtocol(this.bdsAutoEnable.getVersionManager().getLastKnownProtocol());
+            sessionInfo.setPlayers(this.bdsAutoEnable.getServerManager().getOnlinePlayers().size());
+            sessionInfo.setMaxPlayers(serverProperties.getMaxPlayers());
         }
     }
 

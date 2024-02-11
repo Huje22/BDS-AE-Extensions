@@ -7,8 +7,9 @@
     <inspection_tool class="FieldCanBeLocal" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="EXCLUDE_ANNOS">
         <value>
-          <list size="1">
+          <list size="2">
             <item index="0" class="java.lang.String" itemvalue="eu.okaeri.configs.annotation.Comment" />
+            <item index="1" class="java.lang.Boolean" itemvalue="eu.okaeri.configs.annotation.Comment" />
           </list>
         </value>
       </option>
