@@ -10,6 +10,8 @@ import java.io.FileWriter;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -36,7 +38,7 @@ public class RestWebsite extends Extension {
     private RateLimiter limiter;
     private Logger logger;
     private RestApiConfig config;
-    private List<Request> requests;
+    private Set<Request> requests;
     private File htmlFile;
     private String htmlFileContent;
 
@@ -47,7 +49,7 @@ public class RestWebsite extends Extension {
         this.limiter = new RateLimiter(TimeUnit.MINUTES);
         this.logger = this.getLogger();
         this.config = this.createConfig(RestApiConfig.class, "config");
-        this.requests = new ArrayList<>();
+        this.requests = new HashSet<>();
         this.htmlFile = new File(this.getDataFolder(), "Website.html");
 
         this.createHTMLFile();
@@ -105,6 +107,9 @@ public class RestWebsite extends Extension {
         if (this.app != null) this.app.stop();
     }
 
+    public <T extend Request> void register(final T request){
+    this.requests.add(request);
+    }
 
     public void addRateLimit(final Context ctx) {
         this.limiter.incrementCounter(ctx, this.config.getRateLimit());
