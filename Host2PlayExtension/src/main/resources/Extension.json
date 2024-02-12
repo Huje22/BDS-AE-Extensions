@@ -4,5 +4,7 @@
   "name": "Host2Play",
   "author": "IndianPL",
   "authors": [],
-  "description": "Strona RestAPI dla BDS-Auto-Enable"
+  "description": "Mala integracja dla użytkowników Host2Play",
+ "dependencies": [ "RestWebsite"],
+  "softDependencies": ["DiscordExtension"] 
 }
