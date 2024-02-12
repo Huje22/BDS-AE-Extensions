@@ -10,6 +10,7 @@
         <module name="DiscordExtension" />
         <module name="RestWebsite" />
         <module name="XboxBroadcastExtension" />
+        <module name="Host2PlayExtension" />
         <module name="ExampleExtension" />
       </profile>
     </annotationProcessing>
