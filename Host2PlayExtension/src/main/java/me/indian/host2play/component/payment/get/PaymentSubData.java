@@ -1,12 +1,14 @@
-package me.indian.host2play.component;
+package me.indian.host2play.component.payment.get;
 
-public record PaymentPostData(
+public record PaymentSubData(
         String customerEmail,
         int amount,
         String currency,
+        String status,
         String notificationUrl,
         String successRedirectUrl,
         String cancelRedirectUrl,
-        String description,
-        boolean autoRedirect
+        long created,
+        long expires,
+        String description
 ) {}

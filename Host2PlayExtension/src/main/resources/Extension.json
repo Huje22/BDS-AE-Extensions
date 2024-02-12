@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.rest.RestWebsite",
+  "mainClass": "me.indian.host2play.Host2PlayExtension",
   "version": "1.0",
   "name": "Host2Play",
   "author": "IndianPL",
