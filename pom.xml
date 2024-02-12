@@ -18,15 +18,6 @@
     </modules>
 
 
-    <dependencies>
-        <dependency>
-            <groupId>me.indian.bds</groupId>
-            <artifactId>BDS-Auto-Enable</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/BDS-Auto-Enable-0.0.1.jar</systemPath>
-        </dependency>
-    </dependencies>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
