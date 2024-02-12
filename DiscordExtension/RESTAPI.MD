@@ -1,4 +1,4 @@
-### <u>Wymaga rozszerzenia [RestWebsite](..%2FRestWeb)</u>
+### <u>Wymaga rozszerzenia [RestWebsite](..%2FRestWebsite)</u>
 
 ### Wyślij wiadomość do kanału czatu jako gracz
 
