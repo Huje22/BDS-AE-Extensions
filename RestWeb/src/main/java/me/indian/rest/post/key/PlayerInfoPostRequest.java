@@ -8,18 +8,17 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
-import me.indian.rest.Request;
+import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.component.PlayerPostData;
 import me.indian.rest.util.APIKeyUtil;
 
-public class PlayerInfoPostRequest implements Request {
+public class PlayerInfoPostRequest extends HttpHandler {
 
     private final RestWebsite restWebsite;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ServerProcess serverProcess;
-    private final Javalin app;
     private final Gson gson;
 
     public PlayerInfoPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
@@ -27,13 +26,14 @@ public class PlayerInfoPostRequest implements Request {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.restWebsite.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
-        this.app = this.restWebsite.getApp();
+
         this.gson = GsonUtil.getGson();
     }
 
+
     @Override
-    public void init() {
-        this.app.post("/playerInfo/{api-key}", ctx -> {
+    public void handle(final Javalin app) {
+        app.post("/playerInfo/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             if (!APIKeyUtil.isPowerfulKey(ctx)) {
                 ctx.status(HttpStatus.UNAUTHORIZED);
@@ -54,7 +54,7 @@ public class PlayerInfoPostRequest implements Request {
                 return;
             }
 
-            //TODO:Dokończyć to 
+            //TODO:Dokończyć to
 
             if (!this.serverProcess.isEnabled()) {
                 ctx.status(HttpStatus.SERVICE_UNAVAILABLE).result("Server jest wyłączony");

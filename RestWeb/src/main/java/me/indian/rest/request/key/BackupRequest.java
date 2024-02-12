@@ -11,11 +11,11 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.watchdog.module.BackupModule;
-import me.indian.rest.Request;
+import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.util.APIKeyUtil;
 
-public class BackupRequest implements Request {
+public class BackupRequest extends HttpHandler {
 
     private final RestWebsite restWebsite;
     private final Logger logger;
@@ -30,8 +30,8 @@ public class BackupRequest implements Request {
     }
 
     @Override
-    public void init() {
-        this.app.get("/api/{api-key}/backup/", ctx -> {
+    public void handle(final Javalin app) {
+        app.get("/api/{api-key}/backup/", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             if (!APIKeyUtil.isBackupKey(ctx)) return;
             final List<String> backupsNames = this.backupModule.getBackupsNames();

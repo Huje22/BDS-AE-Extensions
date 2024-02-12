@@ -8,8 +8,6 @@ import io.javalin.http.util.RateLimiter;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
@@ -38,7 +36,7 @@ public class RestWebsite extends Extension {
     private RateLimiter limiter;
     private Logger logger;
     private RestApiConfig config;
-    private Set<Request> requests;
+    private Set<HttpHandler> httpHandlers;
     private File htmlFile;
     private String htmlFileContent;
 
@@ -49,15 +47,15 @@ public class RestWebsite extends Extension {
         this.limiter = new RateLimiter(TimeUnit.MINUTES);
         this.logger = this.getLogger();
         this.config = this.createConfig(RestApiConfig.class, "config");
-        this.requests = new HashSet<>();
+        this.httpHandlers = new HashSet<>();
         this.htmlFile = new File(this.getDataFolder(), "Website.html");
 
         this.createHTMLFile();
         this.refreshFileContent();
-        this.requests.add(new StatsRequest(this, this.bdsAutoEnable));
-        this.requests.add(new BackupRequest(this, this.bdsAutoEnable));
-        this.requests.add(new CommandPostRequest(this, this.bdsAutoEnable));
-        this.requests.add(new PlayerInfoPostRequest(this, this.bdsAutoEnable));
+        this.register(new StatsRequest(this, this.bdsAutoEnable));
+        this.register(new BackupRequest(this, this.bdsAutoEnable));
+        this.register(new CommandPostRequest(this, this.bdsAutoEnable));
+        this.register(new PlayerInfoPostRequest(this, this.bdsAutoEnable));
     }
 
     @Override
@@ -71,7 +69,7 @@ public class RestWebsite extends Extension {
         if (extension != null) {
             final DiscordExtension discordExtension = (DiscordExtension) extension;
             this.logger.debug("Znaleziono&b " + extension.getName());
-            this.requests.add(new DiscordMessagePostRequest(this, discordExtension, this.bdsAutoEnable));
+            this.httpHandlers.add(new DiscordMessagePostRequest(this, discordExtension, this.bdsAutoEnable));
         }
 
         APIKeyUtil.init(this);
@@ -91,8 +89,9 @@ public class RestWebsite extends Extension {
                         );
             });
 
-            for (final Request request : this.requests) {
-                request.init();
+            for (final HttpHandler httpHandler : this.httpHandlers) {
+                httpHandler.handle();
+                httpHandler.handle(this.app);
             }
 
             this.logger.info("Uruchomiono strone z rest api na porcie:&b " + this.config.getPort());
@@ -107,8 +106,8 @@ public class RestWebsite extends Extension {
         if (this.app != null) this.app.stop();
     }
 
-    public <T extend Request> void register(final T request){
-    this.requests.add(request);
+    public <T extends HttpHandler> void register(final T httpHandler) {
+        this.httpHandlers.add(httpHandler);
     }
 
     public void addRateLimit(final Context ctx) {

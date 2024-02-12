@@ -19,6 +19,22 @@ GET /api/stats/playtime
 
 Zwraca statystyki dotyczące czasu gry graczy w milisekundach.
 
+### Pobierz informacje o postawionych blokach graczy
+
+```
+GET /api/stats/block/placed
+```
+
+Zwraca statystyki dotyczące liczby postawionych bloków przez graczy.
+
+### Pobierz informacje o zniszczonych blokach graczy
+
+```
+GET /api/stats/block/broken
+```
+
+Zwraca statystyki dotyczące liczby zniszczonych bloków przez graczy.
+
 ### Pobierz informacje o graczach online i offline
 
 ```

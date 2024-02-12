@@ -1,10 +1,9 @@
 package me.indian.rest.util;
 
+import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.server.manager.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
-
-import java.util.List;
 
 public final class HTMLUtil {
 

@@ -9,18 +9,17 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
-import me.indian.rest.Request;
+import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.component.CommandPostData;
 import me.indian.rest.util.APIKeyUtil;
 
-public class CommandPostRequest implements Request {
+public class CommandPostRequest extends HttpHandler {
 
     private final RestWebsite restWebsite;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ServerProcess serverProcess;
-    private final Javalin app;
     private final Gson gson;
 
     public CommandPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
@@ -28,13 +27,12 @@ public class CommandPostRequest implements Request {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.restWebsite.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
-        this.app = this.restWebsite.getApp();
         this.gson = GsonUtil.getGson();
     }
 
     @Override
-    public void init() {
-        this.app.post("/command/{api-key}", ctx -> {
+    public void handle(final Javalin app) {
+        app.post("/command/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             if (!APIKeyUtil.isServerKey(ctx)) return;
 
@@ -43,7 +41,7 @@ public class CommandPostRequest implements Request {
             final CommandPostData data;
 
             try {
-                data = GsonUtil.getGson().fromJson(requestBody, CommandPostData.class);
+                data = this.gson.fromJson(requestBody, CommandPostData.class);
             } catch (final Exception exception) {
                 this.restWebsite.incorrectJsonMessage(ctx, exception);
                 return;

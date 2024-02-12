@@ -11,19 +11,18 @@ import me.indian.bds.util.GsonUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.webhook.WebHook;
-import me.indian.rest.Request;
+import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.component.discord.DiscordMessagePostData;
 import me.indian.rest.util.APIKeyUtil;
 
-public class DiscordMessagePostRequest implements Request {
+public class DiscordMessagePostRequest extends HttpHandler {
 
     private final RestWebsite restWebsite;
     private final DiscordExtension discordExtension;
     private final DiscordJDA discordJDA;
     private final WebHook webHook;
     private final Logger logger;
-    private final Javalin app;
     private final Gson gson;
 
     public DiscordMessagePostRequest(final RestWebsite restWebsite, final DiscordExtension discordExtension, final BDSAutoEnable bdsAutoEnable) {
@@ -31,14 +30,13 @@ public class DiscordMessagePostRequest implements Request {
         this.discordExtension = discordExtension;
         this.discordJDA = this.discordExtension.getDiscordJDA();
         this.webHook = this.discordExtension.getWebHook();
-        this.logger = this.restWebsite.getLogger(); ;
-        this.app = this.restWebsite.getApp();
+        this.logger = this.restWebsite.getLogger();
         this.gson = GsonUtil.getGson();
     }
 
     @Override
-    public void init() {
-        this.app.post("/discord/message/{api-key}", ctx -> {
+    public void handle(final Javalin app) {
+        app.post("/discord/message/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             if (!APIKeyUtil.isDiscordKey(ctx)) return;
 

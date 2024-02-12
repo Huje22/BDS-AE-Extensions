@@ -4,48 +4,59 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import io.javalin.Javalin;
+import java.net.HttpURLConnection;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.util.GsonUtil;
-import me.indian.rest.Request;
+import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
 
-import java.net.HttpURLConnection;
-
-public class StatsRequest implements Request {
+public class StatsRequest extends HttpHandler {
 
     private final RestWebsite restWebsite;
     private final ServerManager serverManager;
-    private final Javalin app;
     private final Gson gson;
 
     public StatsRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
         this.serverManager = bdsAutoEnable.getServerManager();
-        this.app = this.restWebsite.getApp();
         this.gson = GsonUtil.getGson();
     }
 
     @Override
-    public void init() {
-        this.app.get("/api/stats/playtime", ctx -> {
+    public void handle(final Javalin app) {
+        app.get("/api/stats/playtime", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             ctx.contentType("application/json").status(HttpURLConnection.HTTP_OK)
                     .result(this.gson.toJson(this.serverManager.getStatsManager().getPlayTime()));
         });
 
-        this.app.get("/api/stats/deaths", ctx -> {
+        app.get("/api/stats/deaths", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             ctx.contentType("application/json")
                     .status(HttpURLConnection.HTTP_OK)
                     .result(this.gson.toJson(this.serverManager.getStatsManager().getDeaths()));
         });
 
-        this.app.get("/api/stats/players", ctx -> {
+        app.get("/api/stats/players", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             ctx.contentType("application/json")
                     .status(HttpURLConnection.HTTP_OK)
                     .result(this.playersJson());
+        });
+
+        app.get("/api/stats/block/placed", ctx -> {
+            this.restWebsite.addRateLimit(ctx);
+            ctx.contentType("application/json")
+                    .status(HttpURLConnection.HTTP_OK)
+                    .result(this.gson.toJson(this.serverManager.getStatsManager().getBlockPlaced()));
+        });
+
+        app.get("/api/stats/block/broken", ctx -> {
+            this.restWebsite.addRateLimit(ctx);
+            ctx.contentType("application/json")
+                    .status(HttpURLConnection.HTTP_OK)
+                    .result(this.gson.toJson(this.serverManager.getStatsManager().getBlockBroken()));
         });
     }
 
