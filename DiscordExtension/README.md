@@ -11,6 +11,7 @@ To rozszerzenie zawiera:
 - Formatowanie czatu rangami z Discord
 - Łączenie kont
 - Pingowanie innego serwera za pomocą `/server`
+- Integracje z rozserzeniem [RestWebsite](RESTAPI.MD)
 - Łatwy dostęp do:
   - Listy graczy
   - Tworzenia i przeglądania backupów

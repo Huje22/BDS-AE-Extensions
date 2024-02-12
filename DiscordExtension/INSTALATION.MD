@@ -10,7 +10,7 @@ posiadać [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-E
 
 ### WEBHOOK
 
-<u>_**AKTUALNIE NIE UŻYWANE**_</u>
+<u>_**AKTUALNIE NIE UŻYWANE W PROJEKCIE**_</u>
 
 #### Jak zacząć
 
@@ -23,7 +23,7 @@ posiadać [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-E
 
 ### JDA
 
-Integracja za pomocą bota dodająca czat `Discord <-> Minecraft` i nie tylko
+Czat `Discord <-> Minecraft` i nie tylko
 
 #### Jak zacząć
 

@@ -82,33 +82,6 @@ curl -X POST -H "Content-Type: application/json" -d "{ \"command\": \"say To wia
 
 ---
 
-# Discord
-
-### <u>**Wymaga [DiscordExtension](..%2FDiscordExtension)**</u>
-
-### Wyślij wiadomość do kanału czatu jako gracz
-
-```
-POST /discord/message/{api-key}
-```
-
-#### Przykładowy JSON
-
-```json
-{
-  "name": "REST API",
-  "message": "Wysyłam wiadomość na discord!",
-  "messageType": "WEBHOOK"
-}
-```
-#### Przykład wysłania JSON z poziomu konsoli
-
-```
-curl -X POST -H "Content-Type: application/json" -d "{ \"name\": \"REST API\",\"message\": \"Wysyłam wiadomość na discord!\",\"messageType\":\"WEBHOOK\"}" http://localhost:PORT/discord/message/KLUCZ_API
-```
-
----
-
 # Dodatkowe
 
 ### Wyślij wiadomość do kanału czatu

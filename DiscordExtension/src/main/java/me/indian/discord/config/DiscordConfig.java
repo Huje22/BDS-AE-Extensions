@@ -5,6 +5,7 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 import me.indian.discord.config.sub.BotConfig;
+import me.indian.discord.config.sub.RestAPIConfig;
 import me.indian.discord.config.sub.WebHookConfig;
 
 @Header("################################################################")
@@ -22,6 +23,11 @@ public class DiscordConfig extends OkaeriConfig {
     @CustomKey("Bot")
     private BotConfig botConfig = new BotConfig();
 
+    @Comment({""})
+    @Comment({"Ustawienia REST API"})
+    @CustomKey("RestAPI")
+    private RestAPIConfig restAPIConfig = new RestAPIConfig();
+
     public WebHookConfig getWebHookConfig() {
         return this.webHookConfig;
     }
@@ -30,4 +36,7 @@ public class DiscordConfig extends OkaeriConfig {
         return this.botConfig;
     }
 
+    public RestAPIConfig getRestAPIConfig() {
+        return this.restAPIConfig;
+    }
 }

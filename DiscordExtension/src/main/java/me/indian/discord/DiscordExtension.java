@@ -16,7 +16,9 @@ import me.indian.discord.jda.manager.StatsChannelsManager;
 import me.indian.discord.listener.BackupListener;
 import me.indian.discord.listener.PlayerEventListener;
 import me.indian.discord.listener.ServerListener;
+import me.indian.discord.rest.DiscordMessagePostRequest;
 import me.indian.discord.webhook.WebHook;
+import me.indian.rest.RestWebsite;
 import net.dv8tion.jda.api.JDA;
 
 public class DiscordExtension extends Extension {
@@ -57,6 +59,14 @@ public class DiscordExtension extends Extension {
             eventManager.registerListener(new BackupListener(this));
             eventManager.registerListener(new PlayerEventListener(this));
             eventManager.registerListener(new ServerListener(this));
+        }
+
+        final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionLoader().getExtension("RestWebsite");
+
+        if (restWebsite != null) {
+            if (restWebsite.isEnabled()) {
+                restWebsite.register(new DiscordMessagePostRequest(this, restWebsite));
+            }
         }
     }
 

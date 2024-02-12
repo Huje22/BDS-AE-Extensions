@@ -156,7 +156,7 @@ public class DiscordJDA {
                 try {
                     listener.init();
                     this.jda.addEventListener(listener);
-                    this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
+//                    this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
                 } catch (final Exception exception) {
                     this.logger.critical("Wystąpił błąd podczas ładowania listeneru: &b" + listener.getClass().getSimpleName(), exception);
                     throw exception;

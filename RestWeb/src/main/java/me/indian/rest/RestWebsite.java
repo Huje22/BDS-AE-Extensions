@@ -18,11 +18,9 @@ import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
-import me.indian.discord.DiscordExtension;
 import me.indian.rest.config.RestApiConfig;
 import me.indian.rest.post.key.CommandPostRequest;
 import me.indian.rest.post.key.PlayerInfoPostRequest;
-import me.indian.rest.post.key.discord.DiscordMessagePostRequest;
 import me.indian.rest.request.StatsRequest;
 import me.indian.rest.request.key.BackupRequest;
 import me.indian.rest.util.APIKeyUtil;
@@ -52,10 +50,6 @@ public class RestWebsite extends Extension {
 
         this.createHTMLFile();
         this.refreshFileContent();
-        this.register(new StatsRequest(this, this.bdsAutoEnable));
-        this.register(new BackupRequest(this, this.bdsAutoEnable));
-        this.register(new CommandPostRequest(this, this.bdsAutoEnable));
-        this.register(new PlayerInfoPostRequest(this, this.bdsAutoEnable));
     }
 
     @Override
@@ -63,13 +57,6 @@ public class RestWebsite extends Extension {
         if (!this.config.isEnabled()) {
             this.logger.debug("&bRest API&r jest wyłączone");
             return;
-        }
-
-        final Extension extension = this.bdsAutoEnable.getExtensionLoader().getExtension("DiscordExtension");
-        if (extension != null) {
-            final DiscordExtension discordExtension = (DiscordExtension) extension;
-            this.logger.debug("Znaleziono&b " + extension.getName());
-            this.httpHandlers.add(new DiscordMessagePostRequest(this, discordExtension, this.bdsAutoEnable));
         }
 
         APIKeyUtil.init(this);
@@ -89,10 +76,11 @@ public class RestWebsite extends Extension {
                         );
             });
 
-            for (final HttpHandler httpHandler : this.httpHandlers) {
-                httpHandler.handle();
-                httpHandler.handle(this.app);
-            }
+
+            this.register(new StatsRequest(this, this.bdsAutoEnable));
+            this.register(new BackupRequest(this, this.bdsAutoEnable));
+            this.register(new CommandPostRequest(this, this.bdsAutoEnable));
+            this.register(new PlayerInfoPostRequest(this, this.bdsAutoEnable));
 
             this.logger.info("Uruchomiono strone z rest api na porcie:&b " + this.config.getPort());
         } catch (final Exception exception) {
@@ -108,6 +96,9 @@ public class RestWebsite extends Extension {
 
     public <T extends HttpHandler> void register(final T httpHandler) {
         this.httpHandlers.add(httpHandler);
+        httpHandler.handle();
+        httpHandler.handle(this.app);
+        this.logger.debug("Zarejestrowano Handler HTTP:&b " + httpHandler.getClass().getSimpleName());
     }
 
     public void addRateLimit(final Context ctx) {

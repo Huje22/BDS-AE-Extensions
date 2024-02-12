@@ -37,7 +37,7 @@ public final class APIKeyUtil {
         }
 
         final List<List<String>> keys = Arrays.asList(apiKeyConfig.getPowerful(), apiKeyConfig.getServer(),
-                apiKeyConfig.getBackup(), apiKeyConfig.getDiscord());
+                apiKeyConfig.getBackup());
 
         for (final List<String> list : keys) {
             if (list.isEmpty()) {
@@ -70,21 +70,6 @@ public final class APIKeyUtil {
         final String ip = ctx.ip();
 
         if (!CONFIG.getAPIKeys().getBackup().contains(apiKey)) {
-            ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
-                    .result(GsonUtil.getGson().toJson("Klucz API " + apiKey + " nie jest obsługiwany"));
-
-            LOGGER.debug("&b" + ip + "&r używa niepoprawnego klucza autoryzacji&c " + apiKey);
-            return false;
-        }
-        return true;
-    }
-
-    public static boolean isDiscordKey(final Context ctx) {
-        if (isPowerfulKey(ctx)) return true;
-        final String apiKey = ctx.pathParam("api-key");
-        final String ip = ctx.ip();
-
-        if (!CONFIG.getAPIKeys().getDiscord().contains(apiKey)) {
             ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
                     .result(GsonUtil.getGson().toJson("Klucz API " + apiKey + " nie jest obsługiwany"));
 
