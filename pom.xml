@@ -12,9 +12,10 @@
     <modules>
         <module>AutoMessages</module>
         <module>DiscordExtension</module>
-        <module>RestWeb</module>
+        <module>RestWebsite</module>
         <module>ExampleExtension</module>
         <module>XboxBroadcastExtension</module>
+        <module>Host2PlayExtension</module>
     </modules>
 
 
