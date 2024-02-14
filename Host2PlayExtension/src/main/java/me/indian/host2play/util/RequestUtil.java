@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import me.indian.bds.util.GsonUtil;
 import me.indian.host2play.Host2PlayExtension;
 import me.indian.host2play.component.KeyTest;
@@ -21,11 +23,10 @@ import org.jetbrains.annotations.Nullable;
 
 public final class RequestUtil {
 
-    //TODO: Dodac mape z ostatnimi płatnościami ID : DATA
-
     private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
     private static final Gson GSON = GsonUtil.getGson();
     private static final String MAIN_URL = "https://host2play.pl/api/v1/";
+    private static final Map<String, PostReceivedData> LAST_TRANSACTIONS = new HashMap<>();
     private static Host2PlayExtension EXTENSION;
     private static Config CONFIG;
     private static String API_KEY;
@@ -70,13 +71,19 @@ public final class RequestUtil {
                 "Płatność za pomocą rozszerzenia",
                 true);
 
+
+        PostReceivedData receivedData = null;
         try (final Response response = sendPostRequest("payments/create", GSON.toJson(post))) {
+            final String body = response.body().string();
+
             if (response.isSuccessful()) {
                 if (response.code() != HttpURLConnection.HTTP_OK) return null;
-                return GSON.fromJson(response.body().string(), PostReceivedData.class);
+                receivedData = GSON.fromJson(body, PostReceivedData.class);
+                LAST_TRANSACTIONS.put(receivedData.data().paymentId(), receivedData);
+                return receivedData;
             }
         }
-        return null;
+        return receivedData;
     }
 
     public static Response sendGetRequest(final String endpointName) throws IOException {
@@ -101,16 +108,22 @@ public final class RequestUtil {
         return HTTP_CLIENT.newCall(request).execute();
     }
 
+    public static Map<String, PostReceivedData> getLastTransactions() {
+        return LAST_TRANSACTIONS;
+    }
+
+    public static PostReceivedData getLastTransactionData(final String paymentID) {
+        return LAST_TRANSACTIONS.get(paymentID);
+    }
+
     @Nullable
-    public static String getOwnIP() throws IOException {
+    public static String getOwnIP() {
         final Request request = new Request.Builder()
                 .url("https://api64.ipify.org?format=json")
                 .build();
 
-
         try (final Response response = HTTP_CLIENT.newCall(request).execute()) {
             if (response.isSuccessful()) {
-
                 final JsonObject jsonObject = JsonParser.parseString(response.body().string())
                         .getAsJsonObject();
 
@@ -118,7 +131,9 @@ public final class RequestUtil {
                     return jsonObject.get("ip").getAsString();
                 }
             }
+        } catch (final Exception exception) {
+            exception.printStackTrace();
         }
-        return null;
+        return "localhost";
     }
 }

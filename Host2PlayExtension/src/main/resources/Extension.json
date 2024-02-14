@@ -1,10 +1,14 @@
 {
   "mainClass": "me.indian.host2play.Host2PlayExtension",
   "version": "1.0",
-  "name": "Host2Play",
+  "name": "Host2PlayExtension",
   "author": "IndianPL",
   "authors": [],
   "description": "Mala integracja dla użytkowników Host2Play",
- "dependencies": [ "RestWebsite"],
-  "softDependencies": ["DiscordExtension"] 
+  "dependencies": [
+    "RestWebsite"
+  ],
+  "softDependencies": [
+    "DiscordExtension"
+  ]
 }
