@@ -2,7 +2,6 @@
   "mainClass": "me.indian.rest.RestWebsite",
   "version": "1.0",
   "name": "RestWebsite",
-  "author": "IndianPL",
-  "authors": [],
-  "description": "Strona RestAPI dla BDS-Auto-Enable"
+  "description": "Strona RestAPI dla BDS-Auto-Enable",
+  "author": "IndianPL"
 }

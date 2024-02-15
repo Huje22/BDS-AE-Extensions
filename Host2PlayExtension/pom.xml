@@ -42,15 +42,6 @@
             <systemPath>${project.basedir}/../libs/DiscordExtension-1.0.jar</systemPath>
         </dependency>
 
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>5.0.0-alpha.12</version>
-            <scope>compile</scope>
-        </dependency>
-
-
-
         <!--        Z jakiegoś powodu intelij nie czyta mi zależności z shadowanych libek wiec -->
         <!--        dodaje je ręcznie ale z scope `provided` aby nie były w jar-->
 

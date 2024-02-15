@@ -1,13 +1,12 @@
 package me.indian.host2play.util;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.HTTPUtil;
 import me.indian.host2play.Host2PlayExtension;
 import me.indian.host2play.component.KeyTest;
 import me.indian.host2play.component.payment.get.PaymentGet;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class RequestUtil {
 
-    private static final OkHttpClient HTTP_CLIENT = new OkHttpClient();
+    private static final OkHttpClient HTTP_CLIENT = HTTPUtil.getOkHttpClient();
     private static final Gson GSON = GsonUtil.getGson();
     private static final String MAIN_URL = "https://host2play.pl/api/v1/";
     private static final Map<String, PostReceivedData> LAST_TRANSACTIONS = new HashMap<>();
@@ -114,26 +113,5 @@ public final class RequestUtil {
 
     public static PostReceivedData getLastTransactionData(final String paymentID) {
         return LAST_TRANSACTIONS.get(paymentID);
-    }
-
-    @Nullable
-    public static String getOwnIP() {
-        final Request request = new Request.Builder()
-                .url("https://api64.ipify.org?format=json")
-                .build();
-
-        try (final Response response = HTTP_CLIENT.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                final JsonObject jsonObject = JsonParser.parseString(response.body().string())
-                        .getAsJsonObject();
-
-                if (jsonObject.has("ip")) {
-                    return jsonObject.get("ip").getAsString();
-                }
-            }
-        } catch (final Exception exception) {
-            exception.printStackTrace();
-        }
-        return "localhost";
     }
 }

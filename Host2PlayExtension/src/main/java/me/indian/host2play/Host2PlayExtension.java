@@ -3,10 +3,11 @@ package me.indian.host2play;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.HTTPUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.host2play.command.DonationCommand;
 import me.indian.host2play.config.Config;
+import me.indian.host2play.listener.ExtensionEnableListener;
 import me.indian.host2play.rest.NotificationEndpoint;
 import me.indian.host2play.util.RequestUtil;
 import me.indian.rest.RestWebsite;
@@ -30,15 +31,15 @@ public class Host2PlayExtension extends Extension {
 
         final String ip = this.config.getIp();
         if (this.config.isDynamicIP() || ip == null || ip.isEmpty()) {
-            this.config.setIp(RequestUtil.getOwnIP());
+            this.config.setIp(HTTPUtil.getOwnIP());
         }
     }
 
     @Override
     public void onEnable() {
-        this.discordExtension = (DiscordExtension) this.bdsAutoEnable.getExtensionLoader().getExtension("DiscordExtension");
+        this.discordExtension = (DiscordExtension) this.bdsAutoEnable.getExtensionManager().getExtension("DiscordExtension");
 
-        final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionLoader().getExtension("RestWebsite");
+        final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionManager().getExtension("RestWebsite");
 
         if (restWebsite != null) {
             if (restWebsite.isEnabled()) {
@@ -50,19 +51,11 @@ public class Host2PlayExtension extends Extension {
 
                 if (RequestUtil.testKey()) {
                     final DonationCommand donationCommand = new DonationCommand(this);
-                    this.bdsAutoEnable.getCommandManager().registerCommand(donationCommand);
+                    this.bdsAutoEnable.getCommandManager().registerCommand(donationCommand, this);
                     restWebsite.register(new NotificationEndpoint(this, donationCommand));
                 } else {
+                    this.bdsAutoEnable.getEventManager().registerListener(new ExtensionEnableListener(this), this);
                     this.logger.error("&cTwój klucz&b API&c jest nie poprawny!");
-
-                    new ThreadUtil("H2PDisable").newThread(() -> {
-                        while (!this.isEnabled()) {
-                            //Robie tak bo rozszerzenie jest jako włączone dopiero gdy zakończy sie 'onEnable'
-                            ThreadUtil.sleep(3);
-                        }
-                        this.bdsAutoEnable.getExtensionLoader().disableExtension(this);
-                    }).start();
-
                 }
             }
         }

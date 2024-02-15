@@ -2,9 +2,9 @@
   "mainClass": "me.indian.discord.DiscordExtension",
   "version": "1.0",
   "name": "DiscordExtension",
-  "author": "IndianPL",
-  "authors": [],
   "description": "Łączy Minecraft z Discord",
+  "prefix": "Discord",
+  "author": "IndianPL",
   "softDependencies": [
     "RestWebsite"
   ]

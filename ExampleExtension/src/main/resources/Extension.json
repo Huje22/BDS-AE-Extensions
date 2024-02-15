@@ -2,9 +2,12 @@
   "mainClass": "me.indian.example.ExampleExtension",
   "version": "1.0",
   "name": "ExampleExtension",
-  "author": "IndianPL",
   "description": "Przykladowe rozserzenie dla BDS-Auto-Enable",
-  "authors": ["IndianPL"],
+  "prefix": "Example",
+  "author": "IndianPL",
+  "authors": [
+    "IndianPL"
+  ],
   "dependencies": [],
   "softDependencies": []
 }

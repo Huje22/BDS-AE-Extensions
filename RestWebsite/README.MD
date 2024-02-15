@@ -19,7 +19,7 @@ public class MyExtension extends Extension {
 
     @Override
     public void onEnable() {
-        final RestWebsite restWebsite = (RestWebsite) this.getBdsAutoEnable().getExtensionLoader().getExtension("RestWebsite");
+        final RestWebsite restWebsite = (RestWebsite) this.getBdsAutoEnable().getExtensionManager().getExtension("RestWebsite");
 
         if (restWebsite != null) {
             if (restWebsite.isEnabled()) {
@@ -40,4 +40,3 @@ public class ExampleHandler extends HttpHandler {
     }
 }
 ```
-

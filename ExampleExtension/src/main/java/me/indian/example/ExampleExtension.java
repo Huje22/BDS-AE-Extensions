@@ -16,18 +16,14 @@ public class ExampleExtension extends Extension {
 
     @Override
     public void onEnable() {
-
         final BDSAutoEnable bdsAutoEnable = this.getBdsAutoEnable();
         final Logger logger = this.getLogger();
-
-
-        //TODO: Dodać przykład jak pingowac inny server
 
         //Tworzenie poleceń
         final CommandManager commandManager = bdsAutoEnable.getCommandManager();
 
         //Przekazujemy w konstruktorze `this` czyli aktualną klase
-        commandManager.registerCommand(new ExampleCommand(this));
+        commandManager.registerCommand(new ExampleCommand(this), this);
 
         //Tworzenie configu
         try {
@@ -36,10 +32,9 @@ public class ExampleExtension extends Extension {
             logger.error("Nie można utworzyć configu", exception);
         }
 
-
         //Tworzenie mało zawansowanych listenerów
         final EventManager eventManager = bdsAutoEnable.getEventManager();
-        eventManager.registerListener(new ServerListener());
+        eventManager.registerListener(new ServerListener(), this);
 
         //Wysyłanie komend do konsoli servera z wiadomoscią z config
         bdsAutoEnable.getServerProcess().sendToConsole("say " + this.config.getSubConfig().getCos());

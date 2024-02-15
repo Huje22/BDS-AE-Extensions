@@ -31,7 +31,6 @@ public class DiscordExtension extends Extension {
     private WebHook webHook;
     private boolean botEnabled, webhookEnabled;
 
-
     @Override
     public void onEnable() {
         this.bdsAutoEnable = this.getBdsAutoEnable();
@@ -52,16 +51,16 @@ public class DiscordExtension extends Extension {
         final EventManager eventManager = this.bdsAutoEnable.getEventManager();
 
         if (this.botEnabled) {
-            commandManager.registerCommand(new DiscordCommand(this));
-            commandManager.registerCommand(new LinkCommand(this));
-            commandManager.registerCommand(new UnlinkCommand(this));
+            commandManager.registerCommand(new DiscordCommand(this), this);
+            commandManager.registerCommand(new LinkCommand(this), this);
+            commandManager.registerCommand(new UnlinkCommand(this), this);
 
-            eventManager.registerListener(new BackupListener(this));
-            eventManager.registerListener(new PlayerEventListener(this));
-            eventManager.registerListener(new ServerListener(this));
+            eventManager.registerListener(new BackupListener(this), this);
+            eventManager.registerListener(new PlayerEventListener(this), this);
+            eventManager.registerListener(new ServerListener(this), this);
         }
 
-        final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionLoader().getExtension("RestWebsite");
+        final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionManager().getExtension("RestWebsite");
 
         if (restWebsite != null) {
             if (restWebsite.isEnabled()) {

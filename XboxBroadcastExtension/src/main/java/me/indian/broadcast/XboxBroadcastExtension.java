@@ -43,7 +43,7 @@ public class XboxBroadcastExtension extends Extension {
         this.updateSessionInfo(this.sessionInfo);
 
         final CommandManager commandManager = this.bdsAutoEnable.getCommandManager();
-        commandManager.registerCommand(new XboxBroadcastCommand(this));
+        commandManager.registerCommand(new XboxBroadcastCommand(this), this);
 
 
         this.service.execute(() -> {
