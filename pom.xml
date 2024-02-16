@@ -16,6 +16,7 @@
         <module>ExampleExtension</module>
         <module>XboxBroadcastExtension</module>
         <module>Host2PlayExtension</module>
+        <module>EffectsExtension</module>
     </modules>
 
 
