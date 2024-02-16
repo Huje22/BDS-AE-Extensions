@@ -1,12 +1,23 @@
 package me.indian.discord.jda;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
-import me.indian.bds.watchdog.module.PackModule;
+import me.indian.bds.watchdog.module.pack.PackModule;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.MessagesConfig;
@@ -37,18 +48,6 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.Nullable;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 public class DiscordJDA {
 
@@ -107,6 +106,8 @@ public class DiscordJDA {
                 return;
             }
 
+            final long startTime = System.currentTimeMillis();
+
             try {
                 this.jda = JDABuilder.create(this.botConfig.getToken(), this.getGatewayIntents())
                         .disableCache(this.botConfig.getDisableCacheFlag())
@@ -114,7 +115,6 @@ public class DiscordJDA {
                         .setEnableShutdownHook(false)
                         .build();
                 this.jda.awaitReady();
-                this.logger.info("&aZaładowano bota");
             } catch (final Exception exception) {
                 this.logger.error("&cNie można uruchomić bota", exception);
                 this.discordExtension.setBotEnabled(false);
@@ -123,14 +123,15 @@ public class DiscordJDA {
 
             this.guild = this.jda.getGuildById(this.serverID);
             if (this.guild == null) {
-                this.jda.shutdown();
+                this.logger.alert("&aPierw musisz dodać bota:&b " + this.jda.getInviteUrl(Permission.ADMINISTRATOR));
+                this.discordExtension.shutdown();
                 this.jda = null;
                 throw new NullPointerException("Nie można odnaleźć servera o ID " + this.serverID);
             }
 
             this.textChannel = this.guild.getTextChannelById(this.channelID);
             if (this.textChannel == null) {
-                this.jda.shutdown();
+                this.discordExtension.shutdown();
                 this.jda = null;
                 throw new NullPointerException("Nie można odnaleźć kanału z ID&b " + this.channelID);
             }
@@ -187,6 +188,8 @@ public class DiscordJDA {
 
             this.customStatusUpdate();
             this.leaveGuilds();
+
+            this.logger.info("&aZaładowano bota&b " + this.getUserName(this.getBotMember(), this.getBotMember().getUser()));
         }
     }
 
@@ -299,7 +302,7 @@ public class DiscordJDA {
     public List<Member> getAllChannelOnlineMembers(final TextChannel textChannel) {
         return textChannel.getMembers().stream()
                 .filter(member -> !member.getUser().isBot())
-                .filter(member -> !member.getOnlineStatus().equals(OnlineStatus.OFFLINE))
+                .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
                 .sorted(Comparator.comparing(Member::getTimeJoined))
                 .toList();
     }
