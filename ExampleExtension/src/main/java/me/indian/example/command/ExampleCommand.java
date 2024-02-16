@@ -10,24 +10,24 @@ import java.util.List;
 
 public class ExampleCommand extends Command {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final StatsManager statsManager;
 
     public ExampleCommand(final ExampleExtension exampleExtension) {
         super("example", "Przykładowa komenda");
-        this.bdsAutoEnable = exampleExtension.getBdsAutoEnable();
-        this.statsManager = this.bdsAutoEnable.getServerManager().getStatsManager();
+        BDSAutoEnable bdsAutoEnable = exampleExtension.getBdsAutoEnable();
+        this.statsManager = bdsAutoEnable.getServerManager().getStatsManager();
 
 
-        /**
-         *  Tworzymy aliasy aby można było zamiast `!example` użyć np `!exa`
+        /*
+           Tworzymy aliasy aby można było zamiast `!example` użyć np `!exa`
          */
         this.addAlliases(List.of("exa"));
 
-        /**
-         *Tworzymy informacje o opcjach i je opisujemy
-         * Wyskoczą one gdy w  `onExecute` zwrócimy false
+        /*
+         Tworzymy informacje o opcjach i je opisujemy
+          Wyskoczą one gdy w  `onExecute` zwrócimy false
          */
+        this.addOption("help", "Info o poleceniu ");
         this.addOption("info", "Informacje o ");
         this.addOption("playtime <nazwa gracza>", "Czas gry danego gracza ");
     }
@@ -39,9 +39,8 @@ public class ExampleCommand extends Command {
         switch (this.commandSender) {
             case PLAYER -> this.sendMessage("&aPolecenie wykonane przez&3 gracza&b " + playerName);
             //W wypadku konsoli `this.playerName` zwróci nam `CONSOLE`
-            case CONSOLE -> this.sendMessage("&aPolecenie wykonane przez&3 konsole&d(&b " + playerName + "&d0");
+            case CONSOLE -> this.sendMessage("&aPolecenie wykonane przez&3 konsole &d(&b " + playerName + "&d)");
         }
-
 
         if (args.length == 0) {
             this.sendMessage("&aTe polecenie nie zawiera argumentów");
@@ -55,11 +54,17 @@ public class ExampleCommand extends Command {
             return true;
         }
 
+        if (args[0].equalsIgnoreCase("help")) {
+            //Ta metoda buduje nam pomoc na podstawie dodanych opcji przez 'addOption()'
+            this.buildHelp();
+            return true;
+        }
+
         if (args[0].equalsIgnoreCase("playtime")) {
             if (args.length == 2) {
                 final String name = args[1];
 
-                //Z pomocą `StatsManagera` patrzymy ile gracz ma przegrane na serwerze
+                //Z pomocą `StatsManagera` patrzymy ile gracz ma czasu przegranego na serwerze w mili sekundach
                 //Musimy to jeszcze sformatować
                 this.sendMessage(DateUtil.formatTime(this.statsManager.getPlayTimeByName(name), List.of('d', 'h', 'm', 's', 'i')));
 

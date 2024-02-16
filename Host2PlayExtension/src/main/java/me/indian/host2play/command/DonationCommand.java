@@ -27,7 +27,7 @@ public class DonationCommand extends Command {
     private final Map<String, String> lastBuyers;
 
     public DonationCommand(final Host2PlayExtension extension) {
-        super("donate", "");
+        super("donate", "Pozwala na darowiznę servera");
         this.extension = extension;
         this.cooldown = new HashMap<>();
         this.lastBuyers = new HashMap<>();
@@ -96,7 +96,6 @@ public class DonationCommand extends Command {
                     return true;
                 }
             } else {
-
                 final long playerCooldown = this.cooldown.getOrDefault(this.playerName, 0L);
                 final long remainingTime = (playerCooldown + cooldownTime) - System.currentTimeMillis();
 
