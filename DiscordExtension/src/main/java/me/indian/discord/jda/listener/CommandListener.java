@@ -27,7 +27,7 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
-import me.indian.bds.watchdog.module.PackModule;
+import me.indian.bds.watchdog.module.pack.PackModule;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.sub.BotConfig;

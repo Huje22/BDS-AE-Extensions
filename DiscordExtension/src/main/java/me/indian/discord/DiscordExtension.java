@@ -93,7 +93,7 @@ public class DiscordExtension extends Extension {
         if (statsChannelsManager != null) statsChannelsManager.onShutdown();
     }
 
-    private void shutdown() {
+    public void shutdown() {
         this.webHook.shutdown();
 
         final JDA jda = this.discordJDA.getJda();
