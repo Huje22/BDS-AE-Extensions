@@ -127,19 +127,25 @@ public abstract class SessionManagerCore {
      * @return The information about the Xbox authentication token including the token itself
      */
     protected XboxTokenInfo getXboxToken() {
-        if (this.xboxTokenManager.verifyTokens()) {
-            return this.xboxTokenManager.getCachedXstsToken();
+        if (xboxTokenManager.verifyTokens()) {
+            return xboxTokenManager.getCachedXstsToken();
         } else {
-            final String msaToken = this.getMsaToken();
-            final String deviceToken = this.xboxTokenManager.getDeviceToken();
-            final SISUAuthenticationResponse sisuAuthenticationResponse = this.xboxTokenManager.getSISUToken(msaToken, deviceToken);
-            if (sisuAuthenticationResponse == null) {
-                this.logger.info("SISU authentication response is null, please login again");
-                this.liveTokenManager.clearTokenCache();
-                return this.getXboxToken();
+            String msaToken = getMsaToken();
+            if (!msaToken.isEmpty()) {
+                String deviceToken = xboxTokenManager.getDeviceToken();
+                SISUAuthenticationResponse sisuAuthenticationResponse =  xboxTokenManager.getSISUToken(msaToken, deviceToken);
+                if (sisuAuthenticationResponse != null) {
+                    return xboxTokenManager.getXSTSToken(sisuAuthenticationResponse);
+                } else {
+                    logger.info("SISU authentication response is null, please login again");
+                }
+            } else {
+                logger.info("MSA authentication response is null, please login again");
             }
-            return this.xboxTokenManager.getXSTSToken(sisuAuthenticationResponse);
         }
+
+        liveTokenManager.clearTokenCache();
+        return getXboxToken();
     }
 
     /**
