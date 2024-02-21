@@ -61,6 +61,7 @@ public class PlayerEventListener extends Listener {
             return null;
         }
 
+        //TODO: Dodać mape "ID ROLI : IKONA" aby wyświetlać nie standardowe rangi na czacie 
         boolean memberMutedOnDiscord = false;
         String role = "";
 
