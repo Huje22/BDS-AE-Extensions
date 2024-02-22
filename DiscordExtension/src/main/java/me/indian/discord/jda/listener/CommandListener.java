@@ -50,6 +50,8 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
+    //TODO: Zrobić komendy poprzez SlashCommand , a przynajmniej spróbować 
+    
     private final DiscordJDA discordJDA;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
@@ -325,13 +327,15 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
 
                     case "version" -> {
+                        //TODO: Brać wersję z VersionManager bezpośrednio 
                         final String current = this.appConfigManager.getVersionManagerConfig().getVersion();
+                        final int protocol = this.bdsAutoEnable.getVersionManager().getLastKnownProtocol();
                         String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
                         if (latest.equals("")) {
                             latest = current;
                         }
 
-                        final String checkLatest = (current.equals(latest) ? "`" + latest + "`" : "`" + current + "` (Najnowsza to: `" + latest + "`)");
+                        final String checkLatest = (current.equals(latest) ? "`" + latest + "` ("+ protocol +")" : "`" + current + "` ("+ protocol +") (Najnowsza to: `" + latest + "`)");
 
                         final MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Informacje o wersji")
