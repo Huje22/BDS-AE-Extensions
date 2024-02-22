@@ -13,7 +13,6 @@ import me.indian.host2play.util.RequestUtil;
 import me.indian.rest.RestWebsite;
 import org.jetbrains.annotations.Nullable;
 
-
 public class Host2PlayExtension extends Extension {
 
     private BDSAutoEnable bdsAutoEnable;
@@ -50,6 +49,7 @@ public class Host2PlayExtension extends Extension {
                 RequestUtil.init(this);
 
                 if (RequestUtil.testKey()) {
+                    //TODO: Dodać opcje włączenia komendy w config z opisem (ponieważ niedługo w opcji donate będzie można ustawic "NotifucationURL")
                     final DonationCommand donationCommand = new DonationCommand(this);
                     this.bdsAutoEnable.getCommandManager().registerCommand(donationCommand, this);
                     restWebsite.register(new NotificationEndpoint(this, donationCommand));
