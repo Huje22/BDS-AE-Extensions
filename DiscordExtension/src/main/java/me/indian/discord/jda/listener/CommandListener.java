@@ -26,6 +26,7 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.bds.watchdog.module.pack.PackModule;
 import me.indian.discord.DiscordExtension;
@@ -49,8 +50,6 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
-
-    //TODO: Zrobić komendy poprzez SlashCommand , a przynajmniej spróbować 
     
     private final DiscordJDA discordJDA;
     private final BDSAutoEnable bdsAutoEnable;
@@ -264,8 +263,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             for (final String player : players) {
                                 if (counter != 24) {
                                     embed.addField(player,
-                                            "> Czas gry: **" + DateUtil.formatTime(this.statsManager.getPlayTimeByName(player), List.of('d', 'h', 'm', 's'))
-                                                    + "**  \n> Śmierci:** " + this.statsManager.getDeathsByName(player) + "**",
+                                            "> Czas gry: **" + DateUtil.formatTime(this.statsManager.getPlayTime(player), List.of('d', 'h', 'm', 's'))
+                                                    + "**  \n> Śmierci:** " + this.statsManager.getDeaths(player) + "**",
                                             true);
                                     counter++;
                                 } else {
@@ -327,15 +326,15 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
 
                     case "version" -> {
-                        //TODO: Brać wersję z VersionManager bezpośrednio 
-                        final String current = this.appConfigManager.getVersionManagerConfig().getVersion();
-                        final int protocol = this.bdsAutoEnable.getVersionManager().getLastKnownProtocol();
-                        String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
+                        final VersionManager versionManager = this.bdsAutoEnable.getVersionManager();
+                        final String current = versionManager.getLatestVersion();
+                        final int protocol = versionManager.getLastKnownProtocol();
+                        String latest = versionManager.getLatestVersion();
                         if (latest.equals("")) {
                             latest = current;
                         }
 
-                        final String checkLatest = (current.equals(latest) ? "`" + latest + "` ("+ protocol +")" : "`" + current + "` ("+ protocol +") (Najnowsza to: `" + latest + "`)");
+                        final String checkLatest = (current.equals(latest) ? "`" + latest + "` (" + protocol + ")" : "`" + current + "` (" + protocol + ") (Najnowsza to: `" + latest + "`)");
 
                         final MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Informacje o wersji")
@@ -405,7 +404,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
         for (final Map.Entry<String, Long> entry : linkedAccounts.entrySet()) {
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
-                    .getPlayTimeByName(entry.getKey()), TimeUnit.MILLISECONDS);
+                    .getPlayTime(entry.getKey()), TimeUnit.MILLISECONDS);
 
             linked.add(place + ". **" + entry.getKey() + "**: " + entry.getValue() + " " + (hours < 5 ? "❌" : "✅"));
             place++;
@@ -418,7 +417,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         String hoursMessage = "";
         final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
         final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
-                .getPlayTimeByName(this.linkingManager.getNameByID(member.getIdLong())), TimeUnit.MILLISECONDS);
+                .getPlayTime(this.linkingManager.getNameByID(member.getIdLong())), TimeUnit.MILLISECONDS);
         if (hours < 5) {
             if (this.jda.getRoleById(roleID) != null) {
                 hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "> **" + hours + "** godzin gry)" +

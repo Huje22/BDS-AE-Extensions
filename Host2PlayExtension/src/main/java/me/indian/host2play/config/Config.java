@@ -20,6 +20,12 @@ public class Config extends OkaeriConfig {
     private String apiKey = MessageUtil.generateCode(50);
 
     @Comment({""})
+    @Comment({"Czy włączyć !donate ?"})
+    @Comment({"Zezwala ona na tworzenie płatności przez użytkowników, aby mogli dokonać darowizny"})
+    @CustomKey("DonateCommand")
+    private boolean donateCommand = true;
+
+    @Comment({""})
     @Comment({"Twój aktualny adres IP , potrzebny dla 'notificationUrl'"})
     @CustomKey("IP")
     private String ip;
@@ -55,6 +61,10 @@ public class Config extends OkaeriConfig {
 
     public void setIp(final String ip) {
         this.ip = ip;
+    }
+
+    public boolean isDonateCommand() {
+        return this.donateCommand;
     }
 
     public boolean isDynamicIP() {

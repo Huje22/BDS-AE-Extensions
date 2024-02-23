@@ -208,7 +208,7 @@ public class LinkingManager {
                 }
             }
 
-            final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name), TimeUnit.MILLISECONDS);
+            final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTime(name), TimeUnit.MILLISECONDS);
             final Role playtimeRole = guild.getRoleById(this.linkingConfig.getLinkedPlaytimeRoleID());
             final Role linkingRole = guild.getRoleById(this.linkingConfig.getLinkedRoleID());
 

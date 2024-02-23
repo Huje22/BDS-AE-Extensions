@@ -49,10 +49,12 @@ public class Host2PlayExtension extends Extension {
                 RequestUtil.init(this);
 
                 if (RequestUtil.testKey()) {
-                    //TODO: Dodać opcje włączenia komendy w config z opisem (ponieważ niedługo w opcji donate będzie można ustawic "NotifucationURL")
                     final DonationCommand donationCommand = new DonationCommand(this);
-                    this.bdsAutoEnable.getCommandManager().registerCommand(donationCommand, this);
                     restWebsite.register(new NotificationEndpoint(this, donationCommand));
+
+                    if (this.config.isDonateCommand()) {
+                        this.bdsAutoEnable.getCommandManager().registerCommand(donationCommand, this);
+                    }
                 } else {
                     this.bdsAutoEnable.getEventManager().registerListener(new ExtensionEnableListener(this), this);
                     this.logger.error("&cTwój klucz&b API&c jest nie poprawny!");

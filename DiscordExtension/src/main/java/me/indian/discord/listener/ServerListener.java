@@ -11,13 +11,11 @@ import me.indian.discord.jda.DiscordJDA;
 
 public class ServerListener extends Listener {
 
-    private final DiscordExtension discordExtension;
     private final DiscordJDA discordJDA;
-    private int tps, lastTPS;
+    private double tps, lastTPS;
 
     public ServerListener(final DiscordExtension discordExtension) {
-        this.discordExtension = discordExtension;
-        this.discordJDA = this.discordExtension.getDiscordJDA();
+        this.discordJDA = discordExtension.getDiscordJDA();
     }
 
     @Override
@@ -41,7 +39,7 @@ public class ServerListener extends Listener {
     public void onServerRestart(final ServerRestartEvent event) {
         final String reason = event.getReason();
 
-        if(reason == null ) return;
+        if (reason == null) return;
         if (reason.contains("Niska ilość tps")) {
             this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
                     + " (Teraz: **" + this.tps + "** Ostatnie: **" + this.lastTPS + "**)");

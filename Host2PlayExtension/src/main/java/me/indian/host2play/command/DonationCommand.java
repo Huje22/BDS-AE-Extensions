@@ -35,7 +35,6 @@ public class DonationCommand extends Command {
         this.addOption("<emil> <ilość>", "Informacje do wykonania donate");
     }
 
-
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (this.commandSender == CommandSender.CONSOLE) {
