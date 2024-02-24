@@ -1,5 +1,6 @@
 package me.indian.discord.jda.listener;
 
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -13,8 +14,6 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
-import java.util.concurrent.TimeUnit;
 
 public class ConsoleListener extends ListenerAdapter implements JDAListener {
 
@@ -47,19 +46,21 @@ public class ConsoleListener extends ListenerAdapter implements JDAListener {
 
         if (member == null) return;
 
-        if (event.getChannel().asTextChannel() == this.consoleChannel) {
-            if (!this.serverProcess.isEnabled()) return;
-            if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                this.serverProcess.sendToConsole(rawMessage);
-                this.logger.print("[" + DateUtil.getDate() + " DISCORD] " +
-                        this.discordJDA.getUserName(member, author) +
-                        " (" + author.getIdLong() + ") -> " +
-                        rawMessage);
-            } else {
-                event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
-                    msg.delete().queueAfter(5, TimeUnit.SECONDS);
-                    message.delete().queueAfter(4, TimeUnit.SECONDS);
-                });
+        if (event.getChannel() instanceof final TextChannel channel) {
+            if (channel == this.consoleChannel) {
+                if (!this.serverProcess.isEnabled()) return;
+                if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                    this.serverProcess.sendToConsole(rawMessage);
+                    this.logger.print("[" + DateUtil.getDate() + " DISCORD] " +
+                            this.discordJDA.getUserName(member, author) +
+                            " (" + author.getIdLong() + ") -> " +
+                            rawMessage);
+                } else {
+                    event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
+                        msg.delete().queueAfter(5, TimeUnit.SECONDS);
+                        message.delete().queueAfter(4, TimeUnit.SECONDS);
+                    });
+                }
             }
         }
     }

@@ -36,3 +36,5 @@ out/
 #########################
 
 libs/DiscordExtension-1.0.jar
+.idea/compiler.xml
+.idea/encodings.xml
