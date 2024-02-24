@@ -183,6 +183,15 @@ public class DiscordJDA {
                             .addOption(OptionType.STRING, "name", "Nick użytkownika którego konto ma zostać rozłączone", false),
                     Commands.slash("ip", "Informacje o ip ustawione w config"),
                     Commands.slash("top", "Topka graczy w różnych kategoriach"),
+
+                    /*
+                    TODO: Doda zarządzanie allow listą
+
+                    Commands.slash("allowlist", "Zarządzanie białą listą.")
+                            .addOption(OptionType.STRING, "add", "Nazwa gracza do dodania", false)
+                            .addOption(OptionType.STRING, "remove", "Nazwa gracza do usunięcia", false),
+                    */
+
                     Commands.slash("server", "Informacje o danym serwerze")
                             .addOption(OptionType.STRING, "ip", "Adres IP servera", true)
                             .addOption(OptionType.INTEGER, "port", "Port servera", false)
