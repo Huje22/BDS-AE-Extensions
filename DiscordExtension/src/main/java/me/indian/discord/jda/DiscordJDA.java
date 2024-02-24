@@ -15,6 +15,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.HTTPUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.watchdog.module.pack.PackModule;
@@ -113,7 +114,7 @@ public class DiscordJDA {
                         .disableCache(this.botConfig.getDisableCacheFlag())
                         .enableCache(this.botConfig.getEnableCacheFlag())
                         .setEnableShutdownHook(false)
-                    //TODO: Ustawić OkkHttp clienta na tego z BDS-Auto-Enable 
+                        .setHttpClient(HTTPUtil.getOkHttpClient())
                         .build();
                 this.jda.awaitReady();
             } catch (final Exception exception) {
@@ -540,12 +541,21 @@ public class DiscordJDA {
         }
     }
 
-    public void sendDeathMessage(final String playerName, final String deathMessage) {
+    public void sendDeathMessage(final String playerName, final String deathMessage, final String killer, final String itemUsed) {
         if (this.messagesConfig.isSendDeathMessage()) {
-            this.sendMessage(this.messagesConfig.getDeathMessage()
+            String message = this.messagesConfig.getDeathMessage()
                     .replaceAll("<name>", playerName)
-                    .replaceAll("<deathMessage>", deathMessage.replaceAll("\\\\", ""))
-            );
+                    .replaceAll("<deathMessage>", deathMessage
+                            .replaceAll(killer, "**" + killer + "**"));
+
+
+            if (!itemUsed.equalsIgnoreCase("none")) {
+                message = message.replaceAll("<itemName>", "(" + itemUsed + ")");
+            } else {
+                message = message.replaceAll("<itemName>", "");
+            }
+
+            this.sendMessage(message);
         }
     }
 

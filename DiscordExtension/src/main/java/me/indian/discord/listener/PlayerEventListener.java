@@ -78,7 +78,6 @@ public class PlayerEventListener extends Listener {
                 .replaceAll("<message>", event.getMessage())
                 .replaceAll("<role>", role.trim());
 
-
         if (appHandled) {
             if (!event.isMuted() && !memberMutedOnDiscord) {
                 this.discordJDA.sendPlayerMessage(playerName, message);
@@ -103,11 +102,8 @@ public class PlayerEventListener extends Listener {
 
     @Override
     public void onPlayerDeath(final PlayerDeathEvent event) {
-        //TODO: Dodać info z jakiego przedmiotu został zabity gracz
-        this.discordJDA.sendDeathMessage(event.getPlayerName(), event.getDeathMessage()
-                .replaceAll("§l", "**")
-                .replaceAll("§r", "")
-        );
+        this.discordJDA.sendDeathMessage(event.getPlayerName(), event.getDeathMessage(),
+                event.getKillerName(), event.getUsedItemName());
     }
 
     private String getRole(final Member member) {
