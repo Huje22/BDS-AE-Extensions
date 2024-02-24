@@ -103,6 +103,7 @@ public class PlayerEventListener extends Listener {
 
     @Override
     public void onPlayerDeath(final PlayerDeathEvent event) {
+        //TODO: Dodać info z jakiego przedmiotu został zabity gracz
         this.discordJDA.sendDeathMessage(event.getPlayerName(), event.getDeathMessage()
                 .replaceAll("§l", "**")
                 .replaceAll("§r", "")
