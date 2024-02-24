@@ -7,10 +7,10 @@ import me.indian.broadcast.core.SessionInfo;
 public class SessionConfig extends OkaeriConfig {
 
     @Comment({""})
-    @Comment({"UWAGA: Sesia aktualizuje się tylko wtedy gdy server jest włączony"})
+    @Comment({"UWAGA: Sesja aktualizuje się tylko wtedy gdy server jest włączony"})
     @Comment("Ilość czasu w sekundach na aktualizację informacji o sesji")
     @Comment("Ostrzeżenie: Ta wartość nie może być mniejsza niż 20 ze względu na limity prędkości Xboxa")
-    private int updateInterval = 30;
+    private int updateInterval = 40;
 
     @Comment({""})
     @Comment("Czy powinniśmy zapytać serwer Bedrock, aby zsynchronizować informacje o sesji")

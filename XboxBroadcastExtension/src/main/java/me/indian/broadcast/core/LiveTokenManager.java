@@ -150,7 +150,7 @@ public class LiveTokenManager {
 
             // Log the authentication code and link
 
-            this.logger.info("Aby się zalogować, użyj przeglądarki internetowej, otwórz stronę " + codeResponse.verification_uri + " i zaloguj w celu uwierzytelnienia.");
+            this.logger.info("Aby się zalogować, użyj przeglądarki internetowej, otwórz stronę " + codeResponse.verification_uri + "?otc=" + codeResponse.user_code + " i zaloguj w celu uwierzytelnienia.");
 
             // Loop until the token expires or the user finishes authentication
             while (System.currentTimeMillis() < expireTime) {
