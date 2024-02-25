@@ -3,9 +3,9 @@ package me.indian.discord.jda.listener;
 import java.awt.Color;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -17,6 +17,8 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
+import me.indian.bds.server.allowlist.AllowlistManager;
+import me.indian.bds.server.allowlist.component.AllowlistPlayer;
 import me.indian.bds.server.manager.stats.StatsManager;
 import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.server.properties.Gamemode;
@@ -58,6 +60,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private final DiscordConfig discordConfig;
     private final BotConfig botConfig;
     private final List<Button> backupButtons, difficultyButtons, statsButtons;
+    private final List<String> allowlistPlayers;
     private final ExecutorService service;
     private final ServerProcess serverProcess;
     private JDA jda;
@@ -73,9 +76,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordConfig = discordExtension.getConfig();
         this.botConfig = this.discordConfig.getBotConfig();
-        this.backupButtons = new ArrayList<>();
-        this.difficultyButtons = new ArrayList<>();
-        this.statsButtons = new ArrayList<>();
+        this.backupButtons = new LinkedList<>();
+        this.difficultyButtons = new LinkedList<>();
+        this.statsButtons = new LinkedList<>();
+        this.allowlistPlayers = new LinkedList<>();
         this.service = Executors.newScheduledThreadPool(3, new ThreadUtil("Discord Command Listener"));
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
     }
@@ -280,6 +284,50 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         event.getHook().editOriginalEmbeds(embed.build()).queue();
                     }
 
+                    case "allowlist" -> {
+                        final AllowlistManager allowlistManager = this.bdsAutoEnable.getAllowlistManager();
+                        final OptionMapping addOption = event.getOption("add");
+                        final OptionMapping removeOption = event.getOption("remove");
+
+                        if (addOption != null) {
+                            final String playerName = addOption.getAsString();
+                            if (allowlistManager.isOnAllowList(playerName)) {
+                                event.getHook().editOriginal("Gracz **" + playerName + "** jest już na liście").queue();
+                            } else {
+                                allowlistManager.addPlayerByName(playerName);
+                                allowlistManager.saveAllowlist();
+                                if (this.serverProcess.isEnabled()) {
+                                    allowlistManager.reloadAllowlist();
+                                }
+                                event.getHook().editOriginal("Dodano gracza **" + playerName + "**").queue();
+                            }
+                        } else if (removeOption != null) {
+                            final String playerName = removeOption.getAsString();
+                            if (allowlistManager.isOnAllowList(playerName)) {
+                                //Jeśli gracz jest na liście nie może być null :P
+                                final AllowlistPlayer player = allowlistManager.getPlayer(playerName);
+                                allowlistManager.removePlayer(player);
+                                allowlistManager.saveAllowlist();
+                                if (this.serverProcess.isEnabled()) {
+                                    allowlistManager.reloadAllowlist();
+                                }
+                                event.getHook().editOriginal("Usunięto gracza **" + playerName + "**").queue();
+                            } else {
+                                event.getHook().editOriginal("Gracz **" + playerName + "** nie jest na liście").queue();
+                            }
+                        } else {
+                            final EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("Biała lista").setColor(Color.BLUE);
+
+                            this.allowlistPlayers.clear();
+                            for (final AllowlistPlayer player : allowlistManager.getAllowlistPlayers()) {
+                                this.allowlistPlayers.add(player.name());
+                            }
+
+                            embedBuilder.setDescription(MessageUtil.stringListToString(this.allowlistPlayers, " , "));
+                            event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
+                        }
+                    }
+
                     case "backup" -> {
                         if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isEnabled()) {
                             event.getHook().editOriginal("Backupy są wyłączone")
@@ -370,6 +418,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
                 }
             } catch (final Exception exception) {
+
+
                 this.logger.error("Wystąpił błąd przy próbie wykonania&b " + event.getName() + "&r przez&e " + member.getNickname(), exception);
                 event.getHook().editOriginal("Wystąpił błąd\n ```" + MessageUtil.getStackTraceAsString(exception) + "```").queue();
             }
@@ -399,7 +449,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private List<String> getLinkedAccounts() {
         final Map<String, Long> linkedAccounts = this.linkingManager.getLinkedAccounts();
-        final List<String> linked = new ArrayList<>();
+        final List<String> linked = new LinkedList<>();
         int place = 1;
 
         for (final Map.Entry<String, Long> entry : linkedAccounts.entrySet()) {
@@ -420,7 +470,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .getPlayTime(this.linkingManager.getNameByID(member.getIdLong())), TimeUnit.MILLISECONDS);
         if (hours < 5) {
             if (this.jda.getRoleById(roleID) != null) {
-                hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "> **" + hours + "** godzin gry)" +
+                hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "> (**" + hours + "** godzin gry)" +
                         "\nDostaniesz role gdy wbijesz **5** godzin gry";
             }
         }
@@ -667,7 +717,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
         final long gbSpace = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
 
-        final List<String> description = new ArrayList<>();
+        final List<String> description = new LinkedList<>();
         this.backupButtons.clear();
         this.backupButtons.add(Button.primary("backup", "Backup")
                 .withEmoji(Emoji.fromFormatted("<:bds:1138355151258783745>")));
