@@ -4,14 +4,12 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.HTTPUtil;
-import me.indian.discord.DiscordExtension;
 import me.indian.host2play.command.DonationCommand;
 import me.indian.host2play.config.Config;
 import me.indian.host2play.listener.ExtensionEnableListener;
 import me.indian.host2play.rest.NotificationEndpoint;
 import me.indian.host2play.util.RequestUtil;
 import me.indian.rest.RestWebsite;
-import org.jetbrains.annotations.Nullable;
 
 public class Host2PlayExtension extends Extension {
 
@@ -20,7 +18,6 @@ public class Host2PlayExtension extends Extension {
     private Logger logger;
     private String notificationEndpoint;
     private String fullNotificationEndpoint;
-    private DiscordExtension discordExtension;
 
     @Override
     public void onLoad() {
@@ -36,8 +33,6 @@ public class Host2PlayExtension extends Extension {
 
     @Override
     public void onEnable() {
-        this.discordExtension = (DiscordExtension) this.bdsAutoEnable.getExtensionManager().getExtension("DiscordExtension");
-
         final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionManager().getExtension("RestWebsite");
 
         if (restWebsite != null) {
@@ -78,10 +73,5 @@ public class Host2PlayExtension extends Extension {
 
     public String getFullNotificationEndpoint() {
         return this.fullNotificationEndpoint;
-    }
-
-    @Nullable
-    public DiscordExtension getDiscordExtension() {
-        return this.discordExtension;
     }
 }

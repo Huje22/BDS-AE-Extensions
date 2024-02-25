@@ -1,9 +1,9 @@
 {
   "mainClass": "me.indian.host2play.Host2PlayExtension",
-  "version": "1.0",
+  "version": "1.0-Beta",
   "name": "Host2PlayExtension",
   "prefix": "Host2Play",
-  "description": "Mala integracja dla użytkowników Host2Play",
+  "description": "Mała integracja dla użytkowników Host2Play",
   "author": "IndianPL",
   "dependencies": [
     "RestWebsite"

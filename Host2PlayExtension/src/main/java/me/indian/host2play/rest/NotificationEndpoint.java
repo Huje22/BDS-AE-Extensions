@@ -32,37 +32,53 @@ public class NotificationEndpoint extends HttpHandler {
     @Override
     public void handle(final Javalin app) {
         app.post(this.extension.getNotificationEndpoint(), ctx -> {
-            final String requestBody = ctx.body();
-            final Notification notification = GsonUtil.getGson().fromJson(requestBody, Notification.class);
-            final PaymentGet paymentInfo = RequestUtil.getPayment(notification.data().paymentId());
+            try {
+                final String requestBody = ctx.body();
+                this.logger.debug(requestBody);
+                final Notification notification = GsonUtil.getGson().fromJson(requestBody, Notification.class);
 
-            if (paymentInfo == null) {
-                this.logger.error("&cNie udało się przetworzyć płatności:&b " + requestBody.replaceAll("\n", ""));
-                return;
-            }
+                if (notification == null) {
+                    this.logger.error("&cNie udało się przetworzyć płatności:&b " + requestBody.replaceAll("\n", "") + "&c od IP:&b " + ctx.ip());
+                    return;
+                }
 
-            final PaymentSubData paymentData = paymentInfo.data();
-            final String playerName = this.donationCommand.getBuyerName(notification.data().paymentId());
+                final PaymentGet paymentInfo = RequestUtil.getPayment(notification.paymentId());
 
-            if (playerName != null) {
-                this.extension.getBdsAutoEnable().getServerProcess().tellrawToAllAndLogger("",
-                        "&aGracz &l" + playerName + "&r&a zasponsorował server, pięniędzmi o wysokości:&b " + paymentData.amount() + "&e PLN", LogState.INFO);
-                this.sendDiscordAlert(playerName,
-                        "Gracz **" + playerName + "** zasponsorował server, pięniędzmi o wysokości: **" + paymentData.amount() + "** PLN", paymentData);
-            } else {
-                this.extension.getBdsAutoEnable().getServerProcess().tellrawToAllAndLogger("",
-                        "&aUżytkownik z emilem &l" + paymentData.customerEmail() + "&r&a zasponsorował server, pięniędzmi o wysokości:&b " + paymentData.amount() + "&e PLN",
-                        LogState.INFO);
-                this.sendDiscordAlert("",
-                        "Użytkownik z emilem **" + paymentData.customerEmail() + "** zasponsorował server, pięniędzmi o wysokości: **" + paymentData.amount() + "** PLN",
-                        paymentData
-                );
+                if (paymentInfo == null) {
+                    this.logger.error("&cNie udało się przetworzyć płatności:&b " + requestBody.replaceAll("\n", "") + "&c od IP:&b " + ctx.ip());
+                    return;
+                }
+
+                final PaymentSubData paymentData = paymentInfo.data();
+                if (paymentData == null) {
+                    this.logger.error("&cNie udało się przetworzyć płatności:&b " + requestBody.replaceAll("\n", "") + "&c od IP:&b " + ctx.ip());
+                    return;
+                }
+
+                final String playerName = this.donationCommand.getBuyerName(notification.paymentId());
+
+                if (playerName != null) {
+                    this.extension.getBdsAutoEnable().getServerProcess().tellrawToAllAndLogger("",
+                            "&aGracz &l" + playerName + "&r&a zasponsorował server, pięniędzmi o wysokości:&b " + paymentData.amount() + "&e PLN", LogState.INFO);
+                    this.sendDiscordAlert(playerName,
+                            "Gracz **" + playerName + "** zasponsorował server, pięniędzmi o wysokości: **" + paymentData.amount() + "** PLN", paymentData);
+                } else {
+                    this.extension.getBdsAutoEnable().getServerProcess().tellrawToAllAndLogger("",
+                            "&aUżytkownik z emilem &b" + paymentData.customerEmail() + "&r&a zasponsorował server, pięniędzmi o wysokości:&b " + paymentData.amount() + "&e PLN",
+                            LogState.INFO);
+                    this.sendDiscordAlert("",
+                            "Użytkownik z emilem **" + paymentData.customerEmail() + "** zasponsorował server, pięniędzmi o wysokości: **" + paymentData.amount() + "** PLN",
+                            paymentData
+                    );
+                }
+            } catch (final Exception exception) {
+                this.logger.debug("Nie udało się przetworzyć informacji o płatności, wysłało je ip:&b " + ctx.ip(), exception);
             }
         });
     }
 
     private void sendDiscordAlert(final String playerName, final String alert, final PaymentSubData data) {
-        final DiscordExtension discordExtension = this.extension.getDiscordExtension();
+        final DiscordExtension discordExtension = (DiscordExtension) this.extension.getBdsAutoEnable().getExtensionManager().getExtension("DiscordExtension");
         if (discordExtension != null) {
             if (discordExtension.isBotEnabled()) {
                 discordExtension.getDiscordJDA().sendMessage(alert);

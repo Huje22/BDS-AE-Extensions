@@ -106,7 +106,7 @@ public class DonationCommand extends Command {
     }
 
     private void sendLinkToDiscord(final String link, final String playerName) {
-        final DiscordExtension discordExtension = this.extension.getDiscordExtension();
+        final DiscordExtension discordExtension = (DiscordExtension) this.extension.getBdsAutoEnable().getExtensionManager().getExtension("DiscordExtension");
         if (discordExtension != null) {
             if (discordExtension.isBotEnabled()) {
                 final LinkingManager linkingManager = discordExtension.getDiscordJDA().getLinkingManager();
