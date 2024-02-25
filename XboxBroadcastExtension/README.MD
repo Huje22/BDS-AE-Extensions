@@ -1,5 +1,5 @@
 > [!IMPORTANT]
-> Tak jak twórcy, tak i my, nie ponosimy odpowiedzialności za ewentualne szkody wynikłe z korzystania z tego oprogramowania. Prosimy o dokładne przeczytanie całego [README](https://github.com/rtm516/MCXboxBroadcast?tab=readme-ov-file#disclaimer) projektu <br>
+> Tak jak twórcy, tak i my, nie ponosimy odpowiedzialności za ewentualne szkody wynikłe z korzystania z tego oprogramowania. Prosimy o dokładne przeczytanie całego [README](https://github.com/rtm516/MCXboxBroadcast?tab=readme-ov-file#disclaimer) oryginalnego projektu <br>
 >
 > Używanie tego rozszerzenia będzie naliczać ci czas gry w `Minecraft For Android`!
 
