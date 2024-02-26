@@ -1,5 +1,7 @@
 package me.indian.discord.listener;
 
+import java.util.HashMap;
+import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerChatEvent;
@@ -7,7 +9,9 @@ import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.MessagesConfig;
 import me.indian.discord.config.sub.LinkingConfig;
@@ -20,32 +24,42 @@ import net.dv8tion.jda.api.entities.Role;
 public class PlayerEventListener extends Listener {
 
     private final BDSAutoEnable bdsAutoEnable;
+    private final ServerProcess serverProcess;
     private final MessagesConfig messagesConfig;
     private final DiscordJDA discordJDA;
     private final LinkingManager linkingManager;
     private final LinkingConfig linkingConfig;
+    private final Map<String, String> cachedPrefixes;
 
     public PlayerEventListener(final DiscordExtension discordExtension) {
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
+        this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.messagesConfig = discordExtension.getMessagesConfig();
         this.discordJDA = discordExtension.getDiscordJDA();
         this.linkingManager = this.discordJDA.getLinkingManager();
         this.linkingConfig = discordExtension.getConfig().getBotConfig().getLinkingConfig();
+        this.cachedPrefixes = new HashMap<>();
     }
 
     @Override
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        this.discordJDA.sendJoinMessage(event.getPlayerName());
-    }
+        final String playerName = event.getPlayerName();
+        this.discordJDA.sendJoinMessage(playerName);
 
-//    @Override
-//    public void onPlayerSpawn(final PlayerSpawnEvent event) {
-//
-//    }
+        if (this.linkingManager.isLinked(playerName)) {
+            final Member member = this.linkingManager.getMember(playerName);
+            if (member != null) {
+                final String prefix = this.getRole(member);
+                this.setPlayerPrefix(playerName, prefix);
+            }
+        }
+    }
 
     @Override
     public void onPlayerQuit(final PlayerQuitEvent event) {
-        this.discordJDA.sendLeaveMessage(event.getPlayerName());
+        final String playerName = event.getPlayerName();
+        this.discordJDA.sendLeaveMessage(playerName);
+        this.cachedPrefixes.remove(playerName);
     }
 
     @Override
@@ -70,6 +84,7 @@ public class PlayerEventListener extends Listener {
             if (member != null) {
                 memberMutedOnDiscord = member.isTimedOut();
                 role = this.getRole(member);
+                this.setPlayerPrefix(playerName, role);
             }
         }
 
@@ -104,6 +119,22 @@ public class PlayerEventListener extends Listener {
     public void onPlayerDeath(final PlayerDeathEvent event) {
         this.discordJDA.sendDeathMessage(event.getPlayerName(), event.getDeathMessage(),
                 event.getKillerName(), event.getUsedItemName());
+    }
+
+    private void setPlayerPrefix(final String playerName, final String prefix) {
+        if(!this.messagesConfig.isShowInName()) return;
+        final String cachedPrefix = this.cachedPrefixes.get(playerName);
+
+        if (cachedPrefix != null) {
+            if (!cachedPrefix.equals(prefix)) {
+                this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
+                this.cachedPrefixes.put(playerName, prefix);
+            }
+        } else {
+            this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
+            this.cachedPrefixes.put(playerName, prefix);
+        }
+
     }
 
     private String getRole(final Member member) {

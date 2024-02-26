@@ -22,6 +22,10 @@ public class MessagesConfig extends OkaeriConfig {
     private String chatMessageFormat = "&d<role>&r <player> »» <message>";
 
     @Comment({""})
+    @Comment({"Czy pokazywać role gracza w jego nazwie"})
+    private boolean showInName = true;
+
+    @Comment({""})
     @Comment({"Część wyświetlona gdy ktoś odpowie na czyjąś wiadomość"})
     private String replyStatement = " (&dOdpowiada na&a: &a<author> &r»»&b <msg> &r)";
 
@@ -102,6 +106,10 @@ public class MessagesConfig extends OkaeriConfig {
 
     public String getChatMessageFormat() {
         return this.chatMessageFormat;
+    }
+
+    public boolean isShowInName() {
+        return this.showInName;
     }
 
     public String getReplyStatement() {
