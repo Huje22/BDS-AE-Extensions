@@ -39,12 +39,10 @@ public class XboxBroadcastExtension extends Extension {
         this.sessionManager = new SessionManager(this.cacheLocation, this.service, this.logger);
         this.sessionInfo = this.config.getSession().getSessionInfo();
 
-
         this.updateSessionInfo(this.sessionInfo);
 
         final CommandManager commandManager = this.bdsAutoEnable.getCommandManager();
         commandManager.registerCommand(new XboxBroadcastCommand(this), this);
-
 
         this.service.execute(() -> {
             try {
@@ -58,7 +56,6 @@ public class XboxBroadcastExtension extends Extension {
     @Override
     public void onDisable() {
         this.sessionManager.shutdown();
-        if (this.config != null) this.config.save();
     }
 
     public void restart() {
