@@ -14,11 +14,11 @@ public class FriendSyncConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy powinniśmy automatycznie obserwować osoby, które nas obserwują"})
-    private boolean autoFollow = false;
+    private boolean autoFollow = true;
 
     @Comment({""})
     @Comment({"Czy powinniśmy automatycznie przestawać obserwować osoby, które nas już nie obserwują"})
-    private boolean autoUnfollow = false;
+    private boolean autoUnfollow = true;
 
 
     public int getUpdateInterval() {
