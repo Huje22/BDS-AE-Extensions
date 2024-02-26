@@ -122,6 +122,8 @@ public class PlayerEventListener extends Listener {
     }
 
     private void setPlayerPrefix(final String playerName, final String prefix) {
+        //TODO: Dodać boolean "czy uzywac ikon jeśli to możliwe"
+
         if(!this.messagesConfig.isShowInName()) return;
         final String cachedPrefix = this.cachedPrefixes.get(playerName);
 
