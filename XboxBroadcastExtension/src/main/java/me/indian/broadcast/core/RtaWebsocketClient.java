@@ -1,12 +1,11 @@
 package me.indian.broadcast.core;
 
 
+import java.util.Map;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
-
-import java.util.Map;
 
 /**
  * Handle the connection and authentication with the RTA websocket
@@ -80,7 +79,7 @@ public class RtaWebsocketClient extends WebSocketClient {
      * @see WebSocketClient#onError(Exception)
      **/
     @Override
-    public void onError(final Exception ex) {
-        this.logger.debug("Websocket error: " + ex.getMessage());
+    public void onError(final Exception exception) {
+        this.logger.debug("Websocket error: " + exception.getMessage());
     }
 }

@@ -113,8 +113,8 @@ public abstract class SessionManagerCore {
         } else {
             try {
                 return this.liveTokenManager.authDeviceCode().get();
-            } catch (final InterruptedException | ExecutionException e) {
-                this.logger.error("Failed to get authentication token from device code", e);
+            } catch (final InterruptedException | ExecutionException exception) {
+                this.logger.error("Failed to get authentication token from device code", exception);
                 return "";
             }
         }
@@ -169,8 +169,8 @@ public abstract class SessionManagerCore {
             this.logger.info("Oczekiwanie na przetworzenie przyjaźni...");
             try {
                 Thread.sleep(5000); // TODO Do a real callback not just wait
-            } catch (final InterruptedException e) {
-                this.logger.error("Nie udało się poczekać na przetworzenie przyjaźni", e);
+            } catch (final InterruptedException exception) {
+                this.logger.error("Nie udało się poczekać na przetworzenie przyjaźni", exception);
             }
         }
 
@@ -220,8 +220,8 @@ public abstract class SessionManagerCore {
 
                 // Update the current session connection ID
                 this.sessionInfo.setConnectionId(connectionId);
-            } catch (final InterruptedException | ExecutionException e) {
-                throw new SessionCreationException("Nie można uzyskać identyfikatora połączenia dla sesji: " + e.getMessage());
+            } catch (final InterruptedException | ExecutionException exception) {
+                throw new SessionCreationException("Nie można uzyskać identyfikatora połączenia dla sesji: " + exception.getMessage());
             }
         }
 
@@ -249,8 +249,8 @@ public abstract class SessionManagerCore {
                     .header("x-xbl-contract-version", "107")
                     .POST(HttpRequest.BodyPublishers.ofString(Constants.OBJECT_MAPPER.writeValueAsString(createHandleContent)))
                     .build();
-        } catch (final JsonProcessingException e) {
-            throw new SessionCreationException("Unable to create session handle, error parsing json: " + e.getMessage());
+        } catch (final JsonProcessingException exception) {
+            throw new SessionCreationException("Unable to create session handle, error parsing json: " + exception.getMessage());
         }
 
         // Read the handle response
@@ -261,8 +261,8 @@ public abstract class SessionManagerCore {
                 final CreateHandleResponse parsedResponse = Constants.OBJECT_MAPPER.readValue(createHandleResponse.body(), CreateHandleResponse.class);
                 this.sessionInfo.setHandleId(parsedResponse.id());
             }
-        } catch (final IOException | InterruptedException e) {
-            throw new SessionCreationException(e.getMessage());
+        } catch (final IOException | InterruptedException exception) {
+            throw new SessionCreationException(exception.getMessage());
         }
 
         this.lastSessionResponse = createHandleResponse.body();
@@ -299,15 +299,15 @@ public abstract class SessionManagerCore {
                     .header("x-xbl-contract-version", "107")
                     .PUT(HttpRequest.BodyPublishers.ofString(Constants.OBJECT_MAPPER.writeValueAsString(data)))
                     .build();
-        } catch (final JsonProcessingException e) {
-            throw new SessionUpdateException("Nie można zaktualizować informacji o sesji, błąd podczas analizy JSON: " + e.getMessage());
+        } catch (final JsonProcessingException exception) {
+            throw new SessionUpdateException("Nie można zaktualizować informacji o sesji, błąd podczas analizy JSON: " + exception.getMessage());
         }
 
         final HttpResponse<String> createSessionResponse;
         try {
             createSessionResponse = this.httpClient.send(createSessionRequest, HttpResponse.BodyHandlers.ofString());
-        } catch (final IOException | InterruptedException e) {
-            throw new SessionUpdateException(e.getMessage());
+        } catch (final IOException | InterruptedException exception) {
+            throw new SessionUpdateException(exception.getMessage());
         }
 
         if (createSessionResponse.statusCode() != 200 && createSessionResponse.statusCode() != 201) {
@@ -328,8 +328,8 @@ public abstract class SessionManagerCore {
                 this.logger.info("Utracono połączenie z websocketem, ponowne tworzenie sesji...");
                 this.createSession();
                 this.logger.info("Połączono ponownie!");
-            } catch (final SessionCreationException | SessionUpdateException e) {
-                this.logger.error("Sesja jest martwa i wystąpił wyjątek, próbując ją odtworzyć", e);
+            } catch (final SessionCreationException | SessionUpdateException exception) {
+                this.logger.error("Sesja jest martwa i wystąpił wyjątek, próbując ją odtworzyć", exception);
             }
         }
     }
@@ -405,12 +405,12 @@ public abstract class SessionManagerCore {
                 // Read X-Heartbeat-After header to get the next time we should update presence
                 try {
                     heartbeatAfter = Integer.parseInt(updatePresenceResponse.headers().firstValue("X-Heartbeat-After").orElse("300"));
-                } catch (final NumberFormatException e) {
+                } catch (final NumberFormatException exception) {
                     this.logger.debug("Failed to parse heartbeat after header, using default of 300");
                 }
             }
-        } catch (final IOException | InterruptedException e) {
-            this.logger.error("Failed to update presence", e);
+        } catch (final IOException | InterruptedException exception) {
+            this.logger.error("Failed to update presence", exception);
         }
 
         // Schedule the next presence update
@@ -434,8 +434,8 @@ public abstract class SessionManagerCore {
 
         try {
             return Constants.OBJECT_MAPPER.readValue(this.httpClient.send(socialSummaryRequest, HttpResponse.BodyHandlers.ofString()).body(), SocialSummaryResponse.class);
-        } catch (final IOException | InterruptedException e) {
-            this.logger.error("Unable to get current friend count", e);
+        } catch (final IOException | InterruptedException exception) {
+            this.logger.error("Unable to get current friend count", exception);
         }
 
         return new SocialSummaryResponse(-1, -1, false, false, false, false, "", -1, -1, "");

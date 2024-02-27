@@ -60,8 +60,8 @@ public class LiveTokenManager {
         if (!valid) {
             try {
                 this.refreshToken();
-            } catch (final Exception e) {
-                this.logger.error("Nie udało się odświeżyć tokena&b Xbox Live", e);
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się odświeżyć tokena&b Xbox Live", exception);
                 return false;
             }
         }
@@ -75,8 +75,8 @@ public class LiveTokenManager {
     public void clearTokenCache() {
         try {
             Files.deleteIfExists(this.cache);
-        } catch (final IOException e) {
-            this.logger.error("Failed to delete Live token cache", e);
+        } catch (final IOException exception) {
+            this.logger.error("Failed to delete Live token cache", exception);
         }
     }
 
@@ -181,8 +181,8 @@ public class LiveTokenManager {
                         completableFuture.complete(tokenResponse.access_token);
                         break;
                     }
-                } catch (final Exception e) {
-                    completableFuture.completeExceptionally(e);
+                } catch (final Exception exception) {
+                    completableFuture.completeExceptionally(exception);
                 }
             }
 
@@ -205,7 +205,7 @@ public class LiveTokenManager {
     private LiveTokenCache getCache() {
         try {
             return GsonUtil.getGson().fromJson(Files.readString(this.cache), LiveTokenCache.class);
-        } catch (final IOException e) {
+        } catch (final IOException exception) {
             return new LiveTokenCache();
         }
     }
@@ -218,8 +218,8 @@ public class LiveTokenManager {
     private void updateCache(final LiveTokenResponse tokenResponse) {
         try (final FileWriter writer = new FileWriter(this.cache.toString(), StandardCharsets.UTF_8)) {
             Constants.OBJECT_MAPPER.writeValue(writer, new LiveTokenCache(System.currentTimeMillis(), tokenResponse));
-        } catch (final IOException e) {
-            this.logger.error("Failed to update Live token cache", e);
+        } catch (final IOException exception) {
+            this.logger.error("Failed to update Live token cache", exception);
         }
     }
 }

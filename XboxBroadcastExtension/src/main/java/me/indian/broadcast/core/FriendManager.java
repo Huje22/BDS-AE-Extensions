@@ -1,12 +1,5 @@
 package me.indian.broadcast.core;
 
-import me.indian.bds.logger.Logger;
-import me.indian.broadcast.config.FriendSyncConfig;
-import me.indian.broadcast.core.exceptions.XboxFriendsException;
-import me.indian.broadcast.core.models.FriendModifyResponse;
-import me.indian.broadcast.core.models.FriendStatusResponse;
-import me.indian.broadcast.core.models.session.FollowerResponse;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -19,6 +12,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.logger.Logger;
+import me.indian.broadcast.config.FriendSyncConfig;
+import me.indian.broadcast.core.exceptions.XboxFriendsException;
+import me.indian.broadcast.core.models.FriendModifyResponse;
+import me.indian.broadcast.core.models.FriendStatusResponse;
+import me.indian.broadcast.core.models.session.FollowerResponse;
 
 public class FriendManager {
     private final HttpClient httpClient;
@@ -73,9 +72,9 @@ public class FriendManager {
                     people.add(person);
                 }
             }
-        } catch (final IOException | InterruptedException e) {
+        } catch (final IOException | InterruptedException exception) {
             this.logger.debug("Follower request response: " + lastResponse);
-            throw new XboxFriendsException(e.getMessage());
+            throw new XboxFriendsException(exception);
         }
 
         if (includeFollowedBy) {
@@ -100,9 +99,9 @@ public class FriendManager {
                         people.add(person);
                     }
                 }
-            } catch (final IOException | InterruptedException e) {
+            } catch (final IOException | InterruptedException exception) {
                 this.logger.debug("Social request response: " + lastResponse);
-                throw new XboxFriendsException(e.getMessage());
+                throw new XboxFriendsException(exception);
             }
         }
 
@@ -160,9 +159,9 @@ public class FriendManager {
             if (modifyResponse.isFollowingCaller() && modifyResponse.isFollowedByCaller()) {
                 return false;
             }
-        } catch (final InterruptedException | IOException e) {
+        } catch (final InterruptedException | IOException exception) {
             // Debug log it failed and assume we aren't friends
-            this.logger.debug("Failed to check if " + gamertag + " (" + xuid + ") is a friend: " + e.getMessage());
+            this.logger.debug("Failed to check if " + gamertag + " (" + xuid + ") is a friend: ", exception);
         }
 
         this.add(xuid, gamertag);
@@ -212,8 +211,8 @@ public class FriendManager {
                             this.remove(person.xuid, person.displayName);
                         }
                     }
-                } catch (final XboxFriendsException e) {
-                    this.logger.error("Failed to sync friends", e);
+                } catch (final XboxFriendsException exception) {
+                    this.logger.error("Failed to sync friends", exception);
                 }
             }, friendSyncConfig.getUpdateInterval(), friendSyncConfig.getUpdateInterval(), TimeUnit.SECONDS);
         }
@@ -234,7 +233,7 @@ public class FriendManager {
     private boolean isSubAccount(final String xuid) {
         try {
             return this.isSubAccount(Long.parseLong(xuid));
-        } catch (final NumberFormatException e) {
+        } catch (final NumberFormatException exception) {
             return false;
         }
     }
@@ -310,14 +309,14 @@ public class FriendManager {
                                     this.toAdd.remove(entry.getKey());
                                     // TODO Remove these people from following us (block and unblock)
                                 }
-                            } catch (final IOException e) {
+                            } catch (final IOException exception) {
                                 // Ignore this error as it is just a fallback
                             }
 
                             this.logger.warning("Failed to add " + entry.getValue() + " (" + entry.getKey() + ") as a friend: (" + response.statusCode() + ") " + response.body());
                         }
-                    } catch (final IOException | InterruptedException e) {
-                        this.logger.error("Failed to add " + entry.getValue() + " (" + entry.getKey() + ") as a friend: " + e.getMessage());
+                    } catch (final IOException | InterruptedException exception) {
+                        this.logger.error("Failed to add " + entry.getValue() + " (" + entry.getKey() + ") as a friend: ", exception);
                         break;
                     }
                 }
@@ -359,8 +358,8 @@ public class FriendManager {
                         } else {
                             this.logger.warning("Failed to remove " + entry.getValue() + " (" + entry.getKey() + ") as a friend: (" + response.statusCode() + ") " + response.body());
                         }
-                    } catch (final IOException | InterruptedException e) {
-                        this.logger.error("Failed to remove " + entry.getValue() + " (" + entry.getKey() + ") as a friend: " + e.getMessage());
+                    } catch (final IOException | InterruptedException exception) {
+                        this.logger.error("Failed to remove " + entry.getValue() + " (" + entry.getKey() + ") as a friend: ", exception);
                         break;
                     }
                 }

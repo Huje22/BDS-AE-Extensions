@@ -6,15 +6,6 @@ import com.nimbusds.jose.jwk.Curve;
 import com.nimbusds.jose.jwk.ECKey;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.gen.ECKeyGenerator;
-
-import me.indian.bds.logger.Logger;
-import me.indian.broadcast.core.models.auth.GenericAuthenticationRequest;
-import me.indian.broadcast.core.models.auth.GenericAuthenticationResponse;
-import me.indian.broadcast.core.models.auth.JsonJWK;
-import me.indian.broadcast.core.models.auth.SISUAuthenticationResponse;
-import me.indian.broadcast.core.models.auth.XboxTokenCache;
-import me.indian.broadcast.core.models.auth.XboxTokenInfo;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
@@ -36,6 +27,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import me.indian.bds.logger.Logger;
+import me.indian.broadcast.core.models.auth.GenericAuthenticationRequest;
+import me.indian.broadcast.core.models.auth.GenericAuthenticationResponse;
+import me.indian.broadcast.core.models.auth.JsonJWK;
+import me.indian.broadcast.core.models.auth.SISUAuthenticationResponse;
+import me.indian.broadcast.core.models.auth.XboxTokenCache;
+import me.indian.broadcast.core.models.auth.XboxTokenInfo;
 
 /**
  * Handle authentication against Xbox servers and caching of the received tokens
@@ -64,8 +62,8 @@ public class XboxTokenManager {
                     .keyUse(KeyUse.SIGNATURE)
                     .algorithm(JWSAlgorithm.ES256)
                     .generate();
-        } catch (final JOSEException e) {
-            logger.error("Failed to setup xbox jwk", e);
+        } catch (final JOSEException exception) {
+            logger.error("Failed to setup xbox jwk", exception);
         }
         this.jwk = jwk;
     }
@@ -135,8 +133,8 @@ public class XboxTokenManager {
             final GenericAuthenticationResponse tokenResponse = Constants.OBJECT_MAPPER.readValue(this.httpClient.send(authRequest, HttpResponse.BodyHandlers.ofString()).body(), GenericAuthenticationResponse.class);
 
             return tokenResponse.Token;
-        } catch (final IOException | InterruptedException e) {
-            this.logger.error("Failed to get device authentication token", e);
+        } catch (final IOException | InterruptedException exception) {
+            this.logger.error("Failed to get device authentication token", exception);
             return null;
         }
     }
@@ -189,8 +187,8 @@ public class XboxTokenManager {
             this.updateCache(new XboxTokenCache(xboxTokenInfo));
 
             return xboxTokenInfo;
-        } catch (final IOException | InterruptedException e) {
-            this.logger.error("Failed to get XSTS authentication token", e);
+        } catch (final IOException | InterruptedException exception) {
+            this.logger.error("Failed to get XSTS authentication token", exception);
             return null;
         }
     }
@@ -231,8 +229,8 @@ public class XboxTokenManager {
             final SISUAuthenticationResponse tokenResponse = Constants.OBJECT_MAPPER.readValue(this.httpClient.send(authRequest, HttpResponse.BodyHandlers.ofString()).body(), SISUAuthenticationResponse.class);
 
             return tokenResponse;
-        } catch (final IOException | InterruptedException e) {
-            this.logger.error("Failed to get SISU authentication token", e);
+        } catch (final IOException | InterruptedException exception) {
+            this.logger.error("Failed to get SISU authentication token", exception);
             return null;
         }
     }
@@ -290,8 +288,8 @@ public class XboxTokenManager {
 
             // Encode the final data as base64 and return
             return Base64.getEncoder().encodeToString(arrFinal);
-        } catch (final NoSuchAlgorithmException | JOSEException | InvalidKeyException | SignatureException e) {
-            this.logger.error("Failed to get create signature for message", e);
+        } catch (final NoSuchAlgorithmException | JOSEException | InvalidKeyException | SignatureException exception) {
+            this.logger.error("Failed to get create signature for message", exception);
         }
 
         return null;
@@ -305,7 +303,7 @@ public class XboxTokenManager {
     private XboxTokenCache getCache() {
         try {
             return Constants.OBJECT_MAPPER.readValue(Files.readString(this.cache), XboxTokenCache.class);
-        } catch (final IOException e) {
+        } catch (final IOException exception) {
             return new XboxTokenCache();
         }
     }
@@ -318,8 +316,8 @@ public class XboxTokenManager {
     private void updateCache(final XboxTokenCache updatedCache) {
         try (final FileWriter writer = new FileWriter(this.cache.toString(), StandardCharsets.UTF_8)) {
             Constants.OBJECT_MAPPER.writeValue(writer, updatedCache);
-        } catch (final IOException e) {
-            this.logger.error("Failed to update xbox token cache", e);
+        } catch (final IOException exception) {
+            this.logger.error("Failed to update xbox token cache", exception);
         }
     }
 }

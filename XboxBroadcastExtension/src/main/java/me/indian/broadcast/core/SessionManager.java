@@ -96,8 +96,8 @@ public class SessionManager extends SessionManagerCore {
                 subSessionManager.init();
                 subSessionManager.friendManager().initAutoFriend(friendSyncConfig);
                 this.subSessionManagers.put(subSession, subSessionManager);
-            } catch (final Exception e) {
-                this.logger.error("Nie udało się utworzyć sesji podrzędnej&b " + subSession, e);
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się utworzyć sesji podrzędnej&b " + subSession, exception);
                 // TODO Retry creation after 30s or so
             }
         }
@@ -135,8 +135,8 @@ public class SessionManager extends SessionManagerCore {
                 this.logger.info("Restartowanie sesji z powodu " + players + "/30 graczy");
                 this.restart();
             }
-        } catch (final JsonProcessingException e) {
-            this.logger.error("Nie udało się przeanalizować odpowiedzi sesji ", e);
+        } catch (final JsonProcessingException exception) {
+            this.logger.error("Nie udało się przeanalizować odpowiedzi sesji ", exception);
         }
     }
 
@@ -173,8 +173,8 @@ public class SessionManager extends SessionManagerCore {
                 subSessionManager.init();
                 subSessionManager.friendManager().initAutoFriend(this.friendSyncConfig);
                 this.subSessionManagers.put(id, subSessionManager);
-            } catch (final Exception e) {
-                this.logger.error("Nie udało się utworzyć sesji podrzędnej", e);
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się utworzyć sesji podrzędnej", exception);
                 return;
             }
 
@@ -208,15 +208,15 @@ public class SessionManager extends SessionManagerCore {
             files.map(Path::toFile)
                     .forEach(File::delete);
             Paths.get(this.cache, id).toFile().delete();
-        } catch (final IOException e) {
-            this.logger.error("Nie udało się usunąć folderu pamięci podręcznej sesji podrzędnej", e);
+        } catch (final IOException exception) {
+            this.logger.error("Nie udało się usunąć folderu pamięci podręcznej sesji podrzędnej", exception);
         }
 
         // Update the list of sub-sessions
         try {
             Files.write(Paths.get(this.cache, "sub_sessions.json"), Constants.OBJECT_MAPPER.writeValueAsBytes(this.subSessionManagers.keySet()));
-        } catch (final IOException e) {
-            this.logger.error("Nie udało się zaktualizować listy podsesji", e);
+        } catch (final IOException exception) {
+            this.logger.error("Nie udało się zaktualizować listy podsesji", exception);
         }
 
         this.logger.info("Usunięto podsesję z identyfikatorem:&b " + id);
