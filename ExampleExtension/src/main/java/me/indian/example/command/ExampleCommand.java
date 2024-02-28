@@ -1,12 +1,11 @@
 package me.indian.example.command;
 
+import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.server.manager.stats.StatsManager;
+import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
 import me.indian.example.ExampleExtension;
-
-import java.util.List;
 
 public class ExampleCommand extends Command {
 

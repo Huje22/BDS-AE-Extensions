@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
 import io.javalin.Javalin;
 import java.net.HttpURLConnection;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.server.manager.ServerManager;
+import me.indian.bds.server.ServerManager;
 import me.indian.bds.util.GsonUtil;
 import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
