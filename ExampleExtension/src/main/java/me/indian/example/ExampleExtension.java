@@ -34,7 +34,7 @@ public class ExampleExtension extends Extension {
 
         //Tworzenie mało zawansowanych listenerów
         final EventManager eventManager = bdsAutoEnable.getEventManager();
-        eventManager.registerListener(new ServerListener(), this);
+        eventManager.registerListener(new ServerListener(this), this);
 
         //Wysyłanie komend do konsoli servera z wiadomoscią z config
         bdsAutoEnable.getServerProcess().sendToConsole("say " + this.config.getSubConfig().getCos());

@@ -5,9 +5,15 @@ import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
+import me.indian.example.ExampleExtension;
 
 public class ServerListener extends Listener {
 
+    private final ExampleExtension extension;
+
+    public ServerListener(final ExampleExtension extension) {
+        this.extension = extension;
+    }
 
     @Override
     public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
@@ -23,11 +29,11 @@ public class ServerListener extends Listener {
 
     @Override
     public void onServerStart(final ServerStartEvent event) {
-        System.out.println("Włączono server");
+        this.extension.getLogger().info("Włączono server");
     }
 
     @Override
     public void onTpsChange(final TPSChangeEvent event) {
-
+     //Wykonuje akcje gdy TPS ulegną wypisaniu w konsoli
     }
 }
