@@ -16,7 +16,7 @@ pokazane poniżej
     <dependency>
         <groupId>me.indian.bds</groupId>
         <artifactId>BDS-Auto-Enable</artifactId>
-        <version>1.0</version>
+        <version>0.0.1</version>
         <scope>system</scope>
         <systemPath>${project.basedir}/libs/BDS-Auto-Enable-0.0.1.jar</systemPath>
     </dependency>
