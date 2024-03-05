@@ -226,13 +226,21 @@ public class DiscordJDA {
     }
 
     public void sendPrivateMessage(final User user, final String message) {
-       if (user.isBot()) return;
-        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
+        try {
+            if (user.isBot()) return;
+            user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
+        } catch (final Exception exception) {
+            this.logger.debug("Nie udało się wysłać wiadomości do&b " + user.getName(), exception);
+        }
     }
 
     public void sendPrivateMessage(final User user, final MessageEmbed embed) {
-        if (user.isBot()) return;
-        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessageEmbeds(embed).queue());
+        try {
+            if (user.isBot()) return;
+            user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessageEmbeds(embed).queue());
+        } catch (final Exception exception) {
+            this.logger.debug("Nie udało się wysłać wiadomości do&b " + user.getName(), exception);
+        }
     }
 
     public void mute(final Member member, final long amount, final TimeUnit timeUnit) {
