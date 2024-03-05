@@ -32,8 +32,6 @@ Czat `Discord <-> Minecraft` i nie tylko
 * I dalej wypełniasz Config danymi informacjami, czym jest co znajdziesz opis w komentarzach `#`
 * Jak nie wiesz jak skopiować id kanału to tu
   znajdziesz [poradniki](https://www.google.com/amp/s/pl.jugomobile.com/jak-znalezc-identyfikator-serwera-w-discord-na-komputerze-pc-lub-smartfonie/%3famp)<br>
-    * Możesz także używać konsoli na discord , zajrzyj do `Log.yml` aby dowiedzieć się więcej o dostępnych tam
-      wiadomościach
 * Aby bot działał poprawnie będziesz musiał włączyć wszystkie <br>
   `Privileged Gateway Intents`: <br>
     * MESSAGE CONTENT INTENT
