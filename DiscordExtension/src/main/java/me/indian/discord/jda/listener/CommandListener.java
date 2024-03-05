@@ -285,6 +285,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
 
                     case "allowlist" -> {
+                        //TODO: Dodać permisie 
                         final AllowlistManager allowlistManager = this.bdsAutoEnable.getAllowlistManager();
                         final OptionMapping addOption = event.getOption("add");
                         final OptionMapping removeOption = event.getOption("remove");
