@@ -45,14 +45,7 @@ public class PlayerEventListener extends Listener {
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final String playerName = event.getPlayerName();
         this.discordJDA.sendJoinMessage(playerName);
-
-        if (this.linkingManager.isLinked(playerName)) {
-            final Member member = this.linkingManager.getMember(playerName);
-            if (member != null) {
-                final String prefix = this.getRole(member);
-                this.setPlayerPrefix(playerName, prefix);
-            }
-        }
+        this.setPlayerPrefix(playerName);
     }
 
     @Override
@@ -83,8 +76,8 @@ public class PlayerEventListener extends Listener {
             final Member member = this.linkingManager.getMember(playerName);
             if (member != null) {
                 memberMutedOnDiscord = member.isTimedOut();
-                role = this.getRole(member);
-                this.setPlayerPrefix(playerName, role);
+                role = this.getRole(member, this.linkingConfig.isUseCustomRolesInChat());
+                this.setPlayerPrefix(playerName);
             }
         }
 
@@ -121,28 +114,34 @@ public class PlayerEventListener extends Listener {
                 event.getKillerName(), event.getUsedItemName());
     }
 
-    private void setPlayerPrefix(final String playerName, final String prefix) {
-        //TODO: Dodać boolean "czy uzywac ikon jeśli to możliwe"
+    private void setPlayerPrefix(final String playerName) {
+        if (this.linkingManager.isLinked(playerName)) {
+            final Member member = this.linkingManager.getMember(playerName);
+            if (member != null) {
 
-        if(!this.messagesConfig.isShowInName()) return;
-        final String cachedPrefix = this.cachedPrefixes.get(playerName);
+                if (!this.messagesConfig.isShowInName()) return;
+                final String cachedPrefix = this.cachedPrefixes.get(playerName);
+                final String prefix = this.getRole(member, this.linkingConfig.isUseCustomRolesInName());
 
-        if (cachedPrefix != null) {
-            if (!cachedPrefix.equals(prefix)) {
-                this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
-                this.cachedPrefixes.put(playerName, prefix);
+                this.getRole(member, this.linkingConfig.isUseCustomRolesInName());
+
+                if (cachedPrefix != null) {
+                    if (!cachedPrefix.equals(prefix)) {
+                        this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
+                        this.cachedPrefixes.put(playerName, prefix);
+                    }
+                } else {
+                    this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
+                    this.cachedPrefixes.put(playerName, prefix);
+                }
             }
-        } else {
-            this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
-            this.cachedPrefixes.put(playerName, prefix);
         }
-
     }
 
-    private String getRole(final Member member) {
+    private String getRole(final Member member, final boolean customRole) {
         final Role highestRole = this.discordJDA.getHighestRole(member.getIdLong());
         if (highestRole != null) {
-            if (this.linkingConfig.isUseCustomRoles()) {
+            if (customRole) {
                 final long highestAllowedID = this.getHighestFromAllowed(member);
 
                 if (!this.linkingConfig.isOnlyCustomRoles()) {
@@ -153,6 +152,8 @@ public class PlayerEventListener extends Listener {
 
                 final String roleIcon = this.getRoleIcon(highestAllowedID);
                 return roleIcon == null ? "" : roleIcon;
+            } else {
+                return this.discordJDA.getColoredRole(highestRole);
             }
         }
         return "";

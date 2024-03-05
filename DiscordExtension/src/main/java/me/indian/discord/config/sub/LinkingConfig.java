@@ -35,8 +35,12 @@ public class LinkingConfig extends OkaeriConfig {
     private Map<Long, String> customRoles = new LinkedHashMap<>();
 
     @Comment({""})
-    @Comment({"Czy używać custom roli"})
-    private boolean useCustomRoles = true;
+    @Comment({"Czy używać custom roli na czacie"})
+    private boolean useCustomRolesInChat = false;
+
+    @Comment({""})
+    @Comment({"Czy używać custom roli w nazwie"})
+    private boolean useCustomRolesInName = true;
 
     @Comment({""})
     @Comment({"Czy używać tylko custom roli"})
@@ -75,8 +79,12 @@ public class LinkingConfig extends OkaeriConfig {
         return this.customRoles;
     }
 
-    public boolean isUseCustomRoles() {
-        return this.useCustomRoles;
+    public boolean isUseCustomRolesInChat() {
+        return this.useCustomRolesInChat;
+    }
+
+    public boolean isUseCustomRolesInName() {
+        return this.useCustomRolesInName;
     }
 
     public boolean isOnlyCustomRoles() {
