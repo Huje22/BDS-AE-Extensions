@@ -323,6 +323,7 @@ public class DiscordJDA {
 
     public void setBotActivityStatus(final String activityMessage, @Nullable final Activity.ActivityType activityType) {
         this.botConfig.setActivityMessage(activityMessage);
+        this.discordConfig.load();
         if (activityType != null) this.botConfig.setActivity(activityType);
         this.discordConfig.save();
         this.jda.getPresence().setActivity(DiscordJDA.this.getCustomActivity());

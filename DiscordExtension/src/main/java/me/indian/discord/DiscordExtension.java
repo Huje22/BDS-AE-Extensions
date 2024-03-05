@@ -72,8 +72,6 @@ public class DiscordExtension extends Extension {
     @Override
     public void onDisable() {
         this.startShutdown();
-        if (this.config != null) this.config.save();
-        if(this.messagesConfig != null) this.messagesConfig.save();
         this.shutdown();
     }
 
