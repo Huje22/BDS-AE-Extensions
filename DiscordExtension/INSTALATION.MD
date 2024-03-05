@@ -28,7 +28,7 @@ Czat `Discord <-> Minecraft` i nie tylko
 #### Jak zacząć
 
 * Musisz utworzyć bota, tu
-  znajdziesz [poradnik](https://www.appki.com.pl/jak-stworzyc-bota-discord-i-dodac-go-do-swojego-serwera) <br>
+  znajdziesz [poradnik](https://appmaster.io/pl/blog/discord-bot-jak-go-stworzyc-i-dodac-na-serwer) <br>
 * I dalej wypełniasz Config danymi informacjami, czym jest co znajdziesz opis w komentarzach `#`
 * Jak nie wiesz jak skopiować id kanału to tu
   znajdziesz [poradniki](https://www.google.com/amp/s/pl.jugomobile.com/jak-znalezc-identyfikator-serwera-w-discord-na-komputerze-pc-lub-smartfonie/%3famp)<br>
