@@ -10,13 +10,13 @@ import me.indian.discord.command.LinkCommand;
 import me.indian.discord.command.UnlinkCommand;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.MessagesConfig;
+import me.indian.discord.hook.RestWebsiteHook;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import me.indian.discord.jda.manager.StatsChannelsManager;
 import me.indian.discord.listener.BackupListener;
 import me.indian.discord.listener.PlayerEventListener;
 import me.indian.discord.listener.ServerListener;
-import me.indian.discord.rest.DiscordMessagePostRequest;
 import me.indian.discord.webhook.WebHook;
 import me.indian.rest.RestWebsite;
 import net.dv8tion.jda.api.JDA;
@@ -60,12 +60,14 @@ public class DiscordExtension extends Extension {
             eventManager.registerListener(new ServerListener(this), this);
         }
 
-        final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionManager().getExtension("RestWebsite");
-
-        if (restWebsite != null) {
-            if (restWebsite.isEnabled()) {
-                restWebsite.register(new DiscordMessagePostRequest(this, restWebsite));
+        try {
+            final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionManager().getExtension("RestWebsite");
+            if (restWebsite != null && restWebsite.isEnabled()) {
+                new RestWebsiteHook(this, restWebsite);
+                this.logger.info("Wykryto&b " + restWebsite.getName());
             }
+        } catch (final Exception exception) {
+            this.logger.error("Nie udało się załadować hooka do&b RestWebsite", exception);
         }
     }
 
