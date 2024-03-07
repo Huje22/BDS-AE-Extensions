@@ -3,7 +3,6 @@ package me.indian.discord.rest;
 import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
-import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import java.net.HttpURLConnection;
 import me.indian.bds.logger.Logger;
@@ -41,7 +40,7 @@ public class DiscordMessagePostRequest extends HttpHandler {
     public void handle(final Javalin app) {
         app.post("/discord/message/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            if (!this.isDiscordKey(ctx)) return;
+            if (!APIKeyUtil.isCorrectCustomKey(ctx, this.restAPIConfig.getDiscordKeys())) return;
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();
@@ -86,21 +85,5 @@ public class DiscordMessagePostRequest extends HttpHandler {
             this.logger.debug("&b" + ip + "&r używa poprawnie endpointu&1 DISCORD/MESSAGE");
             ctx.status(HttpURLConnection.HTTP_NO_CONTENT);
         });
-    }
-
-
-    public boolean isDiscordKey(final Context ctx) {
-        if (APIKeyUtil.isPowerfulKey(ctx)) return true;
-        final String apiKey = ctx.pathParam("api-key");
-        final String ip = ctx.ip();
-
-        if (!this.restAPIConfig.getDiscordKeys().contains(apiKey)) {
-            ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
-                    .result(GsonUtil.getGson().toJson("Klucz API " + apiKey + " nie jest obsługiwany"));
-
-            this.logger.debug("&b" + ip + "&r używa niepoprawnego klucza autoryzacji&c " + apiKey);
-            return false;
-        }
-        return true;
     }
 }

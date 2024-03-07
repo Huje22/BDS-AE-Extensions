@@ -90,7 +90,6 @@ public class RestWebsite extends Extension {
 
     @Override
     public void onDisable() {
-        if (this.config != null) this.config.save();
         if (this.app != null) this.app.stop();
     }
 

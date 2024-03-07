@@ -49,12 +49,12 @@ public final class APIKeyUtil {
         CONFIG.save();
     }
 
-    public static boolean isServerKey(final Context ctx) {
+    public static boolean isCorrectCustomKey(final Context ctx, final List<String> keys) {
         if (isPowerfulKey(ctx)) return true;
         final String apiKey = ctx.pathParam("api-key");
         final String ip = ctx.ip();
 
-        if (!CONFIG.getAPIKeys().getServer().contains(apiKey)) {
+        if (!keys.contains(apiKey)) {
             ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
                     .result(GsonUtil.getGson().toJson("Klucz API " + apiKey + " nie jest obsługiwany"));
 
@@ -64,19 +64,13 @@ public final class APIKeyUtil {
         return true;
     }
 
+
+    public static boolean isServerKey(final Context ctx) {
+        return isCorrectCustomKey(ctx, CONFIG.getAPIKeys().getServer());
+    }
+
     public static boolean isBackupKey(final Context ctx) {
-        if (isPowerfulKey(ctx)) return true;
-        final String apiKey = ctx.pathParam("api-key");
-        final String ip = ctx.ip();
-
-        if (!CONFIG.getAPIKeys().getBackup().contains(apiKey)) {
-            ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
-                    .result(GsonUtil.getGson().toJson("Klucz API " + apiKey + " nie jest obsługiwany"));
-
-            LOGGER.debug("&b" + ip + "&r używa niepoprawnego klucza autoryzacji&c " + apiKey);
-            return false;
-        }
-        return true;
+        return isCorrectCustomKey(ctx, CONFIG.getAPIKeys().getBackup());
     }
 
     public static boolean isPowerfulKey(final Context ctx) {
