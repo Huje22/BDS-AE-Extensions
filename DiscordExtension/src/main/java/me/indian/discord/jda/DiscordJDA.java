@@ -228,6 +228,8 @@ public class DiscordJDA {
     public void sendPrivateMessage(final User user, final String message) {
         try {
             if (user.isBot()) return;
+
+            //TODO: Obsłużyć inaczej wyjątki , użyć tego error całego w .quene()
             user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
         } catch (final Exception exception) {
             this.logger.debug("Nie udało się wysłać wiadomości do&b " + user.getName(), exception);
