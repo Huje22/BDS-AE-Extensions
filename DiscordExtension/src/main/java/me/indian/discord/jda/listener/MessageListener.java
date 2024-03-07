@@ -19,6 +19,7 @@ import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
@@ -88,7 +89,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
              Usuwanie wiadomości jeśli użytkownik ma status offline
              */
 
-                if (this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)) {
+                if (this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS) && !member.hasPermission(Permission.MANAGE_CHANNEL)) {
                     final OnlineStatus memberStatus = member.getOnlineStatus();
                     if (memberStatus == OnlineStatus.OFFLINE || memberStatus == OnlineStatus.INVISIBLE) {
                         this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
