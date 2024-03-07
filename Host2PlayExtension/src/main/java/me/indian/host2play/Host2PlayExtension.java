@@ -58,11 +58,6 @@ public class Host2PlayExtension extends Extension {
         }
     }
 
-    @Override
-    public void onDisable() {
-        if (this.config != null) this.config.save();
-    }
-
     public Config getConfig() {
         return this.config;
     }

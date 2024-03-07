@@ -426,8 +426,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
                 }
             } catch (final Exception exception) {
-
-
                 this.logger.error("Wystąpił błąd przy próbie wykonania&b " + event.getName() + "&r przez&e " + member.getNickname(), exception);
                 event.getHook().editOriginal("Wystąpił błąd\n ```" + MessageUtil.getStackTraceAsString(exception) + "```").queue();
             }

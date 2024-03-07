@@ -9,5 +9,4 @@ public class RestWebsiteHook {
     public RestWebsiteHook(final DiscordExtension discordExtension, final RestWebsite restWebsite){
         restWebsite.register(new DiscordMessagePostRequest(discordExtension, restWebsite));
     }
-
 }

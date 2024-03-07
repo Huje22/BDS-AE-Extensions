@@ -15,11 +15,6 @@ public class EffectsExtension extends  Extension {
         this.getBdsAutoEnable().getEventManager().registerListener(new PlayerListener(this), this);
     }
 
-    @Override
-    public void onDisable() {
-        if (this.config != null) this.config.save();
-    }
-
     public EffectsConfig getConfig() {
         return this.config;
     }
