@@ -226,23 +226,19 @@ public class DiscordJDA {
     }
 
     public void sendPrivateMessage(final User user, final String message) {
-        try {
-            if (user.isBot()) return;
-
-            //TODO: Obsłużyć inaczej wyjątki , użyć tego error całego w .quene()
-            user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
-        } catch (final Exception exception) {
-            this.logger.debug("Nie udało się wysłać wiadomości do&b " + user.getName(), exception);
-        }
+        if (user.isBot()) return;
+        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue(
+                success -> this.logger.debug("Wysłano wiadomość do:&b " + user.getName() + " &d(&e" + user.getIdLong() + "&d)"),
+                failure -> this.logger.debug("Nie udało się wysłać wiadomości do:&b " + user.getName() + " &d(&e" + user.getIdLong() + "&d)", failure)
+        ));
     }
 
     public void sendPrivateMessage(final User user, final MessageEmbed embed) {
-        try {
-            if (user.isBot()) return;
-            user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessageEmbeds(embed).queue());
-        } catch (final Exception exception) {
-            this.logger.debug("Nie udało się wysłać wiadomości do&b " + user.getName(), exception);
-        }
+        if (user.isBot()) return;
+        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessageEmbeds(embed).queue(
+                success -> this.logger.debug("Wysłano wiadomość do:&b " + user.getName() + " &d(&e" + user.getIdLong() + "&d)"),
+                failure -> this.logger.debug("Nie udało się wysłać wiadomości do:&b " + user.getName() + " &d(&e" + user.getIdLong() + "&d)", failure)
+        ));
     }
 
     public void mute(final Member member, final long amount, final TimeUnit timeUnit) {
