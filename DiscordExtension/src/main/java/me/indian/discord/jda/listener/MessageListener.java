@@ -98,7 +98,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                         this.discordJDA.log("Status aktywności offline",
                                 "Wiadomość została usunięta z powodu statusu aktywności, jej treść to\n```" +
                                         rawMessage + "```",
-                                new Footer(this.discordJDA.getUserName(member, author) + " " + DateUtil.getTimeHMS(), member.getEffectiveAvatarUrl()));
+                                new Footer(author.getName() + " " + DateUtil.getTimeHMS(), member.getEffectiveAvatarUrl()));
 
                         this.discordJDA.sendPrivateMessage(author, "Nie możesz wysyłać wiadomość na tym kanale " +
                                 "gdy twój status aktywności to `" + memberStatus + "`");
@@ -120,7 +120,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                             this.discordJDA.log("Brak połączonych kont",
                                     "Wiadomość została usunięta z powodu braku połączonych kont, jej treść to:\n```" +
                                             rawMessage + "```",
-                                    new Footer(this.discordJDA.getUserName(member, author) + " " + DateUtil.getTimeHMS(), member.getEffectiveAvatarUrl()));
+                                    new Footer(author.getName() + " " + DateUtil.getTimeHMS(), member.getEffectiveAvatarUrl()));
 
                             this.discordJDA.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
                             return;
@@ -133,7 +133,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                         this.discordJDA.log("Wyciszenie w Minecraft",
                                 "Wiadomość została usunięta z powodu wyciszenia w minecraft, jej treść to\n```" +
                                         rawMessage + "```",
-                                new Footer(this.discordJDA.getUserName(member, author) + " " + DateUtil.getTimeHMS(), member.getEffectiveAvatarUrl()));
+                                new Footer(author.getName() + " " + DateUtil.getTimeHMS(), member.getEffectiveAvatarUrl()));
                         this.discordJDA.sendPrivateMessage(author, "Jesteś wyciszony!");
                         return;
                     }
