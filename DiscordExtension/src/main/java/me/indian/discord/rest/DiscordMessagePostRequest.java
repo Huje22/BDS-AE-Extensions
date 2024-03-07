@@ -94,7 +94,7 @@ public class DiscordMessagePostRequest extends HttpHandler {
         final String apiKey = ctx.pathParam("api-key");
         final String ip = ctx.ip();
 
-        if (!this.restAPIConfig.getDiscord().contains(apiKey)) {
+        if (!this.restAPIConfig.getDiscordKeys().contains(apiKey)) {
             ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
                     .result(GsonUtil.getGson().toJson("Klucz API " + apiKey + " nie jest obsługiwany"));
 
