@@ -10,7 +10,7 @@ public class FriendSyncConfig extends OkaeriConfig {
     @Comment({"Ilość czasu w sekundach na sprawdzanie zmian w obserwujących"})
     @Comment({"Ta wartość nie może być niższa niż 20 z powodu limitów prędkości Xboxa"})
     @Comment({"chyba że wyłączysz automatyczne przestawanie obserwowania, wtedy możesz użyć 10"})
-    private int updateInterval = 20;
+    private int updateInterval = 40;
 
     @Comment({""})
     @Comment({"Czy powinniśmy automatycznie obserwować osoby, które nas obserwują"})
