@@ -285,10 +285,27 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
 
                     case "allowlist" -> {
-                        //TODO: Dodać permisie 
                         final AllowlistManager allowlistManager = this.bdsAutoEnable.getAllowlistManager();
                         final OptionMapping addOption = event.getOption("add");
                         final OptionMapping removeOption = event.getOption("remove");
+
+                        if (addOption == null && removeOption == null) {
+                            final EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("Biała lista").setColor(Color.BLUE);
+
+                            this.allowlistPlayers.clear();
+                            for (final AllowlistPlayer player : allowlistManager.getAllowlistPlayers()) {
+                                this.allowlistPlayers.add(player.name());
+                            }
+
+                            embedBuilder.setDescription(MessageUtil.stringListToString(this.allowlistPlayers, " , "));
+                            event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
+                            return;
+                        }
+
+                        if (!member.hasPermission(Permission.MODERATE_MEMBERS)) {
+                            event.getHook().editOriginal("Potrzebujesz uprawnienia: **" + Permission.MODERATE_MEMBERS.getName() + "**").queue();
+                            return;
+                        }
 
                         if (addOption != null) {
                             final String playerName = addOption.getAsString();
@@ -316,16 +333,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             } else {
                                 event.getHook().editOriginal("Gracz **" + playerName + "** nie jest na liście").queue();
                             }
-                        } else {
-                            final EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("Biała lista").setColor(Color.BLUE);
-
-                            this.allowlistPlayers.clear();
-                            for (final AllowlistPlayer player : allowlistManager.getAllowlistPlayers()) {
-                                this.allowlistPlayers.add(player.name());
-                            }
-
-                            embedBuilder.setDescription(MessageUtil.stringListToString(this.allowlistPlayers, " , "));
-                            event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
                         }
                     }
 
