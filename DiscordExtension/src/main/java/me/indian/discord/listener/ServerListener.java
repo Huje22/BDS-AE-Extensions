@@ -65,10 +65,9 @@ public class ServerListener extends Listener {
 
     @Override
     public void onServerUncaughtException(final ServerUncaughtExceptionEvent event) {
-        this.discordJDA.log("Niezłapany wyjątek", "",
+        this.discordJDA.log("Niezłapany wyjątek", "**Wykryto niezłapany wyjątek**",
                 List.of(new Field("Wystąpił w wątku", event.getThread().getName(), true),
-                        new Field("Wyjątek", MessageUtil.getStackTraceAsString(event.getThrowable()), true)
-                ),
+                        new Field("Wyjątek", "```" + MessageUtil.getStackTraceAsString(event.getThrowable()) + "```", false)),
                 new Footer(""));
     }
 }
