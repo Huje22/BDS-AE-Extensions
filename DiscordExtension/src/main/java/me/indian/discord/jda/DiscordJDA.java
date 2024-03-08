@@ -464,7 +464,9 @@ public class DiscordJDA {
 
     public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Footer footer) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-            if (title.isEmpty() || message.isEmpty()) return;
+            if (title.isEmpty() || message.isEmpty()) {
+                throw new NullPointerException("'title' ani 'message' nie mogą być puste");
+            }
             final EmbedBuilder embed = new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
@@ -497,7 +499,9 @@ public class DiscordJDA {
 
     public void log(final String title, final String message, final List<Field> fields, final Footer footer) {
         if (this.jda != null && this.logChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-            if (title.isEmpty() || message.isEmpty()) return;
+            if (title.isEmpty() || message.isEmpty()) {
+                throw new NullPointerException("'title' ani 'message' nie mogą być puste");
+            }
             final EmbedBuilder embed = new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
