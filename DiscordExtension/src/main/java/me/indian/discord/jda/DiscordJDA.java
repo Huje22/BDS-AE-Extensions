@@ -382,7 +382,6 @@ public class DiscordJDA {
     }
 
     private void leaveGuilds() {
-        //TODO: Użyć do tego `log()`
         if (!this.botConfig.isLeaveServers()) return;
         for (final Guild guild1 : this.jda.getGuilds()) {
             if (guild1 != this.guild) {
@@ -391,10 +390,10 @@ public class DiscordJDA {
                 if (defaultChannel != null) inviteLink += defaultChannel.createInvite().complete().getUrl();
 
                 guild1.leave().queue();
-                this.sendMessage("Opuściłem serwer o ID: " + guild1.getId() +
-                        "\n Nazwie: " + guild1.getName() +
-                        "\n Zaproszenie: " + inviteLink
-                );
+                this.log("Opuszczenie servera", "",
+                        List.of(new Field("Nazwa", guild1.getName(), true),
+                                new Field("Zaproszenie", inviteLink, true)),
+                        new Footer(""));
             }
         }
     }
