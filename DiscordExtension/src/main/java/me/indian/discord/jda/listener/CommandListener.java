@@ -438,7 +438,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
         event.deferReply().setEphemeral(true).queue();
 
-        this.serverTopButton(event);
+        if(this.serverTopButton(event)) return;
 
         if (!member.hasPermission(Permission.ADMINISTRATOR)) {
             event.getHook().editOriginal("Nie masz permisji!").queue();
@@ -483,11 +483,23 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         return hoursMessage;
     }
 
-    private void serverTopButton(final ButtonInteractionEvent event) {
+    private boolean serverTopButton(final ButtonInteractionEvent event) {
         switch (event.getComponentId()) {
-            case "playtime" -> event.getHook().editOriginalEmbeds(this.getPlaytimeEmbed()).queue();
-            case "deaths" -> event.getHook().editOriginalEmbeds(this.getDeathsEmbed()).queue();
-            case "blocks" -> event.getHook().editOriginalEmbeds(this.getTopBlockEmbed()).queue();
+            case "playtime" -> {
+                event.getHook().editOriginalEmbeds(this.getPlaytimeEmbed()).queue();
+                return true;
+            }
+            case "deaths" -> {
+                event.getHook().editOriginalEmbeds(this.getDeathsEmbed()).queue();
+                return true;
+            }
+            case "blocks" -> {
+                event.getHook().editOriginalEmbeds(this.getTopBlockEmbed()).queue();
+                return true;
+            }
+            default -> {
+                return false;
+            }
         }
     }
 
