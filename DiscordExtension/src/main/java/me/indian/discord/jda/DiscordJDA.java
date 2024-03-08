@@ -382,6 +382,7 @@ public class DiscordJDA {
     }
 
     private void leaveGuilds() {
+        //TODO: Użyć do tego `log()`
         if (!this.botConfig.isLeaveServers()) return;
         for (final Guild guild1 : this.jda.getGuilds()) {
             if (guild1 != this.guild) {
