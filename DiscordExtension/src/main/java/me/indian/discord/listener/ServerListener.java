@@ -1,12 +1,17 @@
 package me.indian.discord.listener;
 
+import java.util.List;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.event.server.ServerStartEvent;
+import me.indian.bds.event.server.ServerUncaughtExceptionEvent;
 import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
+import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
+import me.indian.discord.embed.component.Field;
+import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 
 public class ServerListener extends Listener {
@@ -56,5 +61,14 @@ public class ServerListener extends Listener {
     @Override
     public void onServerUpdating(final ServerUpdatingEvent event) {
         this.discordJDA.sendServerUpdateMessage(event.getVersion());
+    }
+
+    @Override
+    public void onServerUncaughtException(final ServerUncaughtExceptionEvent event) {
+        this.discordJDA.log("Niezłapany wyjątek", "",
+                List.of(new Field("Wystąpił w wątku", event.getThread().getName(), true),
+                        new Field("Wyjątek", MessageUtil.getStackTraceAsString(event.getThrowable()), true)
+                ),
+                new Footer(""));
     }
 }
