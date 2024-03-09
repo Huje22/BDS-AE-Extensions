@@ -96,8 +96,13 @@ public class XboxBroadcastExtension extends Extension {
             final BedrockQuery query = BedrockQuery.create(sessionInfo.getIp(), sessionInfo.getPort());
 
             if (query.online()) {
-                sessionInfo.setHostName(query.motd());
-                sessionInfo.setWorldName(query.mapName());
+                if (!sessionInfo.isCustomHostName()) {
+                    sessionInfo.setHostName(query.motd());
+                }
+
+                if (!sessionInfo.isCustomWorldName()) {
+                    sessionInfo.setWorldName(query.mapName());
+                }
                 sessionInfo.setVersion(query.minecraftVersion());
                 sessionInfo.setProtocol(query.protocol());
                 sessionInfo.setPlayers(query.playerCount());
@@ -106,8 +111,13 @@ public class XboxBroadcastExtension extends Extension {
         } else {
             final ServerProperties serverProperties = this.bdsAutoEnable.getServerProperties();
 
-            sessionInfo.setHostName(serverProperties.getMOTD());
-            sessionInfo.setWorldName(serverProperties.getRealWorldName());
+            if (!sessionInfo.isCustomHostName()) {
+                sessionInfo.setHostName(serverProperties.getMOTD());
+            }
+            if (!sessionInfo.isCustomWorldName()) {
+                sessionInfo.setWorldName(serverProperties.getRealWorldName());
+            }
+
             sessionInfo.setVersion(this.bdsAutoEnable.getVersionManager().getLoadedVersion());
             sessionInfo.setProtocol(this.bdsAutoEnable.getVersionManager().getLastKnownProtocol());
             sessionInfo.setPlayers(this.bdsAutoEnable.getServerManager().getOnlinePlayers().size());
