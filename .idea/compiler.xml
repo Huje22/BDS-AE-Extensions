@@ -6,11 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="AutoMessages" />
-        <module name="DiscordExtension" />
+        <module name="EffectsExtension" />
         <module name="RestWebsite" />
         <module name="XboxBroadcastExtension" />
         <module name="Host2PlayExtension" />
+        <module name="AutoMessages" />
+        <module name="DiscordExtension" />
         <module name="ExampleExtension" />
       </profile>
     </annotationProcessing>
