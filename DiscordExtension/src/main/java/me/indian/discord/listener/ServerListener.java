@@ -1,7 +1,9 @@
 package me.indian.discord.listener;
 
+import java.util.LinkedList;
 import java.util.List;
 import me.indian.bds.event.Listener;
+import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.event.server.ServerStartEvent;
@@ -56,6 +58,20 @@ public class ServerListener extends Listener {
     @Override
     public void onServerClose(final ServerClosedEvent event) {
         this.discordJDA.sendDisabledMessage();
+    }
+
+    @Override
+    public void onServerAlert(final ServerAlertEvent event) {
+        final List<Field> fieldList = new LinkedList<>();
+        final String additionalInfo = event.getAdditionalInfo();
+
+        if (event.getThrowable() != null) {
+            fieldList.add(new Field("Wyjątek", "```" + MessageUtil.getStackTraceAsString(event.getThrowable()) + "```", false));
+        }
+
+        this.discordJDA.log("Alert " + event.getAlertState(), event.getMessage(),
+                fieldList,
+                new Footer((additionalInfo == null ? "" : additionalInfo)));
     }
 
     @Override
