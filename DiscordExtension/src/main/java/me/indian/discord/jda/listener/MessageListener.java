@@ -57,6 +57,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         this.textChannel = this.discordJDA.getTextChannel();
     }
 
+
+    //TODO: Logowca info o tym że ktoś edytował wiadomość + o tym że ktoś usunol wiadomości (tylko z kanaału czatu)
     @Override
     public void onMessageUpdate(final MessageUpdateEvent event) {
         if (event.getAuthor().equals(this.discordJDA.getJda().getSelfUser())) return;
