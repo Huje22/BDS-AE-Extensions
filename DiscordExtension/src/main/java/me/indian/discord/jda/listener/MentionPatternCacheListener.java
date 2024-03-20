@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class MentionPatternCacheListener extends ListenerAdapter implements JDAListener {
 
-    private final me.indian.discord.jda.DiscordJDA DiscordJDA;
+    private final DiscordJDA discordJDA;
     private final Map<String, Pattern> mentionPatternCache;
 
     public MentionPatternCacheListener(final DiscordJDA DiscordJDA, final Map<String, Pattern> mentionPatternCache) {
