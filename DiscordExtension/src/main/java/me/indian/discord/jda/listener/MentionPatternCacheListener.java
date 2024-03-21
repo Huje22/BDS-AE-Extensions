@@ -15,7 +15,7 @@ public class MentionPatternCacheListener extends ListenerAdapter implements JDAL
     private final Map<String, Pattern> mentionPatternCache;
 
     public MentionPatternCacheListener(final DiscordJDA DiscordJDA, final Map<String, Pattern> mentionPatternCache) {
-        this.DiscordJDA = DiscordJDA;
+        this.discordJDA = DiscordJDA;
         this.mentionPatternCache = mentionPatternCache;
     }
 
@@ -26,13 +26,13 @@ public class MentionPatternCacheListener extends ListenerAdapter implements JDAL
 
     @Override
     public void onGuildMemberUpdateNickname(final GuildMemberUpdateNicknameEvent event) {
-        if (event.getGuild() != this.DiscordJDA.getGuild()) return;
+        if (event.getGuild() != this.discordJDA.getGuild()) return;
         this.mentionPatternCache.remove(event.getMember().getId());
     }
 
     @Override
     public void onRoleUpdateName(final RoleUpdateNameEvent event) {
-        if (event.getGuild() != this.DiscordJDA.getGuild()) return;
+        if (event.getGuild() != this.discordJDA.getGuild()) return;
         this.mentionPatternCache.remove(event.getRole().getId());
     }
 

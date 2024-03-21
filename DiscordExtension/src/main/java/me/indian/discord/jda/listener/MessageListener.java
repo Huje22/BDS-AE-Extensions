@@ -1,6 +1,8 @@
 package me.indian.discord.jda.listener;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -26,6 +28,7 @@ import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -40,6 +43,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private final MessagesConfig messagesConfig;
     private final Lock sendToMinecraftLock;
     private final ServerProcess serverProcess;
+    private final Map<Long, Message> messagesMap;
     private TextChannel textChannel;
 
     public MessageListener(final DiscordJDA DiscordJDA, final DiscordExtension discordExtension) {
@@ -50,6 +54,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         this.messagesConfig = discordExtension.getMessagesConfig();
         this.sendToMinecraftLock = new ReentrantLock();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
+        this.messagesMap = new HashMap<>();
     }
 
     @Override
@@ -57,15 +62,45 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         this.textChannel = this.discordJDA.getTextChannel();
     }
 
+    @Override
+    public void onMessageDelete(final MessageDeleteEvent event) {
+        if (event.getChannel() instanceof final TextChannel channel) {
+            if (channel == this.textChannel) {
+                final Message message = this.getMessage(event.getMessageIdLong());
 
-    //TODO: Logowca info o tym że ktoś edytował wiadomość + o tym że ktoś usunol wiadomości (tylko z kanaału czatu)
+                if (message != null) {
+                    final User author = message.getAuthor();
+
+                    this.discordJDA.log("Usunięto wiadomość",
+                            "```" + message.getContentRaw() + "```",
+                            new Footer(author.getEffectiveName(), author.getEffectiveAvatarUrl()));
+                }
+            }
+        }
+    }
+
     @Override
     public void onMessageUpdate(final MessageUpdateEvent event) {
         if (event.getAuthor().equals(this.discordJDA.getJda().getSelfUser())) return;
 
         if (event.getChannel() instanceof final TextChannel channel) {
             if (channel == this.textChannel) {
-                this.sendMessage(event.getMember(), event.getAuthor(), event.getMessage(), true);
+                final Member member = event.getMember();
+                final Message message = event.getMessage();
+                if (member == null) return;
+
+                final Message oldMessage = this.getMessage(event.getMessageIdLong());
+
+                if (oldMessage != null) {
+
+                    this.discordJDA.log("Edytowano wiadomość",
+                            "```" + oldMessage.getContentRaw() + "```" +
+                                    " \uD83E\uDC7B\uD83E\uDC7B\uD83E\uDC7B" +
+                                    "```" + message.getContentRaw() + "```",
+                            new Footer(member.getEffectiveName(), member.getEffectiveAvatarUrl()));
+                }
+
+                this.sendMessage(member, event.getAuthor(), message, true);
             }
         }
     }
@@ -170,6 +205,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (this.serverProcess.isEnabled()) this.serverProcess.tellrawToAll(msg);
             this.logger.info(msg);
             this.discordJDA.writeConsole(ConsoleColors.removeColors(msg));
+            this.addMessage(message.getIdLong(), message);
         } catch (final Exception exception) {
             this.logger.error("Nie udało się wysłać wiadomości z Discord do Minecraft", exception);
         } finally {
@@ -244,5 +280,18 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
 
         return replyStatement;
+    }
+
+
+    public void addMessage(final long id, final Message message) {
+        if (this.messagesMap.size() == 500) {
+            this.messagesMap.clear();
+        }
+
+        this.messagesMap.put(id, message);
+    }
+
+    public Message getMessage(final long id) {
+        return this.messagesMap.get(id);
     }
 }
