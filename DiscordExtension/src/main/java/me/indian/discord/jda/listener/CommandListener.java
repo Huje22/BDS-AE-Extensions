@@ -172,9 +172,15 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             }
                         } else {
                             final List<String> linkedAccounts = this.getLinkedAccounts();
+                            String linkedAccsString = "**Brak połączonych kont**";
+
+                            if (!linkedAccsString.isEmpty()) {
+                                linkedAccsString = linkedAccounts.size() + "\n" + MessageUtil.listToSpacedString(linkedAccounts);
+                            }
+
                             final MessageEmbed messageEmbed = new EmbedBuilder()
                                     .setTitle("Osoby z połączonym kontami")
-                                    .setDescription((linkedAccounts.isEmpty() ? "**Brak połączonych kont**" : MessageUtil.listToSpacedString(linkedAccounts)))
+                                    .setDescription(linkedAccsString)
                                     .setColor(Color.BLUE)
                                     .setFooter("Aby połączyć konto wpisz /link KOD")
                                     .build();
@@ -254,32 +260,36 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             event.getHook().editOriginal("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").queue();
                             return;
                         }
+
                         final List<String> players = this.bdsAutoEnable.getServerManager().getOnlinePlayers();
                         final String list = "`" + MessageUtil.stringListToString(players, "`, `") + "`";
+                        final int maxPlayers = this.bdsAutoEnable.getServerProperties().getMaxPlayers();
                         final EmbedBuilder embed = new EmbedBuilder()
                                 .setTitle("Lista Graczy")
                                 .setColor(Color.BLUE);
 
                         if (this.botConfig.isAdvancedPlayerList()) {
-                            int counter = 0;
+                            if(!players.isEmpty()) {
+                                int counter = 0;
 
-                            for (final String player : players) {
-                                if (counter != 24) {
-                                    embed.addField(player,
-                                            "> Czas gry: **" + DateUtil.formatTime(this.statsManager.getPlayTime(player), List.of('d', 'h', 'm', 's'))
-                                                    + "**  \n> Śmierci:** " + this.statsManager.getDeaths(player) + "**",
-                                            true);
-                                    counter++;
-                                } else {
-                                    embed.addField("**I pozostałe**", players.size() - 24 + " osób", false);
-                                    break;
+                                for (final String player : players) {
+                                    if (counter != 24) {
+                                        embed.addField(player,
+                                                "> Czas gry: **" + DateUtil.formatTime(this.statsManager.getPlayTime(player), List.of('d', 'h', 'm', 's'))
+                                                        + "**  \n> Śmierci:** " + this.statsManager.getDeaths(player) + "**",
+                                                true);
+                                        counter++;
+                                    } else {
+                                        embed.addField("**I pozostałe**", players.size() - 24 + " osób", false);
+                                        break;
+                                    }
                                 }
+                            } else {
+                                embed.setDescription("**Brak osób online**");
                             }
                         } else {
-                            embed.setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n" +
-                                    (players.isEmpty() ? " " : list) + "\n");
+                            embed.setDescription(players.size() + "/" + maxPlayers + "\n" + (players.isEmpty() ? "**Brak osób online**" : list) + "\n");
                         }
-
                         event.getHook().editOriginalEmbeds(embed.build()).queue();
                     }
 
@@ -287,6 +297,11 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         final AllowlistManager allowlistManager = this.bdsAutoEnable.getAllowlistManager();
                         final OptionMapping addOption = event.getOption("add");
                         final OptionMapping removeOption = event.getOption("remove");
+
+                        if (!this.bdsAutoEnable.getServerProperties().isAllowList()) {
+                            event.getHook().sendMessage("Allowlista jest __wyłączona__").setEphemeral(true).queue();
+                            return;
+                        }
 
                         if (addOption == null && removeOption == null) {
                             final EmbedBuilder embedBuilder = new EmbedBuilder().setTitle("Biała lista").setColor(Color.BLUE);
@@ -296,7 +311,12 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                 this.allowlistPlayers.add(player.name());
                             }
 
-                            embedBuilder.setDescription(MessageUtil.stringListToString(this.allowlistPlayers, " , "));
+                            if(this.allowlistPlayers.isEmpty()){
+                                embedBuilder.setDescription("**Nikt jeszcze nie jest na allowlist**");
+                            } else {
+                                embedBuilder.setDescription(MessageUtil.stringListToString(this.allowlistPlayers, " , "));
+                            }
+
                             event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
                             return;
                         }
