@@ -2,6 +2,7 @@ package me.indian.discord.listener;
 
 import java.util.LinkedList;
 import java.util.List;
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
@@ -19,10 +20,12 @@ import me.indian.discord.jda.DiscordJDA;
 public class ServerListener extends Listener {
 
     private final DiscordJDA discordJDA;
+    private final BDSAutoEnable bdsAutoEnable;
     private double tps, lastTPS;
 
     public ServerListener(final DiscordExtension discordExtension) {
         this.discordJDA = discordExtension.getDiscordJDA();
+        this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
     }
 
     @Override
@@ -35,10 +38,12 @@ public class ServerListener extends Listener {
         this.tps = event.getTps();
         this.lastTPS = event.getLastTps();
 
-        if (this.tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + this.tps + "** TPS");
-        if (this.lastTPS <= 8 && this.tps <= 8) {
-            this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
-                    + " (Teraz: **" + this.tps + "** Ostatnie: **" + this.lastTPS + "**)");
+        if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isRestartOnLowTPS()) {
+            if (this.tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + this.tps + "** TPS");
+            if (this.lastTPS <= 8 && this.tps <= 8) {
+                this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
+                        + " (Teraz: **" + this.tps + "** Ostatnie: **" + this.lastTPS + "**)");
+            }
         }
     }
 
