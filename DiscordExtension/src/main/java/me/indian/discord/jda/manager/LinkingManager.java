@@ -212,8 +212,9 @@ public class LinkingManager {
             if (member == null) continue;
             if (guild.getSelfMember().canInteract(member)) {
                 final String minecraftName = this.getNameByID(id);
+                if (minecraftName == null) continue;
                 if (member.getNickname() == null || !member.getNickname().equals(minecraftName)) {
-                    member.modifyNickname(minecraftName).queue();
+                    member.modifyNickname(minecraftName.replaceAll("\"", "")).queue();
                 }
             }
 
