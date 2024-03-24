@@ -170,6 +170,8 @@ public class DiscordJDA {
 
             this.guild.updateCommands().addCommands(
                     Commands.slash("list", "lista graczy online."),
+                    Commands.slash("playerinfo" , "Informacje o danym graczu")
+                            .addOption(OptionType.MENTIONABLE, "player", "Gracz o którym mamy pozyskać info", true),
                     Commands.slash("backup", "Tworzenie bądź ostatni czas backupa"),
                     Commands.slash("difficulty", "Zmienia poziom trudności"),
                     Commands.slash("version", "Wersja BDS-Auto-Enable i severa, umożliwia update servera"),

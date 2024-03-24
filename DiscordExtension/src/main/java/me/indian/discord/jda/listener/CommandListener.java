@@ -172,10 +172,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             }
                         } else {
                             final List<String> linkedAccounts = this.getLinkedAccounts();
-                            String linkedAccsString = "**Brak połączonych kont**";
+                            String linkedAccsString = "Już **" + linkedAccounts.size() + "** osób połączyło konta\n" + MessageUtil.listToSpacedString(linkedAccounts);
 
-                            if (!linkedAccsString.isEmpty()) {
-                                linkedAccsString = linkedAccounts.size() + "\n" + MessageUtil.listToSpacedString(linkedAccounts);
+                            if (linkedAccsString.isEmpty()) {
+                                linkedAccsString = "**Brak połączonych kont**";
                             }
 
                             final MessageEmbed messageEmbed = new EmbedBuilder()
@@ -292,6 +292,68 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             embed.setDescription(players.size() + "/" + maxPlayers + "\n" + (players.isEmpty() ? "**Brak osób online**" : list) + "\n");
                         }
                         event.getHook().editOriginalEmbeds(embed.build()).queue();
+                    }
+
+                    case "playerinfo" -> {
+                        final OptionMapping mention = event.getOption("player");
+                        if (mention != null) {
+                            final Member player = mention.getAsMember();
+                            if (player != null) {
+                                final String discordPlayerName = this.discordJDA.getUserName(player, player.getUser());
+                                final long id = player.getIdLong();
+                                if (this.linkingManager.isLinked(id)) {
+                                    final String playerName = this.linkingManager.getNameByID(id);
+                                    final EmbedBuilder embedBuilder = new EmbedBuilder()
+                                            .setTitle("Informacje o graczu " + this.linkingManager.getNameByID(id)).setColor(Color.BLUE);
+
+
+                                    if (playerName == null) {
+                                        event.getHook().editOriginal("Nie udało się pozyskać informacji na temat **" + discordPlayerName + "**").queue();
+                                        return;
+                                    }
+
+                                    embedBuilder.setThumbnail("https://mineskin.eu/headhelm/" + playerName + "/100.png");
+
+                                    embedBuilder.addField("Nick", playerName, true);
+                                    embedBuilder.addField("XUID", String.valueOf(this.statsManager.getXuidByName(playerName)), true);
+
+                                    final List<String> oldNames = this.statsManager.getOldNames(playerName);
+                                    if (oldNames != null && !oldNames.isEmpty()) {
+                                        embedBuilder.addField("Znany również jako", MessageUtil.stringListToString(oldNames, " ,"), false);
+                                    } else {
+                                        embedBuilder.addField("Znany również jako", "__Brak danych o innych nick__", false);
+                                    }
+
+                                    final long firstJoin = this.statsManager.getFirstJoin(playerName);
+                                    final long lastJoin = this.statsManager.getLastJoin(playerName);
+                                    final long lastQuit = this.statsManager.getLastQuit(playerName);
+
+                                    if (firstJoin != 0 && firstJoin != -1) {
+                                        embedBuilder.addField("Pirerwsze dołączenie", String.valueOf(DateUtil.longToLocalDate(firstJoin)), true);
+                                    }
+                                    if (lastJoin != 0 && lastJoin != -1) {
+                                        embedBuilder.addField("Ostatnie dołączenie", String.valueOf(DateUtil.longToLocalDate(lastJoin)), true);
+                                    }
+
+                                    if (lastQuit != 0 && lastQuit != -1) {
+                                        embedBuilder.addField("Ostatnie opuszczenie", String.valueOf(DateUtil.longToLocalDate(lastQuit)), true);
+                                    }
+
+                                    embedBuilder.addField("Śmierci", String.valueOf(this.statsManager.getDeaths(playerName)), false);
+                                    embedBuilder.addField("Czas gry", DateUtil.formatTime(this.statsManager.getPlayTime(playerName), List.of('d', 'h', 'm', 's')), false);
+                                    embedBuilder.addField("Postawione bloki", String.valueOf(this.statsManager.getBlockPlaced(playerName)), true);
+                                    embedBuilder.addField("Zniszczone bloki", String.valueOf(this.statsManager.getBlockBroken(playerName)), true);
+
+                                    event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
+                                } else {
+                                    event.getHook()
+                                            .editOriginal("Użytkownik **" + discordPlayerName + "** nie posiada połączonych kont")
+                                            .queue();
+                                }
+                            } else {
+                                event.getHook().editOriginal("Podany gracz jest nieprawidłowy").queue();
+                            }
+                        }
                     }
 
                     case "allowlist" -> {
@@ -444,6 +506,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         if (portOption != null) port = portOption.getAsInt();
 
                         event.getHook().editOriginalEmbeds(this.getServerInfoEmbed(adres, port)).queue();
+                    }
+
+                    default -> {
+                        event.getHook().editOriginal("Polecenie **" + event.getName() + "** nie jest jeszcze przez nas obsługiwane").queue();
                     }
                 }
             } catch (final Exception exception) {
