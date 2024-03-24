@@ -3,6 +3,8 @@ package me.indian.discord.jda.listener;
 import java.awt.Color;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -329,14 +331,14 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                     final long lastQuit = this.statsManager.getLastQuit(playerName);
 
                                     if (firstJoin != 0 && firstJoin != -1) {
-                                        embedBuilder.addField("Pirerwsze dołączenie", String.valueOf(DateUtil.longToLocalDate(firstJoin)), true);
+                                        embedBuilder.addField("Pirerwsze dołączenie", this.getTime(DateUtil.longToLocalDateTime(firstJoin)), true);
                                     }
                                     if (lastJoin != 0 && lastJoin != -1) {
-                                        embedBuilder.addField("Ostatnie dołączenie", String.valueOf(DateUtil.longToLocalDate(lastJoin)), true);
+                                        embedBuilder.addField("Ostatnie dołączenie", this.getTime(DateUtil.longToLocalDateTime(lastJoin)), true);
                                     }
 
                                     if (lastQuit != 0 && lastQuit != -1) {
-                                        embedBuilder.addField("Ostatnie opuszczenie", String.valueOf(DateUtil.longToLocalDate(lastQuit)), true);
+                                        embedBuilder.addField("Ostatnie opuszczenie", this.getTime(DateUtil.longToLocalDateTime(lastQuit)), true);
                                     }
 
                                     embedBuilder.addField("Śmierci", String.valueOf(this.statsManager.getDeaths(playerName)), false);
@@ -538,6 +540,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.serveDeleteBackupButton(event);
         this.serveUpdateButton(event);
         this.serveStatsButtons(event);
+    }
+
+    public static String getTime(final LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy\n HH:mm:ss"));
     }
 
     private List<String> getLinkedAccounts() {
