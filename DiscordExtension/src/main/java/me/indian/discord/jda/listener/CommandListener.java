@@ -272,6 +272,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             if(!players.isEmpty()) {
                                 int counter = 0;
 
+                                embed.setDescription("Aktualnie gra **" + players.size() + "/" + maxPlayers+"** osób");
                                 for (final String player : players) {
                                     if (counter != 24) {
                                         embed.addField(player,
@@ -314,7 +315,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             if(this.allowlistPlayers.isEmpty()){
                                 embedBuilder.setDescription("**Nikt jeszcze nie jest na allowlist**");
                             } else {
-                                embedBuilder.setDescription(MessageUtil.stringListToString(this.allowlistPlayers, " , "));
+                                embedBuilder.setDescription("Aktualnie na białej liście znajduje się **" + this.allowlistPlayers.size() + "** osób \n" +
+                                        MessageUtil.stringListToString(this.allowlistPlayers, " , "));
                             }
 
                             event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
