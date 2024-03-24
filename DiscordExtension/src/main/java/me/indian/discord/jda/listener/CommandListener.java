@@ -475,15 +475,16 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private List<String> getLinkedAccounts() {
-        final Map<String, Long> linkedAccounts = this.linkingManager.getLinkedAccounts();
+        final Map<Long, Long> linkedAccounts = this.linkingManager.getLinkedAccounts();
         final List<String> linked = new LinkedList<>();
         int place = 1;
 
-        for (final Map.Entry<String, Long> entry : linkedAccounts.entrySet()) {
+        for (final Map.Entry<Long, Long> entry : linkedAccounts.entrySet()) {
+            final String playerName = this.statsManager.getNameByXuid(entry.getKey());
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
-                    .getPlayTime(entry.getKey()), TimeUnit.MILLISECONDS);
+                    .getPlayTime(playerName), TimeUnit.MILLISECONDS);
 
-            linked.add(place + ". **" + entry.getKey() + "**: " + entry.getValue() + " " + (hours < 5 ? "❌" : "✅"));
+            linked.add(place + ". **" + playerName + "**: " + entry.getValue() + " " + (hours < 5 ? "❌" : "✅"));
             place++;
         }
 
