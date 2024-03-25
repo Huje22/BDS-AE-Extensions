@@ -77,7 +77,7 @@ public class PlayerEventListener extends Listener {
             if (member != null) {
                 memberMutedOnDiscord = member.isTimedOut();
                 role = this.getRole(member, this.linkingConfig.isUseCustomRolesInChat());
-                this.setPlayerPrefix(playerName.replaceAll("\"" , ""));
+                this.setPlayerPrefix(playerName);
             }
         }
 
@@ -122,20 +122,22 @@ public class PlayerEventListener extends Listener {
                 if (!this.messagesConfig.isShowInName()) return;
                 final String cachedPrefix = this.cachedPrefixes.get(playerName);
                 final String prefix = this.getRole(member, this.linkingConfig.isUseCustomRolesInName());
-
-                this.getRole(member, this.linkingConfig.isUseCustomRolesInName());
-
+                
                 if (cachedPrefix != null) {
                     if (!cachedPrefix.equals(prefix)) {
-                        this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
+                        this.sendPrefixChange(playerName, prefix);
                         this.cachedPrefixes.put(playerName, prefix);
                     }
                 } else {
-                    this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName + " " + MessageUtil.colorize(prefix) + " ");
+                    this.sendPrefixChange(playerName, prefix);
                     this.cachedPrefixes.put(playerName, prefix);
                 }
             }
         }
+    }
+
+    private void sendPrefixChange(final String playerName, final String prefix) {
+        this.serverProcess.sendToConsole("scriptevent bds:tag_prefix " + playerName.replaceAll("\"", "") + "=" + MessageUtil.colorize(prefix) + " ");
     }
 
     private String getRole(final Member member, final boolean customRole) {
