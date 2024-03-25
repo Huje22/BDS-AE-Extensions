@@ -1,5 +1,7 @@
 package me.indian.discord;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.event.EventManager;
@@ -102,10 +104,11 @@ public class DiscordExtension extends Extension {
                 try {
                     this.logger.info("Wyłączanie bota...");
                     jda.shutdown();
-                    if (jda.awaitShutdown()) {
+                    if (jda.awaitShutdown(Duration.of(2, ChronoUnit.MINUTES))) {
                         this.logger.info("Wyłączono bota");
                     } else {
-                        this.logger.error("Nie udało się wyłączyć bota");
+                        jda.shutdownNow();
+                        this.logger.error("Nie udało się wyłączyć bota w czasie&b 2&e minut");
                     }
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można wyłączyć bota", exception);
