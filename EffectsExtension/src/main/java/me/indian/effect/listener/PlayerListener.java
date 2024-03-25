@@ -3,7 +3,6 @@ package me.indian.effect.listener;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import me.indian.bds.event.Listener;
-import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.server.ServerProcess;
@@ -35,15 +34,5 @@ public class PlayerListener extends Listener {
         this.effectsService.execute(() ->
                 this.config.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayerName()))));
 
-    }
-
-    @Override
-    public void onPlayerDimensionChange(final PlayerDimensionChangeEvent event) {
-        this.effectsService.execute(() -> this.config.getOnDimensionChange().
-                forEach(command -> this.serverProcess.sendToConsole(command
-                        .replaceAll("<player>", event.getPlayerName())
-                        .replaceAll("<from>", event.getDimensionFrom())
-                        .replaceAll("<to>", event.getDimensionTo())
-                )));
     }
 }
