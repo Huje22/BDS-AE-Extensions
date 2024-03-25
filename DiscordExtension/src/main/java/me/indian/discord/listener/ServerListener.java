@@ -11,6 +11,7 @@ import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.ServerUncaughtExceptionEvent;
 import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.embed.component.Field;
@@ -38,13 +39,7 @@ public class ServerListener extends Listener {
         this.tps = event.getTps();
         this.lastTPS = event.getLastTps();
 
-        if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isRestartOnLowTPS()) {
-            if (this.tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + this.tps + "** TPS");
-            if (this.lastTPS <= 8 && this.tps <= 8) {
-                this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
-                        + " (Teraz: **" + this.tps + "** Ostatnie: **" + this.lastTPS + "**)");
-            }
-        }
+        if (this.tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + this.tps + "** TPS");
     }
 
     @Override
@@ -69,14 +64,21 @@ public class ServerListener extends Listener {
     public void onServerAlert(final ServerAlertEvent event) {
         final List<Field> fieldList = new LinkedList<>();
         final String additionalInfo = event.getAdditionalInfo();
+        final LogState state = event.getAlertState();
 
         if (event.getThrowable() != null) {
             fieldList.add(new Field("Wyjątek", "```" + MessageUtil.getStackTraceAsString(event.getThrowable()) + "```", false));
         }
 
-        this.discordJDA.log("Alert " + event.getAlertState(), event.getMessage(),
-                fieldList,
-                new Footer((additionalInfo == null ? "" : additionalInfo)));
+        if (state == LogState.INFO || state == LogState.NONE) {
+            this.discordJDA.sendEmbedMessage("Alert " + state, event.getMessage(),
+                    fieldList,
+                    new Footer((additionalInfo == null ? "" : additionalInfo)));
+        } else {
+            this.discordJDA.log("Alert " + state, event.getMessage(),
+                    fieldList,
+                    new Footer((additionalInfo == null ? "" : additionalInfo)));
+        }
     }
 
     @Override
