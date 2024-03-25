@@ -6,7 +6,7 @@ import eu.okaeri.configs.annotation.CustomKey;
 import java.util.List;
 
 public class EffectsConfig extends OkaeriConfig {
-    
+
     @Comment({""})
     @Comment({"Komendy które zostaną wykonane gdy gracz odrodzi sie  "})
     @CustomKey("OnSpawn")
