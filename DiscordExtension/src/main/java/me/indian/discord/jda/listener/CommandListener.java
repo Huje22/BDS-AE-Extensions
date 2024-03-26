@@ -129,7 +129,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                     .setColor(Color.BLUE)
                                     .setFooter("Używasz: " + command)
                                     .build();
-
+              //TODO:Dodaj info kto wykonał komende 
                             event.getHook().editOriginalEmbeds(embed).queue();
 
                         } else {
