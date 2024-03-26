@@ -92,11 +92,12 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 final Message oldMessage = this.getMessage(event.getMessageIdLong());
 
                 if (oldMessage != null) {
-
                     this.discordJDA.log("Edytowano wiadomość",
                             "```" + oldMessage.getContentRaw() + "```" +
-                                    " \uD83E\uDC7B\uD83E\uDC7B\uD83E\uDC7B" +
-                                    "```" + message.getContentRaw() + "```",
+                                    " ↓↓↓↓↓↓" +
+                                    "```" + message.getContentRaw() + "```" +
+                                    "\t-------\n" +
+                                    "\t[Skocz](" + message.getJumpUrl() + ")",
                             new Footer(member.getEffectiveName(), member.getEffectiveAvatarUrl()));
                 }
 
