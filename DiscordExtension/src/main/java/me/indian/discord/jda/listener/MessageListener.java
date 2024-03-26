@@ -92,6 +92,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 final Message oldMessage = this.getMessage(event.getMessageIdLong());
 
                 if (oldMessage != null) {
+                    //TODO: Dodac jakos info o obrazach
                     this.discordJDA.log("Edytowano wiadomość",
                             "```" + oldMessage.getContentRaw() + "```" +
                                     " ↓↓↓↓↓↓" +
