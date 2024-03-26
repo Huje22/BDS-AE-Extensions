@@ -108,7 +108,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                 switch (event.getName()) {
                     case "cmd" -> {
-                        if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        if (member.hasPermission(Permission.MANAGE_SERVER)) {
                             if (!this.serverProcess.isEnabled()) {
                                 event.getHook().editOriginal("Server jest wyłączony").queue();
                                 return;
@@ -129,9 +129,12 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                     .setColor(Color.BLUE)
                                     .setFooter("Używasz: " + command)
                                     .build();
-              //TODO:Dodaj info kto wykonał komende 
-                            event.getHook().editOriginalEmbeds(embed).queue();
 
+                            this.discordJDA.log("Użycie polecenia",
+                                    "**" + member.getEffectiveName() + "** (" + member.getIdLong() + ")",
+                                    new Footer(command));
+
+                            event.getHook().editOriginalEmbeds(embed).queue();
                         } else {
                             event.getHook().editOriginal("Nie posiadasz permisji!!").queue();
                         }
@@ -248,7 +251,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
 
                     case "stats" -> {
-                        if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        if (member.hasPermission(Permission.MANAGE_SERVER)) {
                             event.getHook().editOriginalEmbeds(this.getStatsEmbed())
                                     .setActionRow(ActionRow.of(this.statsButtons).getComponents())
                                     .queue();
@@ -510,9 +513,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         event.getHook().editOriginalEmbeds(this.getServerInfoEmbed(adres, port)).queue();
                     }
 
-                    default -> {
-                        event.getHook().editOriginal("Polecenie **" + event.getName() + "** nie jest jeszcze przez nas obsługiwane").queue();
-                    }
+                    default ->
+                            event.getHook().editOriginal("Polecenie **" + event.getName() + "** nie jest jeszcze przez nas obsługiwane").queue();
                 }
             } catch (final Exception exception) {
                 this.logger.error("Wystąpił błąd przy próbie wykonania&b " + event.getName() + "&r przez&e " + member.getNickname(), exception);
@@ -528,22 +530,22 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
         event.deferReply().setEphemeral(true).queue();
 
-        if(this.serverTopButton(event)) return;
+        if (this.serverTopButton(event)) return;
 
-        if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-            event.getHook().editOriginal("Nie masz permisji!").queue();
+        if (member.hasPermission(Permission.MANAGE_SERVER)) {
+            this.serveUpdateButton(event);
+            this.serveStatsButtons(event);
+            this.serveBackupButton(event);
+            this.serveDeleteBackupButton(event);
+            this.serveDifficultyButton(event);
             return;
         }
 
-        this.serveDifficultyButton(event);
-        this.serveBackupButton(event);
-        this.serveDeleteBackupButton(event);
-        this.serveUpdateButton(event);
-        this.serveStatsButtons(event);
+        event.getHook().editOriginal("Nie posiadasz permisji").queue();
     }
 
     public static String getTime(final LocalDateTime localDateTime) {
-        return localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy\n HH:mm:ss"));
+        return localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy\nHH:mm:ss"));
     }
 
     private List<String> getLinkedAccounts() {
@@ -689,15 +691,24 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private void serveStatsButtons(final ButtonInteractionEvent event) {
         if (!event.getComponentId().contains("stats_")) return;
+        final Member member = event.getMember();
         switch (event.getComponentId()) {
             case "stats_enable" -> {
                 this.serverProcess.setCanRun(true);
                 this.serverProcess.startProcess();
+
+                this.discordJDA.log("Włączenie servera",
+                        "**" + member.getEffectiveName() + "** (" + member.getIdLong() + ")",
+                        new Footer(""));
             }
             case "stats_disable" -> {
                 this.serverProcess.setCanRun(false);
                 this.serverProcess.kickAllPlayers("&aServer został wyłączony za pośrednictwem&b discord");
                 this.serverProcess.sendToConsole("stop");
+
+                this.discordJDA.log("Wyłączenie servera",
+                        "**" + member.getEffectiveName() + "** (" + member.getIdLong() + ")",
+                        new Footer(""));
             }
         }
         ThreadUtil.sleep(3);
