@@ -71,6 +71,7 @@ public class ServerListener extends Listener {
         }
 
         if (state == LogState.INFO || state == LogState.NONE) {
+            //TODO: Takie elerty dawaj bez embeda
             this.discordJDA.sendEmbedMessage("Alert " + state, event.getMessage(),
                     fieldList,
                     new Footer((additionalInfo == null ? "" : additionalInfo)));
