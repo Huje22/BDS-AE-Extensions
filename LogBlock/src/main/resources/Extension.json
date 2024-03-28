@@ -1,0 +1,8 @@
+{
+  "mainClass": "me.indian.logblock.LogBlockExtension",
+  "version": "1.0",
+  "name": "LogBlockExtension",
+  "prefix": "LogBlock",
+  "description": "Rozszerzenie dodające które informuje co gdzie i kiedy zostało zrobione",
+  "author": "IndianPL"
+}

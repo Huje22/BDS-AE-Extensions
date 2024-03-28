@@ -12,6 +12,7 @@
         <module name="Host2PlayExtension" />
         <module name="AutoMessages" />
         <module name="DiscordExtension" />
+        <module name="LogBlock" />
         <module name="ExampleExtension" />
       </profile>
     </annotationProcessing>
