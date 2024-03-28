@@ -50,6 +50,8 @@ public class LogBlockCommand extends Command {
         boolean anyOpened = false;
         boolean anyEntityInteract = false;
 
+//TODO: Dystans jako podany int, domyślnie 10
+        
         this.sendMessage("&a----&bZniszczone bloki w zasięgu&1 10&b kratek&a----");
         for (final Map.Entry<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> entry : this.blockBreakHistory.entrySet()) {
             if (this.distanceToWithout(entry.getKey(), playerPosition) <= 10) {
