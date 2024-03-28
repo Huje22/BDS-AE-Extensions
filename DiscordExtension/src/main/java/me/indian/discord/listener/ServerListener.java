@@ -64,17 +64,18 @@ public class ServerListener extends Listener {
     public void onServerAlert(final ServerAlertEvent event) {
         final List<Field> fieldList = new LinkedList<>();
         final String additionalInfo = event.getAdditionalInfo();
+        final Throwable throwable = event.getThrowable();
         final LogState state = event.getAlertState();
 
-        if (event.getThrowable() != null) {
-            fieldList.add(new Field("Wyjątek", "```" + MessageUtil.getStackTraceAsString(event.getThrowable()) + "```", false));
+        if (throwable != null) {
+            fieldList.add(new Field("Wyjątek", "```" + MessageUtil.getStackTraceAsString(throwable) + "```", false));
         }
 
         if (state == LogState.INFO || state == LogState.NONE) {
-            //TODO: Takie elerty dawaj bez embeda
-            this.discordJDA.sendEmbedMessage("Alert " + state, event.getMessage(),
-                    fieldList,
-                    new Footer((additionalInfo == null ? "" : additionalInfo)));
+            this.discordJDA.sendMessage(event.getMessage() + "\n" + (additionalInfo == null ? "" : additionalInfo));
+            if (event.getThrowable() != null) {
+                this.discordJDA.sendMessage(MessageUtil.getStackTraceAsString(throwable));
+            }
         } else {
             this.discordJDA.log("Alert " + state, event.getMessage(),
                     fieldList,
