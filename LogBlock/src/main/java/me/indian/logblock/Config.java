@@ -9,6 +9,8 @@ public class Config extends OkaeriConfig {
     @Comment({"Po przekroczeniu tej wartości mapa zostanie zapisana do pliku"})
     private int maxMapSize = 1000;
 
+//TODO:Dodaj maxMpaSize na pojedyncza mape , zapisuj pliki jako .json, dodaj opcje max zasiegu dla kazdej kategori
+    
     public int getMaxMapSize() {
         return this.maxMapSize;
     }
