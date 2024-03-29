@@ -1,10 +1,17 @@
 package me.indian.logblock.listener;
 
+import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.Position;
@@ -14,11 +21,13 @@ import me.indian.bds.event.player.PlayerInteractContainerEvent;
 import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.bds.util.GsonUtil;
 import me.indian.logblock.LogBlockExtension;
+import me.indian.logblock.util.MarkDownUtil;
 
 public class PlayerListener extends Listener {
 
     private final LogBlockExtension logBlockExtension;
     private final int maxSize;
+    private final String startDate;
     private final Map<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> blockBreakHistory;
     private final Map<Position, Map<LocalDateTime, PlayerBlockPlaceEvent>> blockPlaceHistory;
     private final Map<Position, Map<LocalDateTime, PlayerInteractContainerEvent>> openedContainerHistory;
@@ -27,6 +36,7 @@ public class PlayerListener extends Listener {
     public PlayerListener(final LogBlockExtension logBlockExtension) {
         this.logBlockExtension = logBlockExtension;
         this.maxSize = logBlockExtension.getConfig().getMaxMapSize();
+        this.startDate = String.valueOf(LocalDate.now());
         this.blockBreakHistory = new LinkedHashMap<>();
         this.blockPlaceHistory = new LinkedHashMap<>();
         this.openedContainerHistory = new LinkedHashMap<>();
@@ -83,7 +93,7 @@ public class PlayerListener extends Listener {
 
     @Override
     public void onPlayerInteractEntityWithContainerEvent(final PlayerInteractEntityWithContainerEvent event) {
-        final Position blockPosition = event.getBlockPosition();
+        final Position blockPosition = event.getEntityPosition();
 
         if (!this.interactedEntityWithContainerHistory.containsKey(blockPosition)) {
             final Map<LocalDateTime, PlayerInteractEntityWithContainerEvent> playerInteractEntityWithContainerEvents = new HashMap<>();
@@ -98,26 +108,26 @@ public class PlayerListener extends Listener {
     }
 
     private void saveBlockBreakHistory() {
-        if (!this.saveToFile("BlockBreakHistory.txt", this.blockBreakHistory)) {
-            this.saveToFile("BlockBreakHistory.txt", this.blockBreakHistory);
+        if (!this.saveToFile("BlockBreakHistory.md", this.blockBreakHistory)) {
+            this.saveToFile("BlockBreakHistory.md", this.blockBreakHistory);
         }
     }
 
     private void saveBlockPlaceHistory() {
-        if (!this.saveToFile("BlockPlaceHistory.txt", this.blockPlaceHistory)) {
-            this.saveToFile("BlockPlaceHistory.txt", this.blockPlaceHistory);
+        if (!this.saveToFile("BlockPlaceHistory.md", this.blockPlaceHistory)) {
+            this.saveToFile("BlockPlaceHistory.md", this.blockPlaceHistory);
         }
     }
 
     private void saveOpenedContainerHistory() {
-        if (!this.saveToFile("OpenedContainerHistory.txt", this.openedContainerHistory)) {
-            this.saveToFile("OpenedContainerHistory.txt", this.openedContainerHistory);
+        if (!this.saveToFile("OpenedContainerHistory.md", this.openedContainerHistory)) {
+            this.saveToFile("OpenedContainerHistory.md", this.openedContainerHistory);
         }
     }
 
     private void saveInteractedEntityMap() {
-        if (!this.saveToFile("InteractedEntityContainerHistory.txt", this.interactedEntityWithContainerHistory)) {
-            this.saveToFile("InteractedEntityContainerHistory.txt", this.interactedEntityWithContainerHistory);
+        if (!this.saveToFile("InteractedEntityContainerHistory.md", this.interactedEntityWithContainerHistory)) {
+            this.saveToFile("InteractedEntityContainerHistory.md", this.interactedEntityWithContainerHistory);
         }
     }
 
@@ -128,17 +138,46 @@ public class PlayerListener extends Listener {
         this.saveInteractedEntityMap();
     }
 
-    private boolean saveToFile(final String fileName, final Map map) {
+    private <T> boolean saveToFile(final String fileName, final Map<Position, Map<LocalDateTime, T>> map) {
         try {
-            final File file = new File(this.logBlockExtension.getDataFolder() + File.separator + fileName);
+            final String path = this.logBlockExtension.getDataFolder() + File.separator + this.startDate + File.separator;
+            final File file = new File(path + fileName);
+            Files.createDirectories(Path.of(path));
             if (!file.exists()) {
                 if (!file.createNewFile()) {
                     return false;
                 }
             }
 
+            final Gson gson = GsonUtil.getGson();
+
             try (final FileWriter writer = new FileWriter(file)) {
-                writer.write(GsonUtil.getGson().toJson(map));
+                for (final Map.Entry<Position, Map<LocalDateTime, T>> entry : map.entrySet()) {
+                    final Position position = entry.getKey();
+                    final Map<LocalDateTime, T> l = entry.getValue();
+
+                    final List<Map.Entry<LocalDateTime, T>> sortedEntries = new ArrayList<>(l.entrySet());
+                    sortedEntries.sort(Map.Entry.comparingByKey());
+
+                    for (final Map.Entry<LocalDateTime, T> sortedEntry : sortedEntries) {
+                        final LocalDateTime dateTime = sortedEntry.getKey();
+                        final T value = sortedEntry.getValue();
+
+                        String event = "";
+
+                        if (value instanceof PlayerBlockBreakEvent) {
+                            event = gson.toJson(value, PlayerBlockBreakEvent.class);
+                        } else if (value instanceof PlayerBlockPlaceEvent) {
+                            event = gson.toJson(value, PlayerBlockPlaceEvent.class);
+                        } else if (value instanceof PlayerInteractContainerEvent) {
+                            event = gson.toJson(value, PlayerInteractContainerEvent.class);
+                        } else if (value instanceof PlayerInteractEntityWithContainerEvent) {
+                            event = gson.toJson(value, PlayerInteractEntityWithContainerEvent.class);
+                        }
+
+                        writer.write(MarkDownUtil.formatInfo(this.getTime(dateTime), event));
+                    }
+                }
             }
 
             this.logBlockExtension.getLogger().info("&aZapisano pomyślnie plik&e " + fileName);
@@ -147,6 +186,10 @@ public class PlayerListener extends Listener {
             this.logBlockExtension.getLogger().critical("&cNie udało się zapisać pliku&e " + fileName, exception);
             return false;
         }
+    }
+
+    public String getTime(final LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy"));
     }
 
     public Map<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> getBlockBreakHistory() {

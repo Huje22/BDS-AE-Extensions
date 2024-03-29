@@ -109,7 +109,7 @@ public class LogBlockCommand extends Command {
             if (this.distanceToWithout(entry.getKey(), playerPosition) <= 10) {
                 anyEntityInteract = true;
                 entry.getValue().forEach((dateTime, event) -> {
-                    final Position position = event.getBlockPosition();
+                    final Position position = event.getEntityPosition();
                     this.sendMessage("&d" + getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eMob:&1 " + event.getEntityID() + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                 });
             }
