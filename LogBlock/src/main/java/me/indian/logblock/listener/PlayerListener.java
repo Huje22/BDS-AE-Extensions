@@ -58,6 +58,7 @@ public class PlayerListener extends Listener {
 
         if (this.blockBreakHistory.size() == this.config.getMaxBrokenBlockMapSize()) {
             this.saveBlockBreakHistory();
+            this.blockBreakHistory.clear();
         }
     }
 
@@ -74,6 +75,7 @@ public class PlayerListener extends Listener {
 
         if (this.blockPlaceHistory.size() == this.config.getMaxPlacedBlockMapSize()) {
             this.saveBlockPlaceHistory();
+            this.blockPlaceHistory.clear();
         }
     }
 
@@ -90,6 +92,7 @@ public class PlayerListener extends Listener {
 
         if (this.openedContainerHistory.size() == this.config.getMaxOpenedContainerMapSize()) {
             this.saveOpenedContainerHistory();
+            this.openedContainerHistory.clear();
         }
     }
 
@@ -106,6 +109,7 @@ public class PlayerListener extends Listener {
 
         if (this.interactedEntityWithContainerHistory.size() == this.config.getMaxInteractedEntityWithContainer()) {
             this.saveInteractedEntityMap();
+            this.interactedEntityWithContainerHistory.clear();
         }
     }
 
