@@ -79,7 +79,7 @@ public class ServerListener extends Listener {
         } else {
             this.discordJDA.log("Alert " + state, event.getMessage(),
                     fieldList,
-                    new Footer((additionalInfo == null ? "" : additionalInfo)));
+                    new Footer((additionalInfo == null ? (throwable == null ? "" : throwable.getLocalizedMessage()) : additionalInfo)));
         }
     }
 
