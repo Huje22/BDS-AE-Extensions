@@ -15,7 +15,7 @@ public class LogBlockExtension extends Extension{
         this.playerListener = new PlayerListener(this);
 
         this.getBdsAutoEnable().getEventManager().registerListener(this.playerListener, this);
-        this.getBdsAutoEnable().getCommandManager().registerCommand(new LogBlockCommand(this.playerListener), this);
+        this.getBdsAutoEnable().getCommandManager().registerCommand(new LogBlockCommand(this, this.playerListener), this);
     }
 
     @Override

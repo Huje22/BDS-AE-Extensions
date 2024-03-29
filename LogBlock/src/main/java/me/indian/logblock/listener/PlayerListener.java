@@ -19,14 +19,16 @@ import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerInteractContainerEvent;
 import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.GsonUtil;
+import me.indian.logblock.Config;
 import me.indian.logblock.LogBlockExtension;
 import me.indian.logblock.util.MarkDownUtil;
 
 public class PlayerListener extends Listener {
 
     private final LogBlockExtension logBlockExtension;
-    private final int maxSize;
+    private final Config config;
     private final String startDate;
     private final Map<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> blockBreakHistory;
     private final Map<Position, Map<LocalDateTime, PlayerBlockPlaceEvent>> blockPlaceHistory;
@@ -35,7 +37,7 @@ public class PlayerListener extends Listener {
 
     public PlayerListener(final LogBlockExtension logBlockExtension) {
         this.logBlockExtension = logBlockExtension;
-        this.maxSize = logBlockExtension.getConfig().getMaxMapSize();
+        this.config = logBlockExtension.getConfig();
         this.startDate = String.valueOf(LocalDate.now());
         this.blockBreakHistory = new LinkedHashMap<>();
         this.blockPlaceHistory = new LinkedHashMap<>();
@@ -54,7 +56,7 @@ public class PlayerListener extends Listener {
 
         this.blockBreakHistory.get(blockPosition).put(LocalDateTime.now(), event);
 
-        if (this.blockBreakHistory.size() == this.maxSize) {
+        if (this.blockBreakHistory.size() == this.config.getMaxBrokenBlockMapSize()) {
             this.saveBlockBreakHistory();
         }
     }
@@ -70,7 +72,7 @@ public class PlayerListener extends Listener {
 
         this.blockPlaceHistory.get(blockPosition).put(LocalDateTime.now(), event);
 
-        if (this.blockPlaceHistory.size() == this.maxSize) {
+        if (this.blockPlaceHistory.size() == this.config.getMaxPlacedBlockMapSize()) {
             this.saveBlockPlaceHistory();
         }
     }
@@ -86,7 +88,7 @@ public class PlayerListener extends Listener {
 
         this.openedContainerHistory.get(blockPosition).put(LocalDateTime.now(), event);
 
-        if (this.openedContainerHistory.size() == this.maxSize) {
+        if (this.openedContainerHistory.size() == this.config.getMaxOpenedContainerMapSize()) {
             this.saveOpenedContainerHistory();
         }
     }
@@ -102,7 +104,7 @@ public class PlayerListener extends Listener {
 
         this.interactedEntityWithContainerHistory.get(blockPosition).put(LocalDateTime.now(), event);
 
-        if (this.interactedEntityWithContainerHistory.size() == this.maxSize) {
+        if (this.interactedEntityWithContainerHistory.size() == this.config.getMaxInteractedEntityWithContainer()) {
             this.saveInteractedEntityMap();
         }
     }
@@ -139,9 +141,10 @@ public class PlayerListener extends Listener {
     }
 
     private <T> boolean saveToFile(final String fileName, final Map<Position, Map<LocalDateTime, T>> map) {
+        if (map.isEmpty()) return true;
         try {
             final String path = this.logBlockExtension.getDataFolder() + File.separator + this.startDate + File.separator;
-            final File file = new File(path + fileName);
+            final File file = new File(path + DateUtil.getTimeHMS().replace(":", "-") + " " + fileName);
             Files.createDirectories(Path.of(path));
             if (!file.exists()) {
                 if (!file.createNewFile()) {
@@ -153,7 +156,6 @@ public class PlayerListener extends Listener {
 
             try (final FileWriter writer = new FileWriter(file)) {
                 for (final Map.Entry<Position, Map<LocalDateTime, T>> entry : map.entrySet()) {
-                    final Position position = entry.getKey();
                     final Map<LocalDateTime, T> l = entry.getValue();
 
                     final List<Map.Entry<LocalDateTime, T>> sortedEntries = new ArrayList<>(l.entrySet());
@@ -188,7 +190,7 @@ public class PlayerListener extends Listener {
         }
     }
 
-    public String getTime(final LocalDateTime localDateTime) {
+    private String getTime(final LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy"));
     }
 
