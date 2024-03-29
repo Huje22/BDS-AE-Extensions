@@ -544,7 +544,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         event.getHook().editOriginal("Nie posiadasz permisji").queue();
     }
 
-    public static String getTime(final LocalDateTime localDateTime) {
+    public  String getTime(final LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy\nHH:mm:ss"));
     }
 

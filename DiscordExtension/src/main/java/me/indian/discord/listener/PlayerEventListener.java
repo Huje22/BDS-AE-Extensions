@@ -5,6 +5,7 @@ import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerChatEvent;
+import me.indian.bds.event.player.PlayerCommandEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
@@ -112,6 +113,13 @@ public class PlayerEventListener extends Listener {
     public void onPlayerDeath(final PlayerDeathEvent event) {
         this.discordJDA.sendDeathMessage(event.getPlayerName().replaceAll("\"" , ""), event.getDeathMessage(),
                 event.getKillerName(), event.getUsedItemName());
+    }
+
+    @Override
+    public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
+        this.discordJDA.log("Użycie polecenia" ,
+                playerCommandEvent.getCommand()
+                , new Footer(playerCommandEvent.getPlayerName()));
     }
 
     private void setPlayerPrefix(final String playerName) {
