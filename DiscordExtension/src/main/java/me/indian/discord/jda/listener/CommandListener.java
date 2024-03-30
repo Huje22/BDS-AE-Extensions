@@ -319,14 +319,17 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                                     embedBuilder.setThumbnail("https://mineskin.eu/headhelm/" + playerName + "/100.png");
 
-                                    embedBuilder.addField("Nick", playerName, true);
-                                    embedBuilder.addField("XUID", String.valueOf(this.statsManager.getXuidByName(playerName)), true);
+
+                                    StringBuilder description = new StringBuilder();
+
+                                    description.append("**Nick:** ").append(playerName).append("\n");
+                                    description.append("**XUID:** ").append(this.statsManager.getXuidByName(playerName)).append("\n");
 
                                     final List<String> oldNames = this.statsManager.getOldNames(playerName);
                                     if (oldNames != null && !oldNames.isEmpty()) {
-                                        embedBuilder.addField("Znany również jako", MessageUtil.stringListToString(oldNames, " ,"), false);
+                                        description.append("**Znany również jako:** ").append(MessageUtil.stringListToString(oldNames, " ,")).append("\n");
                                     } else {
-                                        embedBuilder.addField("Znany również jako", "__Brak danych o innych nick__", false);
+                                        description.append("**Znany również jako:** __Brak danych o innych nick__\n");
                                     }
 
                                     final long firstJoin = this.statsManager.getFirstJoin(playerName);
@@ -334,20 +337,22 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                     final long lastQuit = this.statsManager.getLastQuit(playerName);
 
                                     if (firstJoin != 0 && firstJoin != -1) {
-                                        embedBuilder.addField("Pirerwsze dołączenie", this.getTime(DateUtil.longToLocalDateTime(firstJoin)), true);
+                                        description.append("**Dołączył pierwszy raz:** ").append(this.getTime(DateUtil.longToLocalDateTime(firstJoin))).append("\n");
                                     }
                                     if (lastJoin != 0 && lastJoin != -1) {
-                                        embedBuilder.addField("Ostatnie dołączenie", this.getTime(DateUtil.longToLocalDateTime(lastJoin)), true);
+                                        description.append("**Dołączył ostatni raz:** ").append(this.getTime(DateUtil.longToLocalDateTime(lastJoin))).append("\n");
                                     }
 
                                     if (lastQuit != 0 && lastQuit != -1) {
-                                        embedBuilder.addField("Ostatnie opuszczenie", this.getTime(DateUtil.longToLocalDateTime(lastQuit)), true);
+                                        description.append("**Opuścił ostatni raz:** ").append(this.getTime(DateUtil.longToLocalDateTime(lastQuit))).append("\n");
                                     }
 
-                                    embedBuilder.addField("Śmierci", String.valueOf(this.statsManager.getDeaths(playerName)), false);
-                                    embedBuilder.addField("Czas gry", DateUtil.formatTime(this.statsManager.getPlayTime(playerName), List.of('d', 'h', 'm', 's')), false);
-                                    embedBuilder.addField("Postawione bloki", String.valueOf(this.statsManager.getBlockPlaced(playerName)), true);
-                                    embedBuilder.addField("Zniszczone bloki", String.valueOf(this.statsManager.getBlockBroken(playerName)), true);
+                                    description.append("**Śmierci:** ").append(this.statsManager.getDeaths(playerName)).append("\n");
+                                    description.append("**Czas gry:** ").append(DateUtil.formatTime(this.statsManager.getPlayTime(playerName), List.of('d', 'h', 'm', 's'))).append("\n");
+                                    description.append("**Postawione bloki:** ").append(this.statsManager.getBlockPlaced(playerName)).append("\n");
+                                    description.append("**Zniszczone bloki:** ").append(this.statsManager.getBlockBroken(playerName)).append("\n");
+
+                                    embedBuilder.setDescription(description.toString());
 
                                     event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
                                 } else {
@@ -544,8 +549,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         event.getHook().editOriginal("Nie posiadasz permisji").queue();
     }
 
-    public  String getTime(final LocalDateTime localDateTime) {
-        return localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy\nHH:mm:ss"));
+    public String getTime(final LocalDateTime localDateTime) {
+        return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy"));
     }
 
     private List<String> getLinkedAccounts() {
@@ -875,16 +880,29 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
         if (query.online()) {
             final Gamemode gamemode = query.gamemode();
+            final int portV4 = query.portV4();
+            final int portV6 = query.portV6();
 
-            embedBuilder.addField("Wersja Minecraft", query.minecraftVersion(), true);
-            embedBuilder.addField("Protokół", String.valueOf(query.protocol()), true);
-            embedBuilder.addField("MOTD", query.motd(), true);
-            embedBuilder.addField("Nazwa Mapy", query.mapName(), true);
-            embedBuilder.addField("Gracz online", String.valueOf(query.playerCount()), true);
-            embedBuilder.addField("Maksymalna ilość graczy", String.valueOf(query.maxPlayers()), true);
-            embedBuilder.addField("Tryb Gry", gamemode.getName().toUpperCase() + " (" + gamemode.getId() + ")",
-                    true);
-            embedBuilder.addField("Edycja", query.edition(), true);
+            final StringBuilder description = new StringBuilder();
+            description.append("**Ping:** ").append(query.responseTime()).append("\n");
+            description.append("**Wersja Minecraft:** ").append(query.minecraftVersion()).append("\n");
+            description.append("**Protokół:** ").append(query.protocol()).append("\n");
+            description.append("**MOTD:** ").append(query.motd()).append("\n");
+            description.append("**Nazwa Mapy:** ").append(query.mapName()).append("\n");
+            description.append("**Gracz online:** ").append(query.playerCount()).append("\n");
+            description.append("**Maksymalna ilość graczy:** ").append(query.maxPlayers()).append("\n");
+            description.append("**Tryb Gry:** ").append(gamemode.getName().toUpperCase()).append(" (").append(gamemode.getId()).append(")").append("\n");
+            description.append("**Edycja:** ").append(query.edition()).append("\n");
+
+            if (portV4 != -1) {
+                description.append("**Port v4:** ").append(portV4).append("\n");
+            }
+            if (portV6 != -1) {
+                description.append("**Port v6:** ").append(portV6).append("\n");
+            }
+
+            embedBuilder.setDescription(description.toString());
+
         } else {
             embedBuilder.setDescription("Nie można uzyskać informacji o serwerze ``" + address + ":" + port + "``");
         }
