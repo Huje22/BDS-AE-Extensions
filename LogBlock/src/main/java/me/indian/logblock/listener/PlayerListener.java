@@ -159,6 +159,8 @@ public class PlayerListener extends Listener {
             final Gson gson = GsonUtil.getGson();
 
             try (final FileWriter writer = new FileWriter(file)) {
+                writer.write("# Dostępne jest aż " + map.size() + " pozycji \n\n");
+
                 for (final Map.Entry<Position, Map<LocalDateTime, T>> entry : map.entrySet()) {
                     final Map<LocalDateTime, T> l = entry.getValue();
 
