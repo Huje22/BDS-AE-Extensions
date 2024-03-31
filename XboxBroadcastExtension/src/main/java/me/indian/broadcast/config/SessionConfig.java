@@ -19,12 +19,12 @@ public class SessionConfig extends OkaeriConfig {
     private boolean queryServer = true;
 
     @Comment({""})
-    @Comment({"Nie bierze nazwy hosta z servera tylko używa tej poniżej"})
-    private boolean customHostName = true;
-
-    @Comment({""})
     @Comment({"Nie bierze nazwy świata z servera tylko używa tej poniżej"})
     private boolean customWorldName = true;
+
+    @Comment({""})
+    @Comment({"Nie bierze nazwy hosta z servera tylko używa tej poniżej"})
+    private boolean customHostName = true;
 
     @Comment({""})
     @Comment({"Czy nazwa świata ma być randomowa?"})
