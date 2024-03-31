@@ -26,7 +26,7 @@ public class ConsoleListener extends ListenerAdapter implements JDAListener {
         final BDSAutoEnable bdsAutoEnable = discordExtension.getBdsAutoEnable();
 
         this.discordJDA = DiscordJDA;
-        this.logger =  discordExtension.getLogger();
+        this.logger = discordExtension.getLogger();
         this.serverProcess = bdsAutoEnable.getServerProcess();
     }
 

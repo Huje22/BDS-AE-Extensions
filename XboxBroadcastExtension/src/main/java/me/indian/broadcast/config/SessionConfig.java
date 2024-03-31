@@ -57,8 +57,7 @@ public class SessionConfig extends OkaeriConfig {
     public SessionInfo getSessionInfo() {
         return this.sessionInfo;
     }
-
-
+    
     public boolean isCustomHostName() {
         return this.customHostName;
     }

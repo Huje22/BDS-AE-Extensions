@@ -11,4 +11,5 @@ public record PaymentSubData(
         long created,
         long expires,
         String description
-) {}
+) {
+}

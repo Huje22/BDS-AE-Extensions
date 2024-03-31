@@ -15,8 +15,8 @@ public class RestAPIConfig extends OkaeriConfig {
     @Comment({"Klucze które pozwalają na wysłanie wiadomości do Discord jeśli integracja jest włączona"})
     private List<String> discordKeys = new ArrayList<>();
 
-    public RestAPIConfig(){
-        if(this.discordKeys.isEmpty()){
+    public RestAPIConfig() {
+        if (this.discordKeys.isEmpty()) {
             this.discordKeys.add(MessageUtil.generateCode(6));
         }
     }

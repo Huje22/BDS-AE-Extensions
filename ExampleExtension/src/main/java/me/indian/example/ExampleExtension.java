@@ -60,7 +60,7 @@ public class ExampleExtension extends Extension {
         //Możesz także z łatwoscią pozyskać informacie z guery innego servera bedrock
         final BedrockQuery query = BedrockQuery.create("play.skyblockpe.com", 19132);
 
-        if(query.online()) {
+        if (query.online()) {
             logger.info("&aMOTD:&b " + query.motd());
             logger.info("&aProtocol Version:&b " + query.protocol());
             logger.info("&aMinecraft Version:&b " + query.minecraftVersion());

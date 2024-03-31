@@ -1,5 +1,8 @@
 package me.indian.discord.jda.manager;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
@@ -8,10 +11,6 @@ import me.indian.discord.config.sub.StatsChannelsConfig;
 import me.indian.discord.jda.DiscordJDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class StatsChannelsManager {
 

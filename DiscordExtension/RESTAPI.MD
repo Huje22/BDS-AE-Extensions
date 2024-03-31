@@ -15,6 +15,7 @@ POST /discord/message/{api-key}
   "messageType": "WEBHOOK"
 }
 ```
+
 **<sup>Możesz użyć też <code>JDA</code></sup>**
 
 #### Przykład wysłania JSON z poziomu konsoli

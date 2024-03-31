@@ -35,8 +35,8 @@ public class DiscordCommand extends Command {
         }
 
         if (args[0].equalsIgnoreCase("online")) {
-            if(!this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)){
-                this.sendMessage("&cFlaga&b " +  CacheFlag.ONLINE_STATUS +"&c jest wyłączona , bot nie wie kto ma jaki status aktywności");
+            if (!this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)) {
+                this.sendMessage("&cFlaga&b " + CacheFlag.ONLINE_STATUS + "&c jest wyłączona , bot nie wie kto ma jaki status aktywności");
                 return true;
             }
 

@@ -4,14 +4,14 @@ import me.indian.bds.extension.Extension;
 import me.indian.logblock.command.LogBlockCommand;
 import me.indian.logblock.listener.PlayerListener;
 
-public class LogBlockExtension extends Extension{
+public class LogBlockExtension extends Extension {
 
     private Config config;
     private PlayerListener playerListener;
 
     @Override
     public void onEnable() {
-        this.config = this.createConfig(Config.class , "config");
+        this.config = this.createConfig(Config.class, "config");
         this.playerListener = new PlayerListener(this);
 
         this.getBdsAutoEnable().getEventManager().registerListener(this.playerListener, this);
@@ -20,7 +20,7 @@ public class LogBlockExtension extends Extension{
 
     @Override
     public void onDisable() {
-        if(this.playerListener != null){
+        if (this.playerListener != null) {
             this.playerListener.saveAllMaps();
         }
     }

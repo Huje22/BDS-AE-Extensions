@@ -4,7 +4,7 @@ import me.indian.bds.extension.Extension;
 import me.indian.effect.config.EffectsConfig;
 import me.indian.effect.listener.PlayerListener;
 
-public class EffectsExtension extends  Extension {
+public class EffectsExtension extends Extension {
 
     private EffectsConfig config;
 

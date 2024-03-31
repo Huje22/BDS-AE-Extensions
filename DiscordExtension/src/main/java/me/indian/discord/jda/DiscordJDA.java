@@ -170,7 +170,7 @@ public class DiscordJDA {
 
             this.guild.updateCommands().addCommands(
                     Commands.slash("list", "lista graczy online."),
-                    Commands.slash("playerinfo" , "Informacje o danym graczu")
+                    Commands.slash("playerinfo", "Informacje o danym graczu")
                             .addOption(OptionType.MENTIONABLE, "player", "Gracz o którym mamy pozyskać info", true),
                     Commands.slash("backup", "Tworzenie bądź ostatni czas backupa"),
                     Commands.slash("difficulty", "Zmienia poziom trudności"),
@@ -287,7 +287,7 @@ public class DiscordJDA {
         final int green = (col == null ? -1 : col.getGreen());
         final int blue = (col == null ? -1 : col.getBlue());
 
-        return ConsoleColors.getMinecraftColorFromRGB(red, green ,blue);
+        return ConsoleColors.getMinecraftColorFromRGB(red, green, blue);
     }
 
     public String getColoredRole(final Role role) {
@@ -371,7 +371,7 @@ public class DiscordJDA {
                 return Activity.listening(activityMessage);
             }
             case CUSTOM_STATUS -> {
-                    return Activity.customStatus(activityMessage);
+                return Activity.customStatus(activityMessage);
             }
             case STREAMING -> {
                 return Activity.streaming(activityMessage, this.botConfig.getStreamUrl());

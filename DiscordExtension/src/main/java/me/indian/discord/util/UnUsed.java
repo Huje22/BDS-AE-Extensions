@@ -7,7 +7,8 @@ import net.dv8tion.jda.api.entities.RichPresence;
 
 public class UnUsed {
 
-    private UnUsed(){}
+    private UnUsed() {
+    }
 
 
     public String getActivity(final Member member) {

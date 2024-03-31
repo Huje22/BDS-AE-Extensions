@@ -34,6 +34,6 @@ public class ServerListener extends Listener {
 
     @Override
     public void onTpsChange(final TPSChangeEvent event) {
-     //Wykonuje akcje gdy TPS ulegną wypisaniu w konsoli
+        //Wykonuje akcje gdy TPS ulegną wypisaniu w konsoli
     }
 }

@@ -1,13 +1,12 @@
 package me.indian.discord.jda.listener;
 
+import java.util.Map;
+import java.util.regex.Pattern;
 import me.indian.discord.jda.DiscordJDA;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
 import net.dv8tion.jda.api.events.user.update.UserUpdateNameEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
-import java.util.Map;
-import java.util.regex.Pattern;
 
 public class MentionPatternCacheListener extends ListenerAdapter implements JDAListener {
 

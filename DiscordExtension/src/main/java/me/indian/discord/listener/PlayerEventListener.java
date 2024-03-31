@@ -45,14 +45,14 @@ public class PlayerEventListener extends Listener {
     @Override
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final String playerName = event.getPlayerName();
-        this.discordJDA.sendJoinMessage(playerName.replaceAll("\"" , ""));
+        this.discordJDA.sendJoinMessage(playerName.replaceAll("\"", ""));
         this.setPlayerPrefix(playerName);
     }
 
     @Override
     public void onPlayerQuit(final PlayerQuitEvent event) {
         final String playerName = event.getPlayerName();
-        this.discordJDA.sendLeaveMessage(playerName.replaceAll("\"" , ""));
+        this.discordJDA.sendLeaveMessage(playerName.replaceAll("\"", ""));
         this.cachedPrefixes.remove(playerName);
     }
 
@@ -66,7 +66,7 @@ public class PlayerEventListener extends Listener {
             this.discordJDA.log("Wyciszenie w Minecraft",
                     "Wiadomość została nie wysłana z powodu wyciszenia w Minecraft, jej treść to:\n```" +
                             message + "```",
-                    new Footer(playerName.replaceAll("\"" , "") + " " + DateUtil.getTimeHMS()));
+                    new Footer(playerName.replaceAll("\"", "") + " " + DateUtil.getTimeHMS()));
             return null;
         }
 
@@ -83,27 +83,27 @@ public class PlayerEventListener extends Listener {
         }
 
         final String format = this.messagesConfig.getChatMessageFormat()
-                .replaceAll("<player>", playerName.replaceAll("\"" , ""))
+                .replaceAll("<player>", playerName.replaceAll("\"", ""))
                 .replaceAll("<message>", event.getMessage())
                 .replaceAll("<role>", role.trim());
 
         if (appHandled) {
             if (!event.isMuted() && !memberMutedOnDiscord) {
-                this.discordJDA.sendPlayerMessage(playerName.replaceAll("\"" , ""), message);
+                this.discordJDA.sendPlayerMessage(playerName.replaceAll("\"", ""), message);
             }
             if (memberMutedOnDiscord) {
                 this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerName, "&cZostałeś wyciszony na discord!");
                 this.discordJDA.log("Wyciszenie na Discord",
                         "Wiadomość została usunięta z powodu wyciszenia na Discord, jej treść to:\n```" +
                                 message + "```",
-                        new Footer(playerName.replaceAll("\"" , "") + " " + DateUtil.getTimeHMS()));
+                        new Footer(playerName.replaceAll("\"", "") + " " + DateUtil.getTimeHMS()));
             }
 
             if (!event.isMuted() && this.messagesConfig.isFormatChat()) {
-                return new PlayerChatResponse(format.replaceAll("\"" , ""), memberMutedOnDiscord);
+                return new PlayerChatResponse(format.replaceAll("\"", ""), memberMutedOnDiscord);
             }
         } else {
-            this.discordJDA.sendPlayerMessage(playerName.replaceAll("\"" , ""), message);
+            this.discordJDA.sendPlayerMessage(playerName.replaceAll("\"", ""), message);
         }
 
         return null;
@@ -111,13 +111,13 @@ public class PlayerEventListener extends Listener {
 
     @Override
     public void onPlayerDeath(final PlayerDeathEvent event) {
-        this.discordJDA.sendDeathMessage(event.getPlayerName().replaceAll("\"" , ""), event.getDeathMessage(),
+        this.discordJDA.sendDeathMessage(event.getPlayerName().replaceAll("\"", ""), event.getDeathMessage(),
                 event.getKillerName(), event.getUsedItemName());
     }
 
     @Override
     public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
-        this.discordJDA.log("Użycie polecenia" ,
+        this.discordJDA.log("Użycie polecenia",
                 playerCommandEvent.getCommand()
                 , new Footer(playerCommandEvent.getPlayerName()));
     }
@@ -130,7 +130,7 @@ public class PlayerEventListener extends Listener {
                 if (!this.messagesConfig.isShowInName()) return;
                 final String cachedPrefix = this.cachedPrefixes.get(playerName);
                 final String prefix = this.getRole(member, this.linkingConfig.isUseCustomRolesInName());
-                
+
                 if (cachedPrefix != null) {
                     if (!cachedPrefix.equals(prefix)) {
                         this.sendPrefixChange(playerName, prefix);

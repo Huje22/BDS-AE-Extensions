@@ -126,16 +126,14 @@ public class XboxBroadcastExtension extends Extension {
             sessionInfo.setPlayers(this.bdsAutoEnable.getServerManager().getOnlinePlayers().size());
             sessionInfo.setMaxPlayers(serverProperties.getMaxPlayers());
         }
-        System.out.println(sessionInfo);
     }
-
 
     private void updateHostName(final SessionInfo sessionInfo, final String hostName) {
         if (!this.sessionConfig.isCustomHostName()) {
             sessionInfo.setHostName(hostName);
         } else {
             if (this.sessionConfig.isRandomHostName()) {
-                sessionInfo.setHostName(this.randomHostNames.get(this.random.nextInt(this.randomHostNames.size())));
+                sessionInfo.setHostName(this.randomHostNames.get(this.random.nextInt(this.randomHostNames.size() - 1)));
             }
         }
     }
@@ -145,7 +143,7 @@ public class XboxBroadcastExtension extends Extension {
             sessionInfo.setWorldName(worldName);
         } else {
             if (this.sessionConfig.isRandomWorldName()) {
-                sessionInfo.setWorldName(this.randomWorldNames.get(this.random.nextInt(this.randomWorldNames.size())));
+                sessionInfo.setWorldName(this.randomWorldNames.get(this.random.nextInt(this.randomWorldNames.size() - 1)));
             }
         }
     }

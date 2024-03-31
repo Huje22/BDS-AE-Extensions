@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -36,8 +36,8 @@
             <scope>compile</scope>
         </dependency>
 
-<!--        Z jakiegoś powodu intelij nie czyta mi zależności javalin z `Rest Website-1.0.jar` wiec -->
-<!--        dodaje je ręcznie ale z scope `provided` aby nie były w jar-->
+        <!--        Z jakiegoś powodu intelij nie czyta mi zależności javalin z `Rest Website-1.0.jar` wiec -->
+        <!--        dodaje je ręcznie ale z scope `provided` aby nie były w jar-->
 
         <dependency>
             <groupId>io.javalin</groupId>

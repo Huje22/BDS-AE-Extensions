@@ -2,7 +2,6 @@
 
 ## Instalacja integracji Discord
 
-
 Aby aplikacja miała dostęp do informacji o graczu musisz
 posiadać [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack)
 

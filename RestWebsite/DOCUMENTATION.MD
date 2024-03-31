@@ -1,6 +1,7 @@
 # Dokumentacja API
 
 ---
+
 ## Statystyki
 
 ### Pobierz informacje o śmierciach graczy
@@ -72,6 +73,7 @@ GET /api/{api-key}/backup/{filename}
 Pobiera dostępny backup o określonej nazwie przy użyciu klucza autoryzacji.
 
 ---
+
 ## Konsola serwera
 
 ### Wykonaj polecenie w konsoli serwera

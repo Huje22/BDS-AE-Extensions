@@ -1,6 +1,5 @@
 package me.indian.discord.command;
 
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.util.MessageUtil;

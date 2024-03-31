@@ -55,7 +55,7 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
-    
+
     private final DiscordJDA discordJDA;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
@@ -275,10 +275,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                 .setColor(Color.BLUE);
 
                         if (this.botConfig.isAdvancedPlayerList()) {
-                            if(!players.isEmpty()) {
+                            if (!players.isEmpty()) {
                                 int counter = 0;
 
-                                embed.setDescription("Aktualnie gra **" + players.size() + "/" + maxPlayers+"** osób");
+                                embed.setDescription("Aktualnie gra **" + players.size() + "/" + maxPlayers + "** osób");
                                 for (final String player : players) {
                                     if (counter != 24) {
                                         embed.addField(player,
@@ -395,7 +395,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                 this.allowlistPlayers.add(player.name());
                             }
 
-                            if(this.allowlistPlayers.isEmpty()){
+                            if (this.allowlistPlayers.isEmpty()) {
                                 embedBuilder.setDescription("**Nikt jeszcze nie jest na allowlist**");
                             } else {
                                 embedBuilder.setDescription("Aktualnie na białej liście znajduje się **" + this.allowlistPlayers.size() + "** osób \n" +

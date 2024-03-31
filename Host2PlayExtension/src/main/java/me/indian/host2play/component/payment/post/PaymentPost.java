@@ -9,4 +9,5 @@ public record PaymentPost(
         String cancelRedirectUrl,
         String description,
         boolean autoRedirect
-) {}
+) {
+}
