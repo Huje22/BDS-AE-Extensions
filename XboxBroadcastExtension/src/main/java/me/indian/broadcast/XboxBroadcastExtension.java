@@ -2,6 +2,8 @@ package me.indian.broadcast;
 
 
 import java.io.File;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +16,7 @@ import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.broadcast.command.XboxBroadcastCommand;
 import me.indian.broadcast.config.ExtensionConfig;
+import me.indian.broadcast.config.SessionConfig;
 import me.indian.broadcast.core.SessionInfo;
 import me.indian.broadcast.core.SessionManager;
 import me.indian.broadcast.core.exceptions.SessionCreationException;
@@ -27,7 +30,10 @@ public class XboxBroadcastExtension extends Extension {
     private Logger logger;
     private ExecutorService service;
     private SessionManager sessionManager;
+    private SessionConfig sessionConfig;
     private SessionInfo sessionInfo;
+    private List<String> randomWorldNames, randomHostNames;
+    private Random random;
 
     @Override
     public void onEnable() {
@@ -37,7 +43,12 @@ public class XboxBroadcastExtension extends Extension {
         this.config = this.createConfig(ExtensionConfig.class, "config");
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("XboxBroadcastExtension"));
         this.sessionManager = new SessionManager(this.cacheLocation, this.service, this.logger);
-        this.sessionInfo = this.config.getSession().getSessionInfo();
+        this.sessionConfig = this.config.getSession();
+        this.sessionInfo = this.sessionConfig.getSessionInfo();
+        this.randomHostNames = this.sessionConfig.getRandomHostNames();
+        this.randomWorldNames = this.sessionConfig.getRandomWorldNames();
+        this.random = new Random();
+
 
         this.updateSessionInfo(this.sessionInfo);
 
@@ -96,13 +107,9 @@ public class XboxBroadcastExtension extends Extension {
             final BedrockQuery query = BedrockQuery.create(sessionInfo.getIp(), sessionInfo.getPort());
 
             if (query.online()) {
-                if (!sessionInfo.isCustomHostName()) {
-                    sessionInfo.setHostName(query.motd());
-                }
+                this.updateHostName(sessionInfo, query.motd());
+                this.updateWorldName(sessionInfo, query.mapName());
 
-                if (!sessionInfo.isCustomWorldName()) {
-                    sessionInfo.setWorldName(query.mapName());
-                }
                 sessionInfo.setVersion(query.minecraftVersion());
                 sessionInfo.setProtocol(query.protocol());
                 sessionInfo.setPlayers(query.playerCount());
@@ -111,17 +118,35 @@ public class XboxBroadcastExtension extends Extension {
         } else {
             final ServerProperties serverProperties = this.bdsAutoEnable.getServerProperties();
 
-            if (!sessionInfo.isCustomHostName()) {
-                sessionInfo.setHostName(serverProperties.getMOTD());
-            }
-            if (!sessionInfo.isCustomWorldName()) {
-                sessionInfo.setWorldName(serverProperties.getRealWorldName());
-            }
+            this.updateHostName(sessionInfo, serverProperties.getRealWorldName());
+            this.updateWorldName(sessionInfo, serverProperties.getMOTD());
 
             sessionInfo.setVersion(this.bdsAutoEnable.getVersionManager().getLoadedVersion());
             sessionInfo.setProtocol(this.bdsAutoEnable.getVersionManager().getLastKnownProtocol());
             sessionInfo.setPlayers(this.bdsAutoEnable.getServerManager().getOnlinePlayers().size());
             sessionInfo.setMaxPlayers(serverProperties.getMaxPlayers());
+        }
+        System.out.println(sessionInfo);
+    }
+
+
+    private void updateHostName(final SessionInfo sessionInfo, final String hostName) {
+        if (!this.sessionConfig.isCustomHostName()) {
+            sessionInfo.setHostName(hostName);
+        } else {
+            if (this.sessionConfig.isRandomHostName()) {
+                sessionInfo.setHostName(this.randomHostNames.get(this.random.nextInt(this.randomHostNames.size())));
+            }
+        }
+    }
+
+    private void updateWorldName(final SessionInfo sessionInfo, final String worldName) {
+        if (!this.sessionConfig.isCustomWorldName()) {
+            sessionInfo.setWorldName(worldName);
+        } else {
+            if (this.sessionConfig.isRandomWorldName()) {
+                sessionInfo.setWorldName(this.randomWorldNames.get(this.random.nextInt(this.randomWorldNames.size())));
+            }
         }
     }
 
