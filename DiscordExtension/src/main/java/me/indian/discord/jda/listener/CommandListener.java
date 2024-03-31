@@ -354,6 +354,17 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                                     embedBuilder.setDescription(description.toString());
 
+                                    String footer = "";
+
+                                    if (this.bdsAutoEnable.getServerProperties().isAllowList()) {
+                                        if (this.bdsAutoEnable.getAllowlistManager().isOnAllowList(playerName)) {
+                                            footer = "Znajduje się na białej liście";
+                                        } else {
+                                            footer = "Nie znajduje się na białej liście";
+                                        }
+                                    }
+
+                                    embedBuilder.setFooter(footer, GeyserUtil.getBedrockSkinBody(xuid));
                                     event.getHook().editOriginalEmbeds(embedBuilder.build()).queue();
                                 } else {
                                     event.getHook()
