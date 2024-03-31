@@ -76,6 +76,10 @@ public class RestWebsite extends Extension {
                         );
             });
 
+            app.error(404, ctx -> {
+                ctx.contentType("application/json").result("{\"message\": \"Nie odnaleziono żądanego zasobu\"}");
+            });
+
 
             this.register(new StatsRequest(this, this.bdsAutoEnable));
             this.register(new BackupRequest(this, this.bdsAutoEnable));

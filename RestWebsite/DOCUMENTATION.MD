@@ -35,6 +35,22 @@ GET /api/stats/block/broken
 
 Zwraca statystyki dotyczące liczby zniszczonych bloków przez graczy.
 
+### Pobierz informacje o graczu na podstawie nazwy gracza
+
+```
+GET /api/stats/player/name/{playerName}
+```
+
+Endpoint ten zwraca statystyki dotyczące konkretnego gracza na podstawie jego nazwy.
+
+### Pobierz informacje o graczu na podstawie XUID
+
+```
+GET /api/stats/player/xuid/{xuid}
+```
+
+Endpoint ten zwraca statystyki dotyczące konkretnego gracza na podstawie jego XUID.
+
 ### Pobierz informacje o graczach online i offline
 
 ```
