@@ -30,6 +30,7 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.geyser.GeyserUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.bds.watchdog.module.pack.PackModule;
@@ -308,6 +309,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                 final long id = player.getIdLong();
                                 if (this.linkingManager.isLinked(id)) {
                                     final String playerName = this.linkingManager.getNameByID(id);
+                                    final long xuid = this.statsManager.getXuid(playerName);
                                     final EmbedBuilder embedBuilder = new EmbedBuilder()
                                             .setTitle("Informacje o graczu " + this.linkingManager.getNameByID(id)).setColor(Color.BLUE);
 
@@ -317,10 +319,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                         return;
                                     }
 
-                                    embedBuilder.setThumbnail("https://mineskin.eu/headhelm/" + playerName + "/100.png");
+                                    embedBuilder.setThumbnail(GeyserUtil.getBedrockSkinHead(xuid));
 
 
-                                    StringBuilder description = new StringBuilder();
+                                    final StringBuilder description = new StringBuilder();
 
                                     description.append("**Nick:** ").append(playerName).append("\n");
                                     description.append("**XUID:** ").append(this.statsManager.getXuidByName(playerName)).append("\n");
@@ -328,8 +330,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                     final List<String> oldNames = this.statsManager.getOldNames(playerName);
                                     if (oldNames != null && !oldNames.isEmpty()) {
                                         description.append("**Znany również jako:** ").append(MessageUtil.stringListToString(oldNames, " ,")).append("\n");
-                                    } else {
-                                        description.append("**Znany również jako:** __Brak danych o innych nick__\n");
                                     }
 
                                     final long firstJoin = this.statsManager.getFirstJoin(playerName);
