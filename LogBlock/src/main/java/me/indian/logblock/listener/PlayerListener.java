@@ -38,7 +38,7 @@ public class PlayerListener extends Listener {
     public PlayerListener(final LogBlockExtension logBlockExtension) {
         this.logBlockExtension = logBlockExtension;
         this.config = logBlockExtension.getConfig();
-        this.startDate = String.valueOf(LocalDate.now());
+        this.startDate = String.valueOf(LocalDate.now(DateUtil.POLISH_ZONE));
         this.blockBreakHistory = new LinkedHashMap<>();
         this.blockPlaceHistory = new LinkedHashMap<>();
         this.openedContainerHistory = new LinkedHashMap<>();
@@ -54,7 +54,7 @@ public class PlayerListener extends Listener {
             this.blockBreakHistory.put(blockPosition, blockBreakEvents);
         }
 
-        this.blockBreakHistory.get(blockPosition).put(LocalDateTime.now(), event);
+        this.blockBreakHistory.get(blockPosition).put(LocalDateTime.now(DateUtil.POLISH_ZONE), event);
 
         if (this.blockBreakHistory.size() == this.config.getMaxBrokenBlockMapSize()) {
             this.saveBlockBreakHistory();
@@ -71,7 +71,7 @@ public class PlayerListener extends Listener {
             this.blockPlaceHistory.put(blockPosition, playerBlockPlaceEvents);
         }
 
-        this.blockPlaceHistory.get(blockPosition).put(LocalDateTime.now(), event);
+        this.blockPlaceHistory.get(blockPosition).put(LocalDateTime.now(DateUtil.POLISH_ZONE), event);
 
         if (this.blockPlaceHistory.size() == this.config.getMaxPlacedBlockMapSize()) {
             this.saveBlockPlaceHistory();
@@ -88,7 +88,7 @@ public class PlayerListener extends Listener {
             this.openedContainerHistory.put(blockPosition, playerInteractContainerEvents);
         }
 
-        this.openedContainerHistory.get(blockPosition).put(LocalDateTime.now(), event);
+        this.openedContainerHistory.get(blockPosition).put(LocalDateTime.now(DateUtil.POLISH_ZONE), event);
 
         if (this.openedContainerHistory.size() == this.config.getMaxOpenedContainerMapSize()) {
             this.saveOpenedContainerHistory();
@@ -105,7 +105,7 @@ public class PlayerListener extends Listener {
             this.interactedEntityWithContainerHistory.put(blockPosition, playerInteractEntityWithContainerEvents);
         }
 
-        this.interactedEntityWithContainerHistory.get(blockPosition).put(LocalDateTime.now(), event);
+        this.interactedEntityWithContainerHistory.get(blockPosition).put(LocalDateTime.now(DateUtil.POLISH_ZONE), event);
 
         if (this.interactedEntityWithContainerHistory.size() == this.config.getMaxInteractedEntityWithContainer()) {
             this.saveInteractedEntityMap();
