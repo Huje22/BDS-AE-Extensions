@@ -1,8 +1,12 @@
-package me.indian.discord.config.sub;
+package me.indian.discord.config;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.Header;
 
+@Header("################################################################")
+@Header("#           Ustawienia kanałów z statystykami                  #")
+@Header("################################################################")
 public class StatsChannelsConfig extends OkaeriConfig {
 
     @Comment({""})

@@ -7,7 +7,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
 import me.indian.discord.DiscordExtension;
-import me.indian.discord.config.sub.StatsChannelsConfig;
+import me.indian.discord.config.StatsChannelsConfig;
 import me.indian.discord.jda.DiscordJDA;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
@@ -20,13 +20,13 @@ public class StatsChannelsManager {
     private final Timer timer;
     private final Guild guild;
     private final long onlinePlayersID, tpsID;
-    private int latsTPS;
+    private double latsTPS;
     private VoiceChannel onlinePlayersChannel, tpsChannel;
 
     public StatsChannelsManager(final DiscordExtension discordExtension, final DiscordJDA DiscordJDA) {
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
         this.logger = discordExtension.getLogger();
-        this.statsChannelsConfig = discordExtension.getConfig().getBotConfig().getStatsChannelsConfig();
+        this.statsChannelsConfig = discordExtension.getStatsChannelsConfig();
         this.timer = new Timer("Discord Channel Manager Timer", true);
         this.onlinePlayersID = this.statsChannelsConfig.getOnlinePlayersID();
         this.tpsID = this.statsChannelsConfig.getTpsID();
@@ -46,7 +46,7 @@ public class StatsChannelsManager {
             this.logger.debug("(TPS) Nie można odnaleźć kanału głosowego z ID &b " + this.onlinePlayersID);
     }
 
-    public void setTpsCount(final int tps) {
+    public void setTpsCount(final double tps) {
         if (this.tpsChannel != null) {
             if (tps == this.latsTPS) return;
             this.latsTPS = tps;

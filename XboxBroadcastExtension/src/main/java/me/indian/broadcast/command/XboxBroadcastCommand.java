@@ -15,6 +15,7 @@ public class XboxBroadcastCommand extends Command {
         this.xboxBroadcastExtension = xboxBroadcastExtension;
         this.sessionManager = this.xboxBroadcastExtension.getSessionManager();
 
+        this.addOption("reload" , "Przeładowuje konfiguracje");
         this.addOption("restart", "Ponowne uruchomienie połączenia z Xbox Live.");
         this.addOption("account list", "Lista kont");
         this.addOption("account <add/remove> <sub-session-id>", "Dodaj/Usuń konto");
@@ -32,22 +33,28 @@ public class XboxBroadcastCommand extends Command {
             return true;
         }
 
-        if (args[0].equalsIgnoreCase("restart")) {
-            if (this.commandSender == CommandSender.PLAYER) {
-                this.sendMessage("&cTo polecenie można uruchomić tylko z konsoli.");
-                return true;
+        if (args[0].equalsIgnoreCase("reload")) {
+            try {
+                this.xboxBroadcastExtension.reloadConfig();
+                this.sendMessage("&aPrzeładowano pliki konfiguracyjne");
+            } catch (final Exception exception) {
+                this.xboxBroadcastExtension.getLogger().error("&cNie udało się przeładować configu", exception);
+                this.sendMessage("&cNie udało się przeładować plików konfiguracyjnych");
             }
+            return true;
+        }
 
+        if (this.commandSender == CommandSender.PLAYER) {
+            this.sendMessage("&cTo polecenie można uruchomić tylko z konsoli.");
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("restart")) {
             this.xboxBroadcastExtension.restart();
             return true;
         }
 
         if (args[0].equalsIgnoreCase("account")) {
-            if (this.commandSender == CommandSender.PLAYER) {
-                this.sendMessage("&cTo polecenie można uruchomić tylko z konsoli.");
-                return true;
-            }
-
             if (args.length == 2 && args[1].equalsIgnoreCase("list")) {
                 this.sessionManager.listSessions();
                 return true;

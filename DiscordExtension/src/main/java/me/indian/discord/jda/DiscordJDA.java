@@ -83,12 +83,6 @@ public class DiscordJDA {
         this.listeners = new ArrayList<>();
         this.mentionPatternCache = new HashMap<>();
 
-
-        this.listeners.add(new CommandListener(this, this.discordExtension));
-        this.listeners.add(new MessageListener(this, this.discordExtension));
-//        this.listeners.add(new ConsoleListener(this, this.discordExtension));
-        this.listeners.add(new MentionPatternCacheListener(this, this.mentionPatternCache));
-
     }
 
     public void init() {
@@ -107,7 +101,10 @@ public class DiscordJDA {
                 return;
             }
 
-            final long startTime = System.currentTimeMillis();
+            this.listeners.add(new CommandListener(this.discordExtension));
+            this.listeners.add(new MessageListener(this.discordExtension));
+//        this.listeners.add(new ConsoleListener(this, this.discordExtension));
+            this.listeners.add(new MentionPatternCacheListener(this, this.mentionPatternCache));
 
             try {
                 this.jda = JDABuilder.create(this.botConfig.getToken(), this.getGatewayIntents())
@@ -151,7 +148,7 @@ public class DiscordJDA {
 //                this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
 //            }
 
-            this.linkingManager = new LinkingManager(this.discordExtension, this);
+            this.linkingManager = new LinkingManager(this.discordExtension);
             this.statsChannelsManager = new StatsChannelsManager(this.discordExtension, this);
             this.statsChannelsManager.init();
 
@@ -159,7 +156,7 @@ public class DiscordJDA {
                 try {
                     listener.init();
                     this.jda.addEventListener(listener);
-//                    this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
+                    this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
                 } catch (final Exception exception) {
                     this.logger.critical("Wystąpił błąd podczas ładowania listeneru: &b" + listener.getClass().getSimpleName(), exception);
                     throw exception;

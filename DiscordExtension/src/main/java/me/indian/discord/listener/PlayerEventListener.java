@@ -15,7 +15,7 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.MessagesConfig;
-import me.indian.discord.config.sub.LinkingConfig;
+import me.indian.discord.config.LinkingConfig;
 import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
@@ -38,7 +38,7 @@ public class PlayerEventListener extends Listener {
         this.messagesConfig = discordExtension.getMessagesConfig();
         this.discordJDA = discordExtension.getDiscordJDA();
         this.linkingManager = this.discordJDA.getLinkingManager();
-        this.linkingConfig = discordExtension.getConfig().getBotConfig().getLinkingConfig();
+        this.linkingConfig = discordExtension.getLinkingConfig();
         this.cachedPrefixes = new HashMap<>();
     }
 

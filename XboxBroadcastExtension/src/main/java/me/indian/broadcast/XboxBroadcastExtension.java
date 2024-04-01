@@ -156,6 +156,10 @@ public class XboxBroadcastExtension extends Extension {
         return this.config;
     }
 
+    public void reloadConfig(){
+        this.config = (ExtensionConfig) this.config.load(true);
+    }
+
     public SessionInfo getSessionInfo() {
         return this.sessionInfo;
     }

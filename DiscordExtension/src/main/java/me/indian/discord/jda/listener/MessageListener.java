@@ -16,7 +16,7 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.MessagesConfig;
-import me.indian.discord.config.sub.LinkingConfig;
+import me.indian.discord.config.LinkingConfig;
 import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
@@ -36,6 +36,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class MessageListener extends ListenerAdapter implements JDAListener {
 
+    private final DiscordExtension discordExtension;
     private final DiscordJDA discordJDA;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
@@ -46,8 +47,9 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private final Map<Long, Message> messagesMap;
     private TextChannel textChannel;
 
-    public MessageListener(final DiscordJDA DiscordJDA, final DiscordExtension discordExtension) {
-        this.discordJDA = DiscordJDA;
+    public MessageListener( final DiscordExtension discordExtension) {
+        this.discordExtension = discordExtension;
+        this.discordJDA = this.discordExtension.getDiscordJDA();
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
         this.logger = discordExtension.getLogger();
         this.discordConfig = discordExtension.getConfig();
@@ -116,7 +118,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
         final ServerManager serverManager = this.bdsAutoEnable.getServerManager();
-        final LinkingConfig linkingConfig = this.discordConfig.getBotConfig().getLinkingConfig();
+        final LinkingConfig linkingConfig = this.discordExtension.getLinkingConfig();
 
         if (member == null) return;
 

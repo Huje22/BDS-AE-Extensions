@@ -42,6 +42,24 @@ public class LogBlockCommand extends Command {
             return true;
         }
 
+        if (isOp) {
+            if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("reload")) {
+                    try {
+                        this.extension.reloadConfig();
+                        this.sendMessage("&aPrzeładowano pliki konfiguracyjne");
+                    } catch (final Exception exception) {
+                        this.extension.getLogger().error("&cNie udało się przeładować configu", exception);
+                        this.sendMessage("&cNie udało się przeładować plików konfiguracyjnych");
+                    }
+                    return true;
+                }
+            }
+        } else {
+            this.sendMessage("Nie masz odpowiednich uprawnień do wykonania tego polecenia");
+            return true;
+        }
+
         final Position playerPosition = this.getPosition();
 
         if (this.commandSender == CommandSender.CONSOLE) {
@@ -53,11 +71,6 @@ public class LogBlockCommand extends Command {
             this.sendMessage("&cTwoje pozycje są błędne!");
             return true;
         }
-
-        boolean anyBroken = false;
-        boolean anyPlaced = false;
-        boolean anyOpened = false;
-        boolean anyEntityInteract = false;
 
         int range = 10;
         boolean staticCommonBlocks = true;
@@ -75,8 +88,16 @@ public class LogBlockCommand extends Command {
             }
         }
 
-        final boolean finalCommonBlocks = staticCommonBlocks;
+        this.handleBrokenBlocks(range, playerPosition, staticCommonBlocks);
+        this.handlePlacedBlocks(range, playerPosition, staticCommonBlocks);
+        this.handleOpenedContainers(range, playerPosition, staticCommonBlocks);
+        this.handleInteractedEntities(range, playerPosition);
 
+        return true;
+    }
+
+    private void handleBrokenBlocks(final int range, final Position playerPosition, final boolean staticCommonBlocks) {
+        boolean anyBroken = false;
         this.sendMessage("&a----&bZniszczone bloki w zasięgu&1 " + range + "&b kratek&a----");
         for (final Map.Entry<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> entry : this.blockBreakHistory.entrySet()) {
             if (this.distanceTo(entry.getKey(), playerPosition) <= range) {
@@ -87,7 +108,7 @@ public class LogBlockCommand extends Command {
                     final Position position = event.getBlockPosition();
                     final String blockID = event.getBlockID();
 
-                    if (this.isCommon(blockID, finalCommonBlocks)) {
+                    if (this.isCommon(blockID, staticCommonBlocks)) {
                         anyBroken = true;
                         this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
@@ -100,7 +121,10 @@ public class LogBlockCommand extends Command {
         }
 
         this.sendMessage(" ");
+    }
 
+    private void handlePlacedBlocks(final int range, final Position playerPosition, final boolean staticCommonBlocks) {
+        boolean anyPlaced = false;
         this.sendMessage("&a----&bPostawione bloki w zasięgu&1 " + range + "&b kratek&a----");
         for (final Map.Entry<Position, Map<LocalDateTime, PlayerBlockPlaceEvent>> entry : this.blockPlaceHistory.entrySet()) {
             if (this.distanceTo(entry.getKey(), playerPosition) <= range) {
@@ -111,7 +135,7 @@ public class LogBlockCommand extends Command {
                     final Position position = event.getBlockPosition();
                     final String blockID = event.getBlockID();
 
-                    if (this.isCommon(event.getBlockID(), finalCommonBlocks)) {
+                    if (this.isCommon(event.getBlockID(), staticCommonBlocks)) {
                         anyPlaced = true;
                         this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
@@ -124,7 +148,10 @@ public class LogBlockCommand extends Command {
         }
 
         this.sendMessage(" ");
+    }
 
+    private void handleOpenedContainers(final int range, final Position playerPosition, final boolean staticCommonBlocks) {
+        boolean anyOpened = false;
         this.sendMessage("&a----&bOtworzone kontenery w zasięgu&1 " + range + "&b kratek&a----");
         for (final Map.Entry<Position, Map<LocalDateTime, PlayerInteractContainerEvent>> entry : this.openedContainerHistory.entrySet()) {
             if (this.distanceTo(entry.getKey(), playerPosition) <= range) {
@@ -135,7 +162,7 @@ public class LogBlockCommand extends Command {
                     final Position position = event.getBlockPosition();
                     final String blockID = event.getBlockID();
 
-                    if (this.isCommon(event.getBlockID(), finalCommonBlocks)) {
+                    if (this.isCommon(event.getBlockID(), staticCommonBlocks)) {
                         anyOpened = true;
                         this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
@@ -148,7 +175,10 @@ public class LogBlockCommand extends Command {
         }
 
         this.sendMessage(" ");
+    }
 
+    private void handleInteractedEntities(final int range, final Position playerPosition) {
+        boolean anyEntityInteract = false;
         this.sendMessage("&a----&bInterakcja z mobami posiadającymi kontener w zasięgu&1 " + range + "&b kratek&a----");
         for (final Map.Entry<Position, Map<LocalDateTime, PlayerInteractEntityWithContainerEvent>> entry : this.interactedEntityWithContainerHistory.entrySet()) {
             if (this.distanceTo(entry.getKey(), playerPosition) <= range) {
@@ -165,9 +195,8 @@ public class LogBlockCommand extends Command {
         }
 
         this.sendMessage(" ");
-
-        return true;
     }
+
 
     public String getTime(final LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));

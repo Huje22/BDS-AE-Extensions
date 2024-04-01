@@ -2,13 +2,11 @@ package me.indian.discord.config;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 
 @Header("################################################################")
 @Header("#           Ustawienia wiadomości                              #")
 @Header("################################################################")
-
 public class MessagesConfig extends OkaeriConfig {
 
     @Comment({""})
@@ -17,7 +15,6 @@ public class MessagesConfig extends OkaeriConfig {
     @Comment({"<role> - rola z discord gdy użytkownik ma połączone konta"})
     @Comment({"<player> - nazwa gracza"})
     @Comment({"<message> - wiadomość gracza"})
-    @CustomKey("ChatMessageFormat")
     private boolean formatChat = true;
     private String chatMessageFormat = "&d<role>&r <player> »» <message>";
 

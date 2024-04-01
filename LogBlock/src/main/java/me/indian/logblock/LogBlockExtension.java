@@ -28,4 +28,8 @@ public class LogBlockExtension extends Extension {
     public Config getConfig() {
         return this.config;
     }
+
+    public void reloadConfig() {
+        this.config = (Config) this.config.load(true);
+    }
 }

@@ -14,13 +14,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.discord.DiscordExtension;
-import me.indian.discord.config.sub.LinkingConfig;
+import me.indian.discord.config.LinkingConfig;
 import me.indian.discord.jda.DiscordJDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -33,7 +32,6 @@ public class LinkingManager {
     private final DiscordExtension discordExtension;
     private final BDSAutoEnable bdsAutoEnable;
     private final StatsManager statsManager;
-    private final AppConfigManager appConfigManager;
     private final LinkingConfig linkingConfig;
     private final DiscordJDA discordJDA;
     private final Logger logger;
@@ -42,13 +40,12 @@ public class LinkingManager {
     private final HashMap<Long, String> accountsToLink;
     private final List<Member> linkedMembers;
 
-    public LinkingManager(final DiscordExtension discordExtension, final DiscordJDA DiscordJDA) {
+    public LinkingManager(final DiscordExtension discordExtension) {
         this.discordExtension = discordExtension;
         this.bdsAutoEnable = this.discordExtension.getBdsAutoEnable();
         this.statsManager = this.bdsAutoEnable.getServerManager().getStatsManager();
-        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
-        this.linkingConfig = this.discordExtension.getConfig().getBotConfig().getLinkingConfig();
-        this.discordJDA = DiscordJDA;
+        this.linkingConfig = this.discordExtension.getLinkingConfig();
+        this.discordJDA = this.discordExtension.getDiscordJDA();
         this.logger = this.discordExtension.getLogger();
         this.linkedAccountsJson = new File(this.discordExtension.getDataFolder(), "linkedAccounts.json");
         this.createJson();

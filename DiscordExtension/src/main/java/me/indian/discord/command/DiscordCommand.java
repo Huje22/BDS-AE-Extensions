@@ -11,15 +11,18 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class DiscordCommand extends Command {
 
+    private final DiscordExtension discordExtension;
     private final DiscordJDA discordJDA;
     private final TextChannel textChannel;
 
     public DiscordCommand(final DiscordExtension discordExtension) {
         super("discord", "Komenda do zarządzania Discord ");
+        this.discordExtension = discordExtension;
         this.discordJDA = discordExtension.getDiscordJDA();
         this.textChannel = this.discordJDA.getTextChannel();
 
         this.addOption("help", "Lista poleceń");
+        this.addOption("reload", "Przeładowuje konfiguracje");
         this.addOption("online", "Osoby online mające dostęp do&1 #" + this.textChannel.getName());
         this.addOption("message <wiadomość>", "Wysyła wiadomość do Discord na kanał&1 #" + this.textChannel.getName());
         this.addOption("status <nowy status bota>", "Zmienia status bota");
@@ -54,6 +57,17 @@ public class DiscordCommand extends Command {
 
         if (!isOp) {
             this.sendMessage("Nie masz odpowiednich uprawnień do wykonania tego polecenia");
+            return true;
+        }
+
+        if (args[0].equalsIgnoreCase("reload")) {
+            try {
+                this.discordExtension.reloadConfigs();
+                this.sendMessage("&aPrzeładowano pliki konfiguracyjne");
+            } catch (final Exception exception) {
+                this.discordExtension.getLogger().error("&cNie udało się przeładować configu", exception);
+                this.sendMessage("&cNie udało się przeładować plików konfiguracyjnych");
+            }
             return true;
         }
 

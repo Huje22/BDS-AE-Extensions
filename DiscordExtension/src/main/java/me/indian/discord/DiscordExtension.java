@@ -11,7 +11,9 @@ import me.indian.discord.command.DiscordCommand;
 import me.indian.discord.command.LinkCommand;
 import me.indian.discord.command.UnlinkCommand;
 import me.indian.discord.config.DiscordConfig;
+import me.indian.discord.config.LinkingConfig;
 import me.indian.discord.config.MessagesConfig;
+import me.indian.discord.config.StatsChannelsConfig;
 import me.indian.discord.hook.RestWebsiteHook;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
@@ -25,9 +27,10 @@ import net.dv8tion.jda.api.JDA;
 
 public class DiscordExtension extends Extension {
 
-    private BDSAutoEnable bdsAutoEnable;
     private DiscordConfig config;
     private MessagesConfig messagesConfig;
+    private LinkingConfig linkingConfig;
+    private StatsChannelsConfig statsChannelsConfig;
     private Logger logger;
     private DiscordJDA discordJDA;
     private WebHook webHook;
@@ -35,9 +38,11 @@ public class DiscordExtension extends Extension {
 
     @Override
     public void onEnable() {
-        this.bdsAutoEnable = this.getBdsAutoEnable();
+        final BDSAutoEnable bdsAutoEnable = this.getBdsAutoEnable();
         this.config = this.createConfig(DiscordConfig.class, "config");
         this.messagesConfig = this.createConfig(MessagesConfig.class, "Messages");
+        this.linkingConfig = this.createConfig(LinkingConfig.class, "Linking");
+        this.statsChannelsConfig = this.createConfig(StatsChannelsConfig.class,"StatsChannels");
 
         this.logger = this.getLogger();
 
@@ -49,8 +54,8 @@ public class DiscordExtension extends Extension {
 
         this.discordJDA.init();
 
-        final CommandManager commandManager = this.bdsAutoEnable.getCommandManager();
-        final EventManager eventManager = this.bdsAutoEnable.getEventManager();
+        final CommandManager commandManager = bdsAutoEnable.getCommandManager();
+        final EventManager eventManager = bdsAutoEnable.getEventManager();
 
         if (this.botEnabled) {
             commandManager.registerCommand(new DiscordCommand(this), this);
@@ -63,7 +68,7 @@ public class DiscordExtension extends Extension {
         }
 
         try {
-            final RestWebsite restWebsite = (RestWebsite) this.bdsAutoEnable.getExtensionManager().getExtension("RestWebsite");
+            final RestWebsite restWebsite = (RestWebsite) bdsAutoEnable.getExtensionManager().getExtension("RestWebsite");
             if (restWebsite != null && restWebsite.isEnabled()) {
                 new RestWebsiteHook(this, restWebsite);
                 this.logger.info("Wykryto&b " + restWebsite.getName());
@@ -77,14 +82,6 @@ public class DiscordExtension extends Extension {
     public void onDisable() {
         this.startShutdown();
         this.shutdown();
-    }
-
-    public DiscordConfig getConfig() {
-        return this.config;
-    }
-
-    public MessagesConfig getMessagesConfig() {
-        return this.messagesConfig;
     }
 
     private void startShutdown() {
@@ -115,6 +112,29 @@ public class DiscordExtension extends Extension {
                 }
             }
         }
+    }
+
+    public DiscordConfig getConfig() {
+        return this.config;
+    }
+
+    public MessagesConfig getMessagesConfig() {
+        return this.messagesConfig;
+    }
+
+    public LinkingConfig getLinkingConfig() {
+        return this.linkingConfig;
+    }
+
+    public StatsChannelsConfig getStatsChannelsConfig() {
+        return this.statsChannelsConfig;
+    }
+
+    public void reloadConfigs(){
+        this.config = (DiscordConfig) this.config.load(true);
+        this.messagesConfig = (MessagesConfig) this.messagesConfig.load(true);
+        this.linkingConfig = (LinkingConfig) this.linkingConfig.load(true);
+        this.statsChannelsConfig = (StatsChannelsConfig) this.statsChannelsConfig.load(true);
     }
 
     public DiscordJDA getDiscordJDA() {

@@ -2,7 +2,6 @@ package me.indian.discord.listener;
 
 import java.util.LinkedList;
 import java.util.List;
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
@@ -17,16 +16,15 @@ import me.indian.discord.DiscordExtension;
 import me.indian.discord.embed.component.Field;
 import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
+import me.indian.discord.jda.manager.StatsChannelsManager;
 
 public class ServerListener extends Listener {
 
     private final DiscordJDA discordJDA;
-    private final BDSAutoEnable bdsAutoEnable;
     private double tps, lastTPS;
 
     public ServerListener(final DiscordExtension discordExtension) {
         this.discordJDA = discordExtension.getDiscordJDA();
-        this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
     }
 
     @Override
@@ -38,6 +36,11 @@ public class ServerListener extends Listener {
     public void onTpsChange(final TPSChangeEvent event) {
         this.tps = event.getTps();
         this.lastTPS = event.getLastTps();
+
+        final StatsChannelsManager statsChannelsManager = this.discordJDA.getStatsChannelsManager();
+        if (statsChannelsManager != null) {
+            statsChannelsManager.setTpsCount(this.tps);
+        }
 
         if (this.tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + this.tps + "** TPS");
     }

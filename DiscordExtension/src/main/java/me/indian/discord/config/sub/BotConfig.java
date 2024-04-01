@@ -2,7 +2,6 @@ package me.indian.discord.config.sub;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
 import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Activity;
@@ -52,15 +51,6 @@ public class BotConfig extends OkaeriConfig {
 //    @Comment({""})
 //    @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
 //    private long consoleID = 1L;
-
-    @Comment({""})
-    @Comment({""})
-    private LinkingConfig linkingConfig = new LinkingConfig();
-
-    @Comment({""})
-    @Comment({"Ustawienia kanałów statystyk"})
-    @CustomKey("statsChannels")
-    private StatsChannelsConfig statsChannelsConfig = new StatsChannelsConfig();
 
     @Comment({""})
     @Comment({"Czy pokazać więcej informacji o graczu online w /list ? "})
@@ -131,14 +121,6 @@ public class BotConfig extends OkaeriConfig {
 
     public List<CacheFlag> getDisableCacheFlag() {
         return this.disableCacheFlag;
-    }
-
-    public LinkingConfig getLinkingConfig() {
-        return this.linkingConfig;
-    }
-
-    public StatsChannelsConfig getStatsChannelsConfig() {
-        return this.statsChannelsConfig;
     }
 
     public boolean isAdvancedPlayerList() {

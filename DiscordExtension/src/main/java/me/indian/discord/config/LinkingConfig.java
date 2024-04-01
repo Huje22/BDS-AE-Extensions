@@ -1,10 +1,14 @@
-package me.indian.discord.config.sub;
+package me.indian.discord.config;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.Header;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@Header("################################################################")
+@Header("#           Ustawienia łączenia kont                            #")
+@Header("################################################################")
 public class LinkingConfig extends OkaeriConfig {
 
 

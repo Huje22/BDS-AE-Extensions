@@ -56,6 +56,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
+    private final DiscordExtension discordExtension;
     private final DiscordJDA discordJDA;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
@@ -72,8 +73,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private PackModule packModule;
     private LinkingManager linkingManager;
 
-    public CommandListener(final DiscordJDA discordJDA, final DiscordExtension discordExtension) {
-        this.discordJDA = discordJDA;
+    public CommandListener( final DiscordExtension discordExtension) {
+        this.discordExtension = discordExtension;
+        this.discordJDA = this.discordExtension.getDiscordJDA();
         this.bdsAutoEnable = discordExtension.getBdsAutoEnable();
         this.logger = discordExtension.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
@@ -583,7 +585,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private String hasEnoughHours(final Member member) {
         String hoursMessage = "";
-        final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
+        final long roleID = this.discordExtension.getLinkingConfig().getLinkedPlaytimeRoleID();
         final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
                 .getPlayTime(this.linkingManager.getNameByID(member.getIdLong())), TimeUnit.MILLISECONDS);
         if (hours < 5) {
