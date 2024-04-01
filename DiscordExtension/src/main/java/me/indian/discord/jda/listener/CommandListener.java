@@ -489,7 +489,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                     case "version" -> {
                         final VersionManager versionManager = this.bdsAutoEnable.getVersionManager();
-                        final String current = versionManager.getLatestVersion();
+                        final String current = versionManager.getLoadedVersion();
                         final int protocol = versionManager.getLastKnownProtocol();
                         String latest = versionManager.getLatestVersion();
                         if (latest.equals("")) {
