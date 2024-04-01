@@ -89,7 +89,7 @@ public class LogBlockCommand extends Command {
 
                     if (this.isCommon(blockID, finalCommonBlocks)) {
                         anyBroken = true;
-                        this.sendMessage("&d" + getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
                 }
             }
@@ -113,7 +113,7 @@ public class LogBlockCommand extends Command {
 
                     if (this.isCommon(event.getBlockID(), finalCommonBlocks)) {
                         anyPlaced = true;
-                        this.sendMessage("&d" + getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
                 }
             }
@@ -137,7 +137,7 @@ public class LogBlockCommand extends Command {
 
                     if (this.isCommon(event.getBlockID(), finalCommonBlocks)) {
                         anyOpened = true;
-                        this.sendMessage("&d" + getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
                 }
             }
@@ -155,7 +155,7 @@ public class LogBlockCommand extends Command {
                 anyEntityInteract = true;
                 entry.getValue().forEach((dateTime, event) -> {
                     final Position position = event.getEntityPosition();
-                    this.sendMessage("&d" + getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eMob:&1 " + event.getEntityID() + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                    this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eMob:&1 " + event.getEntityID() + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                 });
             }
         }
@@ -169,7 +169,7 @@ public class LogBlockCommand extends Command {
         return true;
     }
 
-    public static String getTime(final LocalDateTime localDateTime) {
+    public String getTime(final LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
 

@@ -29,11 +29,11 @@ public class PlayerListener extends Listener {
 
     private final LogBlockExtension logBlockExtension;
     private final Config config;
- private final Map<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> blockBreakHistory;
+    private final Map<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> blockBreakHistory;
     private final Map<Position, Map<LocalDateTime, PlayerBlockPlaceEvent>> blockPlaceHistory;
     private final Map<Position, Map<LocalDateTime, PlayerInteractContainerEvent>> openedContainerHistory;
     private final Map<Position, Map<LocalDateTime, PlayerInteractEntityWithContainerEvent>> interactedEntityWithContainerHistory;
-    
+
     public PlayerListener(final LogBlockExtension logBlockExtension) {
         this.logBlockExtension = logBlockExtension;
         this.config = logBlockExtension.getConfig();
@@ -145,7 +145,7 @@ public class PlayerListener extends Listener {
     private <T> boolean saveToFile(final String fileName, final Map<Position, Map<LocalDateTime, T>> map) {
         if (map.isEmpty()) return true;
         try {
-            final String path = this.logBlockExtension.getDataFolder() + File.separator + String.valueOf(LocalDate.now(DateUtil.POLISH_ZONE)) + File.separator;
+            final String path = this.logBlockExtension.getDataFolder() + File.separator + LocalDate.now(DateUtil.POLISH_ZONE) + File.separator;
             final File file = new File(path + DateUtil.getTimeHMS().replace(":", "-") + " " + fileName);
             Files.createDirectories(Path.of(path));
             if (!file.exists()) {
