@@ -52,10 +52,7 @@ public class LinkingConfig extends OkaeriConfig {
 
     public LinkingConfig() {
         if (this.customRoles.isEmpty()) {
-            this.customRoles.put(1204425453109121054L, "\uE400");
-            this.customRoles.put(925851131698098226L, "\uE400");
-            this.customRoles.put(927545485512826880L, "\uE401");
-            this.customRoles.put(925793764822368286L, "\uE405");
+            this.customRoles.put(1138353019667361833L, "&bOWNER&f");
         }
     }
 
