@@ -58,21 +58,21 @@ public class LogBlockCommand extends Command {
         boolean staticCommonBlocks = true;
 
         if (args.length == 1) {
-if (args[0].equalsIgnoreCase("reload")) {
-    if (!isOp) {
-            this.sendMessage("Nie masz odpowiednich uprawnień do wykonania tego polecenia");
-            return true;
-    }
-                    try {
-                        this.extension.reloadConfig();
-                        this.sendMessage("&aPrzeładowano pliki konfiguracyjne");
-                    } catch (final Exception exception) {
-                        this.extension.getLogger().error("&cNie udało się przeładować configu", exception);
-                        this.sendMessage("&cNie udało się przeładować plików konfiguracyjnych");
-                    }
+            if (args[0].equalsIgnoreCase("reload")) {
+                if (!isOp) {
+                    this.sendMessage("Nie masz odpowiednich uprawnień do wykonania tego polecenia");
                     return true;
-}
-            
+                }
+                try {
+                    this.extension.reloadConfig();
+                    this.sendMessage("&aPrzeładowano pliki konfiguracyjne");
+                } catch (final Exception exception) {
+                    this.extension.getLogger().error("&cNie udało się przeładować configu", exception);
+                    this.sendMessage("&cNie udało się przeładować plików konfiguracyjnych");
+                }
+                return true;
+            }
+
             try {
                 range = Integer.parseInt(args[0]);
             } catch (final NumberFormatException ignored) {
