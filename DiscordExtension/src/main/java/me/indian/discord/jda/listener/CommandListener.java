@@ -17,6 +17,9 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.player.Controller;
+import me.indian.bds.player.DeviceOS;
+import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.allowlist.AllowlistManager;
 import me.indian.bds.server.allowlist.component.AllowlistPlayer;
@@ -305,56 +308,69 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     case "playerinfo" -> {
                         final OptionMapping mention = event.getOption("player");
                         if (mention != null) {
-                            final Member player = mention.getAsMember();
-                            if (player != null) {
-                                final String discordPlayerName = this.discordJDA.getUserName(player, player.getUser());
-                                final long id = player.getIdLong();
+                            final Member playerMember = mention.getAsMember();
+                            if (playerMember != null) {
+                                final String discordPlayerName = this.discordJDA.getUserName(playerMember, playerMember.getUser());
+                                final long id = playerMember.getIdLong();
                                 if (this.linkingManager.isLinked(id)) {
                                     final String playerName = this.linkingManager.getNameByID(id);
-                                    final long xuid = this.statsManager.getXuid(playerName);
-                                    final EmbedBuilder embedBuilder = new EmbedBuilder()
-                                            .setTitle("Informacje o graczu " + this.linkingManager.getNameByID(id)).setColor(Color.BLUE);
-
 
                                     if (playerName == null) {
                                         event.getHook().editOriginal("Nie udało się pozyskać informacji na temat **" + discordPlayerName + "**").queue();
                                         return;
                                     }
 
-                                    embedBuilder.setThumbnail(GeyserUtil.getBedrockSkinHead(xuid));
+                                    final PlayerStatistics player = this.statsManager.getPlayer(playerName);
 
-
-                                    final StringBuilder description = new StringBuilder();
-
-                                    description.append("**Nick:** ").append(playerName).append("\n");
-                                    description.append("**XUID:** ").append(this.statsManager.getXuidByName(playerName)).append("\n");
-
-                                    final List<String> oldNames = this.statsManager.getOldNames(playerName);
-                                    if (oldNames != null && !oldNames.isEmpty()) {
-                                        description.append("**Znany również jako:** ").append(MessageUtil.stringListToString(oldNames, " ,")).append("\n");
+                                    if (player == null) {
+                                        event.getHook().editOriginal("Nie udało się pozyskać informacji na temat **" + playerName + "**").queue();
+                                        return;
                                     }
 
-                                    final long firstJoin = this.statsManager.getFirstJoin(playerName);
-                                    final long lastJoin = this.statsManager.getLastJoin(playerName);
-                                    final long lastQuit = this.statsManager.getLastQuit(playerName);
+                                    final long xuid = player.getXuid();
+                                    final EmbedBuilder embedBuilder = new EmbedBuilder()
+                                            .setTitle("Informacje o graczu " + this.linkingManager.getNameByID(id)).setColor(Color.BLUE);
+
+
+                                    embedBuilder.setThumbnail(GeyserUtil.getBedrockSkinHead(xuid));
+                                    embedBuilder.addField("Nick", playerName, true);
+                                    embedBuilder.addField("XUID", String.valueOf(xuid), true);
+
+                                    final DeviceOS deviceOS = player.getLastDevice();
+                                    final Controller controller = player.getLastController();
+
+                                    if (deviceOS != DeviceOS.UNKNOWN || controller != Controller.UNKNOWN) {
+                                        embedBuilder.addBlankField(false);
+                                        embedBuilder.addField("Platforma", deviceOS.toString(), true);
+                                        embedBuilder.addField("Kontroler", controller.toString(), true);
+                                    }
+
+                                    final List<String> oldNames = player.getOldNames();
+                                    if (oldNames != null && !oldNames.isEmpty()) {
+                                        embedBuilder.addField("Znany również jako", MessageUtil.stringListToString(oldNames, " ,"), false);
+                                    } else {
+                                        embedBuilder.addField("Znany również jako", "__Brak danych o innych nick__", false);
+                                    }
+
+                                    final long firstJoin = player.getFirstJoin();
+                                    final long lastJoin = player.getLastJoin();
+                                    final long lastQuit = player.getLastQuit();
 
                                     if (firstJoin != 0 && firstJoin != -1) {
-                                        description.append("**Dołączył pierwszy raz:** ").append(this.getTime(DateUtil.longToLocalDateTime(firstJoin))).append("\n");
+                                        embedBuilder.addField("Pierwsze dołączenie", this.getTime(DateUtil.longToLocalDateTime(firstJoin)), true);
                                     }
                                     if (lastJoin != 0 && lastJoin != -1) {
-                                        description.append("**Dołączył ostatni raz:** ").append(this.getTime(DateUtil.longToLocalDateTime(lastJoin))).append("\n");
+                                        embedBuilder.addField("Ostatnie dołączenie", this.getTime(DateUtil.longToLocalDateTime(lastJoin)), true);
                                     }
 
                                     if (lastQuit != 0 && lastQuit != -1) {
-                                        description.append("**Opuścił ostatni raz:** ").append(this.getTime(DateUtil.longToLocalDateTime(lastQuit))).append("\n");
+                                        embedBuilder.addField("Ostatnie opuszczenie", this.getTime(DateUtil.longToLocalDateTime(lastQuit)), true);
                                     }
 
-                                    description.append("**Śmierci:** ").append(this.statsManager.getDeaths(playerName)).append("\n");
-                                    description.append("**Czas gry:** ").append(DateUtil.formatTime(this.statsManager.getPlayTime(playerName), List.of('d', 'h', 'm', 's'))).append("\n");
-                                    description.append("**Postawione bloki:** ").append(this.statsManager.getBlockPlaced(playerName)).append("\n");
-                                    description.append("**Zniszczone bloki:** ").append(this.statsManager.getBlockBroken(playerName)).append("\n");
-
-                                    embedBuilder.setDescription(description.toString());
+                                    embedBuilder.addField("Śmierci", String.valueOf(player.getDeaths()), false);
+                                    embedBuilder.addField("Czas gry", DateUtil.formatTime(player.getPlaytime(), List.of('d', 'h', 'm', 's')), false);
+                                    embedBuilder.addField("Postawione bloki", String.valueOf(player.getBlockPlaced()), true);
+                                    embedBuilder.addField("Zniszczone bloki", String.valueOf(player.getBlockBroken()), true);
 
                                     String footer = "";
 
@@ -563,7 +579,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     public String getTime(final LocalDateTime localDateTime) {
-        return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy"));
+        return localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy\nHH:mm:ss"));
     }
 
     private List<String> getLinkedAccounts() {
