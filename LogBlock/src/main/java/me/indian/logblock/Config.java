@@ -4,7 +4,7 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import java.util.List;
 
-@SuppressWarnings({"FieldMayBeFinal", "CanBeLocalVariable"})
+@SuppressWarnings({"FieldMayBeFinal", "CanBeLocalVariable", "FieldCanBeLocal"})
 public class Config extends OkaeriConfig {
 
     @Comment({""})
@@ -14,11 +14,12 @@ public class Config extends OkaeriConfig {
     @Comment({""})
     @Comment({"Maksymalny rozmiar mapy z danymi"})
     @Comment({"Po przekroczeniu tej wartości mapa zostanie zapisana do pliku"})
-    @Comment({"UWAGA Żadna z tych ilości nie była testowana :)"})
-    private int maxBrokenBlockMapSize = 10000;
-    private int maxPlacedBlockMapSize = 10000;
-    private int maxOpenedContainerMapSize = 10000;
-    private int maxInteractedEntityWithContainer = 10000;
+    @Comment({"Większa liczba = więcej używanego ramu + więcej danych w aktualnym logblock"})
+    @Comment({"Największa liczba jaką możesz tu użyć to: " + Long.MAX_VALUE})
+    private long maxBrokenBlockMapSize = 100000;
+    private long maxPlacedBlockMapSize = 100000;
+    private long maxOpenedContainerMapSize = 100000;
+    private long maxInteractedEntityWithContainer = 100000;
 
     @Comment({""})
     @Comment({"Lista bloków które nie musza zostać pokazane "})
@@ -31,19 +32,19 @@ public class Config extends OkaeriConfig {
         return this.logBlockForAll;
     }
 
-    public int getMaxBrokenBlockMapSize() {
+    public long getMaxBrokenBlockMapSize() {
         return this.maxBrokenBlockMapSize;
     }
 
-    public int getMaxPlacedBlockMapSize() {
+    public long getMaxPlacedBlockMapSize() {
         return this.maxPlacedBlockMapSize;
     }
 
-    public int getMaxOpenedContainerMapSize() {
+    public long getMaxOpenedContainerMapSize() {
         return this.maxOpenedContainerMapSize;
     }
 
-    public int getMaxInteractedEntityWithContainer() {
+    public long getMaxInteractedEntityWithContainer() {
         return this.maxInteractedEntityWithContainer;
     }
 
