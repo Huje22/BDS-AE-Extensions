@@ -12,23 +12,25 @@ import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerInteractContainerEvent;
 import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.logblock.LogBlockExtension;
-import me.indian.logblock.listener.PlayerListener;
+import me.indian.logblock.history.HistoryManager;
 
 public class LogBlockCommand extends Command {
 
     private final LogBlockExtension extension;
+    private final HistoryManager historyManager;
     private final Map<Position, Map<LocalDateTime, PlayerBlockBreakEvent>> blockBreakHistory;
     private final Map<Position, Map<LocalDateTime, PlayerBlockPlaceEvent>> blockPlaceHistory;
     private final Map<Position, Map<LocalDateTime, PlayerInteractContainerEvent>> openedContainerHistory;
     private final Map<Position, Map<LocalDateTime, PlayerInteractEntityWithContainerEvent>> interactedEntityWithContainerHistory;
 
-    public LogBlockCommand(final LogBlockExtension extension, final PlayerListener playerListener) {
+    public LogBlockCommand(final LogBlockExtension extension) {
         super("logblock", "Informacje na temat interakcji w danym obszarze");
         this.extension = extension;
-        this.blockBreakHistory = playerListener.getBlockBreakHistory();
-        this.blockPlaceHistory = playerListener.getBlockPlaceHistory();
-        this.openedContainerHistory = playerListener.getOpenedContainerHistory();
-        this.interactedEntityWithContainerHistory = playerListener.getInteractedEntityWithContainerHistory();
+        this.historyManager = extension.getHistoryManager();
+        this.blockBreakHistory = this.historyManager.getBrokenBlockHistory().getHistory();
+        this.blockPlaceHistory = this.historyManager.getPlacedBlockHistory().getHistory();
+        this.openedContainerHistory = this.historyManager.getOpenedContainerHistory().getHistory();
+        this.interactedEntityWithContainerHistory = this.historyManager.getInteractedEntityWithContainerHistory().getHistory();
 
         this.addAlliases(List.of("lb"));
         this.addOption("range <int>", "Liczba z jaką zostanie przeszukany teren");
