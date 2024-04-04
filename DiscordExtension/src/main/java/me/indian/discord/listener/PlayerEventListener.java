@@ -44,21 +44,21 @@ public class PlayerEventListener extends Listener {
 
     @Override
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        final String playerName = event.getPlayerName();
+        final String playerName = event.getPlayer().getPlayerName();
         this.discordJDA.sendJoinMessage(playerName.replaceAll("\"", ""));
         this.setPlayerPrefix(playerName);
     }
 
     @Override
     public void onPlayerQuit(final PlayerQuitEvent event) {
-        final String playerName = event.getPlayerName();
+        final String playerName = event.getPlayer().getPlayerName();
         this.discordJDA.sendLeaveMessage(playerName.replaceAll("\"", ""));
         this.cachedPrefixes.remove(playerName);
     }
 
     @Override
     public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
-        final String playerName = event.getPlayerName();
+        final String playerName = event.getPlayer().getPlayerName();
         final String message = event.getMessage();
         final boolean appHandled = event.isAppHandled();
 
@@ -111,7 +111,7 @@ public class PlayerEventListener extends Listener {
 
     @Override
     public void onPlayerDeath(final PlayerDeathEvent event) {
-        this.discordJDA.sendDeathMessage(event.getPlayerName().replaceAll("\"", ""), event.getDeathMessage(),
+        this.discordJDA.sendDeathMessage(event.getPlayer().getPlayerName().replaceAll("\"", ""), event.getDeathMessage(),
                 event.getKillerName(), event.getUsedItemName());
     }
 
@@ -119,7 +119,7 @@ public class PlayerEventListener extends Listener {
     public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
         this.discordJDA.log("Użycie polecenia",
                 playerCommandEvent.getCommand()
-                , new Footer(playerCommandEvent.getPlayerName()));
+                , new Footer(playerCommandEvent.getPlayer().getPlayerName()));
     }
 
     private void setPlayerPrefix(final String playerName) {

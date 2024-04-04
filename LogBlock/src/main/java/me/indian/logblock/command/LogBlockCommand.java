@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 import me.indian.bds.event.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
@@ -46,7 +45,7 @@ public class LogBlockCommand extends Command {
 
         final Position playerPosition = this.getPosition();
 
-        if (this.commandSender == CommandSender.CONSOLE) {
+        if (this.player == null) {
             this.sendMessage("&4Musisz być graczem!");
             return true;
         }
@@ -109,7 +108,7 @@ public class LogBlockCommand extends Command {
 
                     if (this.isCommon(blockID, staticCommonBlocks)) {
                         anyBroken = true;
-                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayer().getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
                 }
             }
@@ -136,7 +135,7 @@ public class LogBlockCommand extends Command {
 
                     if (this.isCommon(event.getBlockID(), staticCommonBlocks)) {
                         anyPlaced = true;
-                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayer().getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
                 }
             }
@@ -163,7 +162,7 @@ public class LogBlockCommand extends Command {
 
                     if (this.isCommon(event.getBlockID(), staticCommonBlocks)) {
                         anyOpened = true;
-                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                        this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayer().getPlayerName() + " &eBlok:&1 " + blockID + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                     }
                 }
             }
@@ -184,7 +183,7 @@ public class LogBlockCommand extends Command {
                 anyEntityInteract = true;
                 entry.getValue().forEach((dateTime, event) -> {
                     final Position position = event.getEntityPosition();
-                    this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayerName() + " &eMob:&1 " + event.getEntityID() + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
+                    this.sendMessage("&d" + this.getTime(dateTime) + " &aGracz&b " + event.getPlayer().getPlayerName() + " &eMob:&1 " + event.getEntityID() + " &cX:" + position.x() + " &aY:" + position.y() + " &9Z:" + position.z());
                 });
             }
         }

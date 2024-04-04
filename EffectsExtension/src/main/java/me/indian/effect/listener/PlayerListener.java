@@ -26,13 +26,13 @@ public class PlayerListener extends Listener {
     @Override
     public void onPlayerJoin(final PlayerJoinEvent event) {
         this.effectsService.execute(() ->
-                this.config.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayerName()))));
+                this.config.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayer().getPlayerName()))));
     }
 
     @Override
     public void onPlayerSpawn(final PlayerSpawnEvent event) {
         this.effectsService.execute(() ->
-                this.config.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayerName()))));
+                this.config.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayer().getPlayerName()))));
 
     }
 }

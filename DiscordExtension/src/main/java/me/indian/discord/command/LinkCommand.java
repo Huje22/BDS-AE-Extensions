@@ -1,7 +1,6 @@
 package me.indian.discord.command;
 
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.jda.manager.LinkingManager;
@@ -17,7 +16,7 @@ public class LinkCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (this.commandSender == CommandSender.CONSOLE) {
+        if (this.player == null) {
             this.sendMessage("&cPolecenie jest tylko dla graczy");
             return true;
         }
@@ -28,14 +27,14 @@ public class LinkCommand extends Command {
             return true;
         }
 
-        if (linkingManager.isLinked(this.playerName)) {
+        if (linkingManager.isLinked(this.player.getPlayerName())) {
             this.sendMessage(
-                    "&aTwoje konto jest już połączone z ID:&b " + linkingManager.getIdByName(this.playerName));
+                    "&aTwoje konto jest już połączone z ID:&b " + linkingManager.getIdByName(this.player.getPlayerName()));
             return true;
         }
 
         final String code = MessageUtil.generateCode(6);
-        linkingManager.addAccountToLink(this.playerName, code);
+        linkingManager.addAccountToLink(this.player.getPlayerName(), code);
         this.sendMessage("&aTwój kod do połączenia konto to:&b " + code);
         this.sendMessage("&aUżyj na naszym discord&b /link&a aby go użyć");
 

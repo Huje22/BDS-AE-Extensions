@@ -17,7 +17,7 @@ public class ServerListener extends Listener {
 
     @Override
     public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
-        final String playerName = event.getPlayerName();
+        final String playerName = event.getPlayer().getPlayerName();
         final String message = event.getMessage();
 
 

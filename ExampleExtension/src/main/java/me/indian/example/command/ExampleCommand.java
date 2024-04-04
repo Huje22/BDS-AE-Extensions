@@ -13,7 +13,7 @@ public class ExampleCommand extends Command {
 
     public ExampleCommand(final ExampleExtension exampleExtension) {
         super("example", "Przykładowa komenda");
-        BDSAutoEnable bdsAutoEnable = exampleExtension.getBdsAutoEnable();
+        final BDSAutoEnable bdsAutoEnable = exampleExtension.getBdsAutoEnable();
         this.statsManager = bdsAutoEnable.getServerManager().getStatsManager();
 
 
@@ -33,12 +33,10 @@ public class ExampleCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        final String playerName = this.playerName;
-
-        switch (this.commandSender) {
-            case PLAYER -> this.sendMessage("&aPolecenie wykonane przez&3 gracza&b " + playerName);
-            //W wypadku konsoli `this.playerName` zwróci nam `CONSOLE`
-            case CONSOLE -> this.sendMessage("&aPolecenie wykonane przez&3 konsole &d(&b " + playerName + "&d)");
+        if(this.player != null){
+            this.sendMessage("&aPolecenie wykonane przez&3 gracza&b " + this.player.getPlayerName());
+        } else {
+            this.sendMessage("&aPolecenie wykonane przez&3 konsole");
         }
 
         if (args.length == 0) {

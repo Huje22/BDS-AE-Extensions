@@ -1,7 +1,6 @@
 package me.indian.discord.command;
 
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.jda.manager.LinkingManager;
 
@@ -19,17 +18,17 @@ public class UnlinkCommand extends Command {
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (args.length == 0) {
-            if (this.commandSender == CommandSender.CONSOLE) {
+            if (this.player == null) {
                 this.sendMessage("&cPolecenie jest tylko dla graczy");
                 return true;
             }
-            if (this.linkingManager.isLinked(this.playerName)) {
+            if (this.linkingManager.isLinked(this.player.getPlayerName())) {
                 if (!this.linkingManager.isCanUnlink() && !isOp) {
                     this.sendMessage("&cNie możesz sobie sam rozłączyć kont");
                     return true;
                 }
-                this.linkingManager.unLinkAccount(this.playerName);
-                this.sendMessage("Rozłączono konto " + this.playerName);
+                this.linkingManager.unLinkAccount(this.player.getPlayerName());
+                this.sendMessage("Rozłączono konto " + this.player.getPlayerName());
             } else {
                 this.sendMessage("&cNie posiadasz połączonych kont!");
             }

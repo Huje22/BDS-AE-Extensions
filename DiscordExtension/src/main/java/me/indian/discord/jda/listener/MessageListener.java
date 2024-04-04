@@ -168,7 +168,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                         }
                     }
 
-                    if (serverManager.isMuted(linkingManager.getNameByID(id))) {
+                    if (serverManager.isMuted(linkingManager.getXuidByID(id))) {
                         this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
                         message.delete().queue();
                         this.discordJDA.log("Wyciszenie w Minecraft",

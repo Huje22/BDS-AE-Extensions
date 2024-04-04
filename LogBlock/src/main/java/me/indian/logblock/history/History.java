@@ -1,6 +1,5 @@
 package me.indian.logblock.history;
 
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.file.Files;
@@ -13,13 +12,8 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.event.Event;
 import me.indian.bds.event.Position;
-import me.indian.bds.event.player.PlayerBlockBreakEvent;
-import me.indian.bds.event.player.PlayerBlockPlaceEvent;
-import me.indian.bds.event.player.PlayerInteractContainerEvent;
-import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.GsonUtil;
 import me.indian.logblock.LogBlockExtension;
 import me.indian.logblock.util.MarkDownUtil;
 
@@ -61,7 +55,6 @@ public abstract class History {
                 }
             }
 
-            final Gson gson = GsonUtil.getGson();
 
             try (final FileWriter writer = new FileWriter(file)) {
                 writer.write("# Dostępne jest aż " + map.size() + " pozycji \n\n");
@@ -76,19 +69,7 @@ public abstract class History {
                         final LocalDateTime dateTime = sortedEntry.getKey();
                         final T value = sortedEntry.getValue();
 
-                        String event = "";
-
-                        if (value instanceof PlayerBlockBreakEvent) {
-                            event = gson.toJson(value, PlayerBlockBreakEvent.class);
-                        } else if (value instanceof PlayerBlockPlaceEvent) {
-                            event = gson.toJson(value, PlayerBlockPlaceEvent.class);
-                        } else if (value instanceof PlayerInteractContainerEvent) {
-                            event = gson.toJson(value, PlayerInteractContainerEvent.class);
-                        } else if (value instanceof PlayerInteractEntityWithContainerEvent) {
-                            event = gson.toJson(value, PlayerInteractEntityWithContainerEvent.class);
-                        }
-
-                        writer.write(MarkDownUtil.formatInfo(this.getTime(dateTime), event));
+                        writer.write(MarkDownUtil.formatInfo(this.getTime(dateTime), (Event) value));
                     }
                 }
             }
@@ -104,6 +85,8 @@ public abstract class History {
     public abstract void saveHistory();
 
     protected abstract void clearHistory();
+
+
 
     protected String getTime(final LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy"));
