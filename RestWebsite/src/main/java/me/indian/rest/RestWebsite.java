@@ -3,6 +3,7 @@ package me.indian.rest;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
+import io.javalin.http.HttpResponseException;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.util.RateLimiter;
 import java.io.File;
@@ -76,7 +77,7 @@ public class RestWebsite extends Extension {
                         );
             });
 
-            app.error(404, ctx -> {
+            this.app.error(404, ctx -> {
                 ctx.contentType("application/json").result("{\"message\": \"Nie odnaleziono żądanego zasobu\"}");
             });
 
@@ -105,7 +106,12 @@ public class RestWebsite extends Extension {
     }
 
     public void addRateLimit(final Context ctx) {
-        this.limiter.incrementCounter(ctx, this.config.getRateLimit());
+        final int limit = this.config.getRateLimit();
+        try {
+            this.limiter.incrementCounter(ctx, limit);
+        } catch (final Exception exception) {
+            throw new HttpResponseException(HttpStatus.TOO_MANY_REQUESTS.getCode(), "Osiągnięto limit (" + limit + ") zapytań na minute!");
+        }
     }
 
     public void incorrectJsonMessage(final Context ctx, final String json) {
