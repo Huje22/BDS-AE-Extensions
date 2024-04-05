@@ -1,7 +1,6 @@
 package me.indian.broadcast.command;
 
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 import me.indian.broadcast.XboxBroadcastExtension;
 import me.indian.broadcast.core.SessionManager;
 
@@ -44,7 +43,7 @@ public class XboxBroadcastCommand extends Command {
             return true;
         }
 
-        if (this.commandSender == CommandSender.PLAYER) {
+        if (this.player != null) {
             this.sendMessage("&cTo polecenie można uruchomić tylko z konsoli.");
             return true;
         }
