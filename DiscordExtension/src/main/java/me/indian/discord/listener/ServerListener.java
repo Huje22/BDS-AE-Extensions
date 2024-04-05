@@ -80,6 +80,7 @@ public class ServerListener extends Listener {
                 this.discordJDA.sendMessage(MessageUtil.getStackTraceAsString(throwable));
             }
         } else {
+            //TODO: Ulepszyć te message localized itp
             this.discordJDA.log("Alert " + state, event.getMessage(),
                     fieldList,
                     new Footer((additionalInfo == null ? (throwable == null ? "" : throwable.getLocalizedMessage()) : additionalInfo)));
