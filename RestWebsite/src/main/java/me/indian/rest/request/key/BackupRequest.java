@@ -1,5 +1,6 @@
 package me.indian.rest.request.key;
 
+import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
@@ -12,6 +13,7 @@ import me.indian.bds.util.GsonUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
+import me.indian.rest.component.Info;
 import me.indian.rest.util.APIKeyUtil;
 
 public class BackupRequest extends HttpHandler {
@@ -20,18 +22,20 @@ public class BackupRequest extends HttpHandler {
     private final Logger logger;
     private final Javalin app;
     private final BackupModule backupModule;
+    private final Gson gson;
 
     public BackupRequest(final RestWebsite restWebsite) {
         this.restWebsite = restWebsite;
         this.logger = restWebsite.getLogger();
         this.app = this.restWebsite.getApp();
         this.backupModule = restWebsite.getBdsAutoEnable().getWatchDog().getBackupModule();
+        this.gson = GsonUtil.getGson();
     }
 
     @Override
     public void handle(final Javalin app) {
         app.get("/api/{api-key}/backup/", ctx -> {
-            this.restWebsite.addRateLimit(ctx);
+             if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isBackupKey(ctx)) return;
             final List<String> backupsNames = this.backupModule.getBackupsNames();
 
@@ -41,7 +45,7 @@ public class BackupRequest extends HttpHandler {
         });
 
         this.app.get("/api/{api-key}/backup/{filename}", ctx -> {
-            this.restWebsite.addRateLimit(ctx);
+             if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isBackupKey(ctx)) return;
 
             final String filename = ctx.pathParam("filename");
@@ -60,14 +64,14 @@ public class BackupRequest extends HttpHandler {
                         ctx.status(HttpStatus.OK).result(new FileInputStream(file));
 
                     } else {
-                        ctx.status(HttpStatus.NOT_FOUND).contentType(ContentType.TEXT_PLAIN)
-                                .result("Nie udało nam się odnaleźć pliku tego backup ponieważ już on nie istneieje");
+                        ctx.status(HttpStatus.NOT_FOUND).contentType(ContentType.APPLICATION_JSON)
+                                .result(this.gson.toJson(new Info("Ten plik już nie istnieje", HttpStatus.NOT_FOUND.getCode())));
                     }
                     return;
                 }
             }
-            ctx.status(HttpStatus.NOT_FOUND).contentType(ContentType.TEXT_PLAIN)
-                    .result("Nie udało się odnaleźć backup o nazwie: " + filename);
+            ctx.status(HttpStatus.NOT_FOUND).contentType(ContentType.APPLICATION_JSON)
+                    .result(this.gson.toJson(new Info("Nie udało się odnaleźć backup o nazwie: " + filename, HttpStatus.NOT_FOUND.getCode())));
         });
     }
 }

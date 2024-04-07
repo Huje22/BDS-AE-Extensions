@@ -24,7 +24,7 @@ public class CommandPostRequest extends HttpHandler {
 
     public CommandPostRequest(final RestWebsite restWebsite) {
         this.restWebsite = restWebsite;
-        this.bdsAutoEnable = bdsAutoEnable;
+        this.bdsAutoEnable = restWebsite.getBdsAutoEnable();
         this.logger = this.restWebsite.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.gson = GsonUtil.getGson();
@@ -33,7 +33,7 @@ public class CommandPostRequest extends HttpHandler {
     @Override
     public void handle(final Javalin app) {
         app.post("/command/{api-key}", ctx -> {
-            this.restWebsite.addRateLimit(ctx);
+             if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isServerKey(ctx)) return;
 
             final String ip = ctx.ip();

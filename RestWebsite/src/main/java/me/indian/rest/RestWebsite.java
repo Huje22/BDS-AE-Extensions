@@ -3,7 +3,6 @@ package me.indian.rest;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
-import io.javalin.http.HttpResponseException;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.util.RateLimiter;
 import java.io.File;
@@ -17,13 +16,16 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.rest.component.Info;
 import me.indian.rest.config.RestApiConfig;
 import me.indian.rest.post.key.CommandPostRequest;
 import me.indian.rest.post.key.PlayerInfoPostRequest;
 import me.indian.rest.request.StatsRequest;
 import me.indian.rest.request.key.BackupRequest;
+import me.indian.rest.request.key.ServerLogRequest;
 import me.indian.rest.util.APIKeyUtil;
 import me.indian.rest.util.HTMLUtil;
 import org.jetbrains.annotations.Nullable;
@@ -84,6 +86,7 @@ public class RestWebsite extends Extension {
 
             this.register(new StatsRequest(this));
             this.register(new BackupRequest(this));
+            this.register(new ServerLogRequest(this));
             this.register(new CommandPostRequest(this));
             this.register(new PlayerInfoPostRequest(this));
 
@@ -105,13 +108,18 @@ public class RestWebsite extends Extension {
         this.logger.debug("Zarejestrowano Handler HTTP:&b " + httpHandler.getClass().getSimpleName());
     }
 
-    public void addRateLimit(final Context ctx) {
+    public boolean addRateLimit(final Context ctx) {
         final int limit = this.config.getRateLimit();
         try {
             this.limiter.incrementCounter(ctx, limit);
         } catch (final Exception exception) {
-            throw new HttpResponseException(HttpStatus.TOO_MANY_REQUESTS.getCode(), "Osiągnięto limit (" + limit + ") zapytań na minute!");
+            this.logger.alert("IP&b " + ctx.ip() + "&c przekracza limit&1 " + limit + "&c zapytań na&b minute&c!");
+            ctx.status(HttpStatus.TOO_MANY_REQUESTS)
+                    .contentType(ContentType.APPLICATION_JSON)
+                    .result(GsonUtil.getGson().toJson(new Info("Osiągnięto limit (" + limit + ") zapytań na minute!", HttpStatus.TOO_MANY_REQUESTS.getCode())));
+            return true;
         }
+        return false;
     }
 
     public void incorrectJsonMessage(final Context ctx, final String json) {
@@ -125,16 +133,18 @@ public class RestWebsite extends Extension {
     public void incorrectJsonMessage(final Context ctx, final String json, final @Nullable Exception exception) {
         final String ip = ctx.ip();
 
-        this.logger.debug("&b" + ip + "&r wysła niepoprawny json&1 " + json.replaceAll("\n", ""), exception);
-        ctx.status(HttpStatus.BAD_REQUEST).result("Niepoprawny Json! " + json.replaceAll("\n", ""));
+        ctx.status(HttpStatus.BAD_REQUEST).contentType(ContentType.APPLICATION_JSON)
+                .result(GsonUtil.getGson().toJson(new Info("Niepoprawny Json! " + json.replaceAll("\n", ""), HttpStatus.BAD_REQUEST.getCode())));
+        this.logger.debug("&b" + ip + "&r wysyła niepoprawny json&1 " + json.replaceAll("\n", ""), exception);
     }
 
     public void incorrectJsonMessage(final Context ctx, final @Nullable Exception exception) {
         final String ip = ctx.ip();
         final String requestBody = ctx.body();
 
-        this.logger.debug("&b" + ip + "&r wysła niepoprawny json&1 " + requestBody.replaceAll("\n", ""), exception);
-        ctx.status(HttpStatus.BAD_REQUEST).result("Niepoprawny Json! " + requestBody.replaceAll("\n", ""));
+        this.logger.debug("&b" + ip + "&r wysyła niepoprawny json&1 " + requestBody.replaceAll("\n", ""), exception);
+        ctx.status(HttpStatus.BAD_REQUEST).contentType(ContentType.APPLICATION_JSON)
+                .result(GsonUtil.getGson().toJson(new Info("Niepoprawny Json! " + requestBody.replaceAll("\n", ""), HttpStatus.BAD_REQUEST.getCode())));
     }
 
     private void createHTMLFile() {
@@ -171,6 +181,10 @@ public class RestWebsite extends Extension {
 
         final long minute = MathUtil.minutesTo(1, TimeUnit.MILLISECONDS);
         new Timer("Refresh File Content", true).scheduleAtFixedRate(task, 0, minute);
+    }
+
+    public void reloadConfig() {
+        this.config = (RestApiConfig) this.config.load(true);
     }
 
     public Javalin getApp() {

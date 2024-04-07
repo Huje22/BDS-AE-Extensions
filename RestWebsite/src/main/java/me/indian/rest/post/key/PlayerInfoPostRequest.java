@@ -34,7 +34,7 @@ public class PlayerInfoPostRequest extends HttpHandler {
     @Override
     public void handle(final Javalin app) {
         app.post("/playerInfo/{api-key}", ctx -> {
-            this.restWebsite.addRateLimit(ctx);
+             if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isPowerfulKey(ctx)) {
                 ctx.status(HttpStatus.UNAUTHORIZED);
                 return;

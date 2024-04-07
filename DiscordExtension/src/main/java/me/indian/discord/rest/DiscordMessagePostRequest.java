@@ -14,6 +14,7 @@ import me.indian.discord.rest.component.DiscordMessagePostData;
 import me.indian.discord.webhook.WebHook;
 import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
+import me.indian.rest.component.Info;
 import me.indian.rest.util.APIKeyUtil;
 
 public class DiscordMessagePostRequest extends HttpHandler {
@@ -39,7 +40,7 @@ public class DiscordMessagePostRequest extends HttpHandler {
     @Override
     public void handle(final Javalin app) {
         app.post("/discord/message/{api-key}", ctx -> {
-            this.restWebsite.addRateLimit(ctx);
+             if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isCorrectCustomKey(ctx, this.restAPIConfig.getDiscordKeys())) return;
 
             final String ip = ctx.ip();
@@ -61,23 +62,29 @@ public class DiscordMessagePostRequest extends HttpHandler {
             switch (data.messageType()) {
                 case WEBHOOK -> {
                     if (!this.discordExtension.isWebhookEnabled()) {
-                        ctx.status(HttpStatus.SERVICE_UNAVAILABLE).contentType(ContentType.TEXT_PLAIN).result("Webhook jest wyłączony");
+                        ctx.status(HttpStatus.SERVICE_UNAVAILABLE)
+                                .contentType(ContentType.APPLICATION_JSON)
+                                .result(this.gson.toJson(new Info("Webhook jest wyłączony", HttpStatus.SERVICE_UNAVAILABLE.getCode())));
                         return;
+
                     }
                     this.webHook.sendMessage(data.message());
                 }
 
                 case JDA -> {
                     if (!this.discordExtension.isBotEnabled()) {
-                        ctx.status(HttpStatus.SERVICE_UNAVAILABLE).contentType(ContentType.TEXT_PLAIN).result("Bot jest wyłączony");
+                        ctx.status(HttpStatus.SERVICE_UNAVAILABLE)
+                                .contentType(ContentType.APPLICATION_JSON)
+                                .result(this.gson.toJson(new Info("Bot jest wyłączony", HttpStatus.SERVICE_UNAVAILABLE.getCode())));
                         return;
                     }
                     this.discordJDA.sendPlayerMessage(data.name(), data.message());
                 }
 
                 default -> {
-                    ctx.status(HttpStatus.BAD_REQUEST).contentType(ContentType.TEXT_PLAIN)
-                            .result("'MessageType' (" + data.messageType() + ") jest nie poprawny!");
+                    ctx.status(HttpStatus.BAD_REQUEST).
+                            contentType(ContentType.APPLICATION_JSON)
+                            .result(this.gson.toJson(new Info("'MessageType' (" + data.messageType() + ") jest nie poprawny!", HttpStatus.BAD_REQUEST.getCode())));
                     return;
                 }
             }
