@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
+import io.javalin.http.staticfiles.Location;
 import io.javalin.http.util.RateLimiter;
 import java.io.File;
 import java.io.FileWriter;
@@ -23,6 +24,7 @@ import me.indian.rest.component.Info;
 import me.indian.rest.config.RestApiConfig;
 import me.indian.rest.post.key.CommandPostRequest;
 import me.indian.rest.post.key.PlayerInfoPostRequest;
+import me.indian.rest.request.SkinRequest;
 import me.indian.rest.request.StatsRequest;
 import me.indian.rest.request.key.BackupRequest;
 import me.indian.rest.request.key.ServerLogRequest;
@@ -44,7 +46,12 @@ public class RestWebsite extends Extension {
     @Override
     public void onLoad() {
         this.bdsAutoEnable = this.getBdsAutoEnable();
-        this.app = Javalin.create(config -> config.router.ignoreTrailingSlashes = true);
+        this.app = Javalin.create(config -> {
+            config.router.ignoreTrailingSlashes = true;
+            config.useVirtualThreads = true;
+            config.staticFiles.add(this.getDataFolder().getAbsolutePath(), Location.EXTERNAL);
+        });
+
         this.limiter = new RateLimiter(TimeUnit.MINUTES);
         this.logger = this.getLogger();
         this.config = this.createConfig(RestApiConfig.class, "config");
@@ -68,6 +75,7 @@ public class RestWebsite extends Extension {
             this.app.start(this.config.getPort());
             this.app.after(ctx -> ctx.res().setCharacterEncoding("UTF-8"));
 
+
             this.app.get("/", ctx -> {
                 if (!this.htmlFile.exists()) this.createHTMLFile();
 
@@ -79,12 +87,12 @@ public class RestWebsite extends Extension {
                         );
             });
 
-            this.app.error(404, ctx -> {
-                ctx.contentType("application/json").result("{\"message\": \"Nie odnaleziono żądanego zasobu\"}");
-            });
-
+            this.app.error(404, ctx -> ctx.status(HttpStatus.NOT_FOUND)
+                    .contentType(ContentType.APPLICATION_JSON)
+                    .result(GsonUtil.getGson().toJson(new Info("Nie odnaleziono żądanego zasobu", HttpStatus.NOT_FOUND.getCode()))));
 
             this.register(new StatsRequest(this));
+            this.register(new SkinRequest(this));
             this.register(new BackupRequest(this));
             this.register(new ServerLogRequest(this));
             this.register(new CommandPostRequest(this));
