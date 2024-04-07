@@ -22,7 +22,7 @@ public class CommandPostRequest extends HttpHandler {
     private final ServerProcess serverProcess;
     private final Gson gson;
 
-    public CommandPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
+    public CommandPostRequest(final RestWebsite restWebsite) {
         this.restWebsite = restWebsite;
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.restWebsite.getLogger();

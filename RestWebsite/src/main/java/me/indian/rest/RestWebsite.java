@@ -82,10 +82,10 @@ public class RestWebsite extends Extension {
             });
 
 
-            this.register(new StatsRequest(this, this.bdsAutoEnable));
-            this.register(new BackupRequest(this, this.bdsAutoEnable));
-            this.register(new CommandPostRequest(this, this.bdsAutoEnable));
-            this.register(new PlayerInfoPostRequest(this, this.bdsAutoEnable));
+            this.register(new StatsRequest(this));
+            this.register(new BackupRequest(this));
+            this.register(new CommandPostRequest(this));
+            this.register(new PlayerInfoPostRequest(this));
 
             this.logger.info("Uruchomiono strone z rest api na porcie:&b " + this.config.getPort());
         } catch (final Exception exception) {

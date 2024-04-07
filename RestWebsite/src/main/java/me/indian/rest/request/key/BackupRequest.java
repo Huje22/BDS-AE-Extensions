@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.util.List;
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.watchdog.module.BackupModule;
@@ -22,11 +21,11 @@ public class BackupRequest extends HttpHandler {
     private final Javalin app;
     private final BackupModule backupModule;
 
-    public BackupRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
+    public BackupRequest(final RestWebsite restWebsite) {
         this.restWebsite = restWebsite;
         this.logger = restWebsite.getLogger();
         this.app = this.restWebsite.getApp();
-        this.backupModule = bdsAutoEnable.getWatchDog().getBackupModule();
+        this.backupModule = restWebsite.getBdsAutoEnable().getWatchDog().getBackupModule();
     }
 
     @Override

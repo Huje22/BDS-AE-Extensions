@@ -21,9 +21,9 @@ public class PlayerInfoPostRequest extends HttpHandler {
     private final ServerProcess serverProcess;
     private final Gson gson;
 
-    public PlayerInfoPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
+    public PlayerInfoPostRequest(final RestWebsite restWebsite) {
         this.restWebsite = restWebsite;
-        this.bdsAutoEnable = bdsAutoEnable;
+        this.bdsAutoEnable = restWebsite.getBdsAutoEnable();
         this.logger = this.restWebsite.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
 

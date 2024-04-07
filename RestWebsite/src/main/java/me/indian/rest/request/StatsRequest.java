@@ -7,7 +7,6 @@ import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
 import java.net.HttpURLConnection;
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.stats.StatsManager;
@@ -23,9 +22,9 @@ public class StatsRequest extends HttpHandler {
     private final StatsManager statsManager;
     private final Gson gson;
 
-    public StatsRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
+    public StatsRequest(final RestWebsite restWebsite) {
         this.restWebsite = restWebsite;
-        this.serverManager = bdsAutoEnable.getServerManager();
+        this.serverManager = restWebsite.getBdsAutoEnable().getServerManager();
         this.statsManager = this.serverManager.getStatsManager();
         this.gson = GsonUtil.getGson();
     }
