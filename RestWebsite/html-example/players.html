@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Graczy Online i Offline</title>
+    <style>
+    body {
+    background-color: BLUE;
+    }
+        .player-item {
+            display: inline-block;
+            text-align: center;
+            margin: 10px;
+        }
+        .player-head {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 5px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .player-head:hover {
+            transform: scale(1.2);
+        }
+        .player-name {
+            font-size: 14px;
+            font-weight: bold;
+            opacity: 0; /* Ukrycie nazwy gracza */
+            transition: opacity 0.3s ease-in-out;
+        }
+        .player-item:hover .player-name {
+            opacity: 1; /* Wyświetlenie nazwy gracza po najechaniu kursorem na obrazek gracza */
+        }
+
+
+    </style>
+</head>
+<body>
+<h1>Lista Graczy Online i Offline</h1>
+<h2>Gracze Online:</h2>
+<div id="onlinePlayersList"></div>
+<h2>Gracze Offline:</h2>
+<div id="offlinePlayersList"></div>
+
+<script>
+        fetch('/api/stats/players')
+            .then(response => response.json())
+            .then(data => {
+                const onlinePlayersList = document.getElementById('onlinePlayersList');
+                const offlinePlayersList = document.getElementById('offlinePlayersList');
+
+                const generatePlayerList = (playerArray, listElement) => {
+                    playerArray.forEach(player => {
+                        const playerItem = document.createElement('div');
+                        playerItem.classList.add('player-item');
+
+                        fetch(`/api/skin/head/name/${player}`)
+                            .then(response => response.text())
+                            .then(skinUrl => {
+                                const playerHead = document.createElement('img');
+                                playerHead.classList.add('player-head');
+                                playerHead.src = skinUrl;
+                                playerHead.alt = `${player}'s head`;
+
+                                const playerName = document.createElement('p');
+                                playerName.classList.add('player-name');
+                                playerName.textContent = player;
+
+                                playerItem.appendChild(playerHead);
+                                playerItem.appendChild(playerName);
+                                listElement.appendChild(playerItem);
+                            })
+                            .catch(error => {
+                                console.error('Error while fetching player skin URL:', error);
+                            });
+                    });
+                };
+
+                generatePlayerList(data.online, onlinePlayersList);
+                generatePlayerList(data.offline, offlinePlayersList);
+
+                if (data.online.length === 0) {
+                    onlinePlayersList.innerHTML = '<p>Brak graczy online.</p>';
+                }
+                if (data.offline.length === 0) {
+                    offlinePlayersList.innerHTML = '<p>Brak graczy offline.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error while fetching player data:', error);
+            });
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+[Przykładowe wyświetlanie graczy , pisane z GTP z użyciem naszych endpointów](players.html)
