@@ -9,11 +9,13 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.rest.RestWebsite;
+import me.indian.rest.component.Info;
 import me.indian.rest.config.APIKeyConfig;
 import me.indian.rest.config.RestApiConfig;
 
 public final class APIKeyUtil {
 
+    private static RestWebsite RESTWEBSITE;
     private static RestApiConfig CONFIG;
     private static Logger LOGGER;
 
@@ -21,6 +23,7 @@ public final class APIKeyUtil {
     }
 
     public static void init(final RestWebsite restWebsite) {
+        RESTWEBSITE = restWebsite;
         CONFIG = restWebsite.getConfig();
         LOGGER = restWebsite.getLogger();
         generateMissingKeys();
@@ -37,7 +40,7 @@ public final class APIKeyUtil {
         }
 
         final List<List<String>> keys = Arrays.asList(apiKeyConfig.getPowerful(), apiKeyConfig.getServer(),
-                apiKeyConfig.getBackup());
+                apiKeyConfig.getBackup(), apiKeyConfig.getLog());
 
         for (final List<String> list : keys) {
             if (list.isEmpty()) {
@@ -56,7 +59,7 @@ public final class APIKeyUtil {
 
         if (!keys.contains(apiKey)) {
             ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
-                    .result(GsonUtil.getGson().toJson("Klucz API " + apiKey + " nie jest obsługiwany"));
+                    .result(GsonUtil.getGson().toJson(new Info("Klucz API " + apiKey + " nie jest obsługiwany", HttpStatus.UNAUTHORIZED.getCode())));
 
             LOGGER.debug("&b" + ip + "&r używa niepoprawnego klucza autoryzacji&c " + apiKey);
             return false;
@@ -71,6 +74,10 @@ public final class APIKeyUtil {
 
     public static boolean isBackupKey(final Context ctx) {
         return isCorrectCustomKey(ctx, CONFIG.getAPIKeys().getBackup());
+    }
+
+    public static boolean isLogKey(final Context ctx){
+        return isCorrectCustomKey(ctx, CONFIG.getAPIKeys().getLog());
     }
 
     public static boolean isPowerfulKey(final Context ctx) {

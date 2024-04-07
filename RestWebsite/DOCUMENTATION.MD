@@ -66,11 +66,40 @@ Zwraca informacje o graczach, którzy są obecnie online oraz offline.
 
 ### Pobierz backup za pomocą klucza autoryzacji
 
+
+### Pobierz listę nazw plików backup za pomocą klucza autoryzacji
+
+```
+GET /api/{api-key}/backup/
+```
+
+Pobierz aktualną listę nazw plików backup
+
+### Pobierz konkretny backup.
+
 ```
 GET /api/{api-key}/backup/{filename}
 ```
 
 Pobiera dostępny backup o określonej nazwie przy użyciu klucza autoryzacji.
+
+---
+## Logi
+
+### Pobiera listę nazw plików logów servera
+
+```
+GET /api/{api-key}/log/
+```
+Pobierz aktualną listę nazw plików logów servera
+
+### Pobierz konkretny log servera.
+
+```
+GET /api/{api-key}/log/{filename}
+```
+
+Zwraca `TEXT_PLAIN` z aktualnego pliku log servera.
 
 ---
 

@@ -19,6 +19,10 @@ public class APIKeyConfig extends OkaeriConfig {
     @Comment({"Klucze które pozwalają: wysłać polecenie do konsoli"})
     private List<String> server = new ArrayList<>();
 
+    @Comment({""})
+    @Comment({"Klucze które pozwalają: wyświetlić pliki logów servera"})
+    private List<String> log = new ArrayList<>();
+
     public List<String> getPowerful() {
         return this.powerful;
     }
@@ -29,5 +33,9 @@ public class APIKeyConfig extends OkaeriConfig {
 
     public List<String> getServer() {
         return this.server;
+    }
+
+    public List<String> getLog() {
+        return this.log;
     }
 }
