@@ -64,13 +64,13 @@ public class BackupRequest extends HttpHandler {
                         ctx.status(HttpStatus.OK).result(new FileInputStream(file));
 
                     } else {
-                        ctx.status(HttpStatus.NOT_FOUND).contentType(ContentType.APPLICATION_JSON)
+                        ctx.contentType(ContentType.APPLICATION_JSON)
                                 .result(this.gson.toJson(new Info("Ten plik już nie istnieje", HttpStatus.NOT_FOUND.getCode())));
                     }
                     return;
                 }
             }
-            ctx.status(HttpStatus.NOT_FOUND).contentType(ContentType.APPLICATION_JSON)
+            ctx.contentType(ContentType.APPLICATION_JSON)
                     .result(this.gson.toJson(new Info("Nie udało się odnaleźć backup o nazwie: " + filename, HttpStatus.NOT_FOUND.getCode())));
         });
     }

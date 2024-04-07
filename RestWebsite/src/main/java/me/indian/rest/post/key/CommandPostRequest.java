@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
-import java.net.HttpURLConnection;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -12,6 +11,7 @@ import me.indian.bds.util.GsonUtil;
 import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.component.CommandPostData;
+import me.indian.rest.component.Info;
 import me.indian.rest.util.APIKeyUtil;
 
 public class CommandPostRequest extends HttpHandler {
@@ -55,15 +55,17 @@ public class CommandPostRequest extends HttpHandler {
             }
 
             if (!this.serverProcess.isEnabled()) {
-                ctx.status(HttpStatus.SERVICE_UNAVAILABLE).result("Server jest wyłączony");
+                ctx.status(HttpStatus.SERVICE_UNAVAILABLE)
+                        .contentType(ContentType.APPLICATION_JSON)
+                        .result(this.gson.toJson(new Info("Server jest wyłączony", HttpStatus.SERVICE_UNAVAILABLE.getCode())));
                 return;
             }
 
             this.logger.debug("&b" + ip + "&r używa poprawnie endpointu&1 COMMAND");
             this.logger.print(command);
 
-            ctx.contentType(ContentType.APPLICATION_JSON).status(HttpURLConnection.HTTP_OK)
-                    .result("Ostatnia linia z konsoli: " + this.serverProcess.commandAndResponse(command));
+            ctx.status(HttpStatus.OK).contentType(ContentType.APPLICATION_JSON)
+                    .result(this.gson.toJson(new Info(this.serverProcess.commandAndResponse(command), HttpStatus.OK.getCode())));
         });
     }
 }

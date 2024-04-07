@@ -64,8 +64,7 @@ public class ServerLogRequest extends HttpHandler {
                 this.logger.info("&b" + ip + "&r pobiera&3 " + logName);
             } else {
                 this.logger.error("&b" + ip + "&r próbuje pobrać log o nazwie:&1 " + logName + "&r lecz takiego nie ma");
-                ctx.status(HttpStatus.NOT_FOUND)
-                        .contentType(ContentType.APPLICATION_JSON)
+                ctx.contentType(ContentType.APPLICATION_JSON)
                         .result(this.gson.toJson(new Info("Nie odnaleziono logu o nazwie: " + logName, HttpStatus.NOT_FOUND.getCode())));
             }
         });

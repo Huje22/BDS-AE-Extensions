@@ -14,6 +14,7 @@ import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
+import me.indian.rest.component.Info;
 
 public class StatsRequest extends HttpHandler {
 
@@ -76,8 +77,7 @@ public class StatsRequest extends HttpHandler {
                         .result(this.gson.toJson(player));
             } else {
                 ctx.contentType(ContentType.APPLICATION_JSON)
-                        .status(HttpURLConnection.HTTP_NOT_FOUND)
-                        .result(this.gson.toJson("Nie udało się odnaleźć gracza o nick '" + playerName + "'"));
+                        .result(this.gson.toJson(new Info("Nie udało się odnaleźć gracza o nick '" + playerName + "'", HttpStatus.NOT_FOUND.getCode())));
             }
         });
 
@@ -93,13 +93,12 @@ public class StatsRequest extends HttpHandler {
                             .result(this.gson.toJson(player));
                 } else {
                     ctx.contentType(ContentType.APPLICATION_JSON)
-                            .status(HttpURLConnection.HTTP_NOT_FOUND)
-                            .result(this.gson.toJson("Nie udało się odnaleźć gracza o xuid '" + xuid + "'"));
+                            .result(this.gson.toJson(new Info("Nie udało się odnaleźć gracza o xuid '" + xuid + "'", HttpStatus.NOT_FOUND.getCode())));
                 }
             } catch (final Exception exception) {
                 ctx.contentType(ContentType.APPLICATION_JSON)
                         .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .result(MessageUtil.getStackTraceAsString(exception));
+                        .result(this.gson.toJson(new Info(MessageUtil.getStackTraceAsString(exception), HttpStatus.INTERNAL_SERVER_ERROR.getCode())));
             }
         });
     }
