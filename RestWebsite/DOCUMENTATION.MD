@@ -103,6 +103,35 @@ Zwraca `TEXT_PLAIN` z aktualnego pliku log servera.
 
 ---
 
+## Skin
+
+### Pobiera skórkę głowy gracza na podstawie jego XUID
+```
+GET /api/skin/head/xuid/{xuid}
+```
+Zwraca link do głowy gracza po jego XUID
+
+### Pobiera skórkę głowy gracza na podstawie nicku
+```
+GET /api/skin/head/name/{name}
+```
+
+Zwraca link do głowy gracza po jego nicku
+
+### Pobiera skórkę ciała gracza na podstawie jego XUID
+```
+GET /api/skin/body/xuid/{xuid}
+```
+Zwraca link do ciała gracza gracza po jego XUID
+
+### Pobiera skórkę ciała gracza na podstawie nicku
+```
+GET /api/skin/body/name/{name}
+```
+Zwraca link do ciała gracza gracza po jego nicku
+
+---
+
 ## Konsola serwera
 
 ### Wykonaj polecenie w konsoli serwera
@@ -130,8 +159,6 @@ curl -X POST -H "Content-Type: application/json" -d "{ \"command\": \"say To wia
 ---
 
 # Dodatkowe
-
-### Wyślij wiadomość do kanału czatu
 
 ```
 POST /playerInfo/{api-key}
