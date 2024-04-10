@@ -191,6 +191,9 @@ public class DiscordJDA {
             ).queue();
 
             this.customStatusUpdate();
+
+
+            //TODO: Jeśli opuszczać gildie przy starcie to nasłuchuj eventu dołączania do nowej i z niej wychodź 
             this.leaveGuilds();
 
             this.logger.info("&aZaładowano bota&b " + this.getUserName(this.getBotMember(), this.getBotMember().getUser()));
