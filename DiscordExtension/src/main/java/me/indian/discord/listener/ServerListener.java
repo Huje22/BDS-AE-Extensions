@@ -76,14 +76,16 @@ public class ServerListener extends Listener {
 
         if (state == LogState.INFO || state == LogState.NONE) {
             this.discordJDA.sendMessage(event.getMessage() + "\n" + (additionalInfo == null ? "" : additionalInfo));
-            if (event.getThrowable() != null) {
-                this.discordJDA.sendMessage(MessageUtil.getStackTraceAsString(throwable));
-            }
         } else {
-            //TODO: Ulepszyć te message localized itp
-            this.discordJDA.log("Alert " + state, event.getMessage(),
-                    fieldList,
-                    new Footer((additionalInfo == null ? (throwable == null ? "" : throwable.getLocalizedMessage()) : additionalInfo)));
+            String footerInfo = "";
+
+            if (additionalInfo == null || additionalInfo.isEmpty()) {
+                footerInfo = (throwable == null ? "" : throwable.getLocalizedMessage());
+            } else {
+                footerInfo = additionalInfo;
+            }
+
+            this.discordJDA.log("Alert " + state, event.getMessage(), fieldList, new Footer(footerInfo));
         }
     }
 
