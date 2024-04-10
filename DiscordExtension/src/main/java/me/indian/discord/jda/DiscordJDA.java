@@ -26,6 +26,7 @@ import me.indian.discord.config.sub.BotConfig;
 import me.indian.discord.embed.component.Field;
 import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.listener.CommandListener;
+import me.indian.discord.jda.listener.GuildJoinListener;
 import me.indian.discord.jda.listener.JDAListener;
 import me.indian.discord.jda.listener.MentionPatternCacheListener;
 import me.indian.discord.jda.listener.MessageListener;
@@ -193,8 +194,10 @@ public class DiscordJDA {
             this.customStatusUpdate();
 
 
-            //TODO: Jeśli opuszczać gildie przy starcie to nasłuchuj eventu dołączania do nowej i z niej wychodź 
-            this.leaveGuilds();
+            if (this.botConfig.isLeaveServers()) {
+                this.leaveGuilds();
+                this.jda.addEventListener(new GuildJoinListener(this));
+            }
 
             this.logger.info("&aZaładowano bota&b " + this.getUserName(this.getBotMember(), this.getBotMember().getUser()));
         }
@@ -384,20 +387,27 @@ public class DiscordJDA {
     }
 
     private void leaveGuilds() {
-        if (!this.botConfig.isLeaveServers()) return;
         for (final Guild guild1 : this.jda.getGuilds()) {
             if (guild1 != this.guild) {
-                String inviteLink = "";
-                final DefaultGuildChannelUnion defaultChannel = guild1.getDefaultChannel();
-                if (defaultChannel != null) inviteLink += defaultChannel.createInvite().complete().getUrl();
-
-                guild1.leave().queue();
-                this.log("Opuszczenie servera", "",
-                        List.of(new Field("Nazwa", guild1.getName(), true),
-                                new Field("Zaproszenie", inviteLink, true)),
-                        new Footer(""));
+                this.leaveGuild(guild1);
             }
         }
+    }
+
+    public void leaveGuild(final Guild guild) {
+        String inviteLink = "";
+        final DefaultGuildChannelUnion defaultChannel = guild.getDefaultChannel();
+        if (defaultChannel != null) inviteLink += defaultChannel.createInvite().complete().getUrl();
+
+        guild.leave().queue();
+
+        final List<Field> fieldList = new ArrayList<>();
+        fieldList.add(new Field("Nazwa", guild.getName(), true));
+        if (!inviteLink.equals("")) {
+            fieldList.add(new Field("Zaproszenie", inviteLink, true));
+        }
+
+        this.log("Opuszczenie servera", "", fieldList, new Footer(""));
     }
 
     /**

@@ -57,7 +57,7 @@ public class BotConfig extends OkaeriConfig {
     private boolean advancedPlayerList = true;
 
     @Comment({""})
-    @Comment({"Opuść wszystkie inne servery przy starcie bota "})
+    @Comment({"Opuść wszystkie inne servery "})
     private boolean leaveServers = false;
 
     @Comment({""})
