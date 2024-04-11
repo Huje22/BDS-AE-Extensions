@@ -915,6 +915,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             final int portV4 = query.portV4();
             final int portV6 = query.portV6();
 
+            //TODO: Zrobić to w fieldach
             final StringBuilder description = new StringBuilder();
             description.append("**Ping:** ").append(query.responseTime()).append("\n");
             description.append("**Wersja Minecraft:** ").append(query.minecraftVersion()).append("\n");
