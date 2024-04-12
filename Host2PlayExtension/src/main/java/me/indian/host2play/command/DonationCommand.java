@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.discord.DiscordExtension;
@@ -22,6 +21,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class DonationCommand extends Command {
 
+
+    //TODO:Fix that
+    
     private final Host2PlayExtension extension;
     private final Map<String, Long> cooldown;
     private final Map<String, String> lastBuyers;
@@ -37,7 +39,7 @@ public class DonationCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (this.commandSender == CommandSender.CONSOLE) {
+        if (this.player == null) {
             this.sendMessage("&cTe polecenie nie może zostać wykonane z poziomu konsoli");
             return true;
         }
