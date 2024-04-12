@@ -915,27 +915,22 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             final int portV4 = query.portV4();
             final int portV6 = query.portV6();
 
-            //TODO: Zrobić to w fieldach
-            final StringBuilder description = new StringBuilder();
-            description.append("**Ping:** ").append(query.responseTime()).append("\n");
-            description.append("**Wersja Minecraft:** ").append(query.minecraftVersion()).append("\n");
-            description.append("**Protokół:** ").append(query.protocol()).append("\n");
-            description.append("**MOTD:** ").append(query.motd()).append("\n");
-            description.append("**Nazwa Mapy:** ").append(query.mapName()).append("\n");
-            description.append("**Gracz online:** ").append(query.playerCount()).append("\n");
-            description.append("**Maksymalna ilość graczy:** ").append(query.maxPlayers()).append("\n");
-            description.append("**Tryb Gry:** ").append(gamemode.getName().toUpperCase()).append(" (").append(gamemode.getId()).append(")").append("\n");
-            description.append("**Edycja:** ").append(query.edition()).append("\n");
+            embedBuilder.addField("Ping", String.valueOf(query.responseTime()), false);
+            embedBuilder.addField("Wersja Minecraft", query.minecraftVersion(), true);
+            embedBuilder.addField("Protokół", String.valueOf(query.protocol()), true);
+            embedBuilder.addField("MOTD", query.motd(), false);
+            embedBuilder.addField("Nazwa Mapy", query.mapName(), false);
+            embedBuilder.addField("Gracz online", String.valueOf(query.playerCount()), true);
+            embedBuilder.addField("Maksymalna ilość graczy", String.valueOf(query.maxPlayers()), true);
+            embedBuilder.addField("Tryb Gry", gamemode.getName().toUpperCase() + " (" + gamemode.getId() + ")", false);
+            embedBuilder.addField("Edycja", query.edition(), true);
 
             if (portV4 != -1) {
-                description.append("**Port v4:** ").append(portV4).append("\n");
+                embedBuilder.addField("Port v4", String.valueOf(portV4), true);
             }
             if (portV6 != -1) {
-                description.append("**Port v6:** ").append(portV6).append("\n");
+                embedBuilder.addField("Port v6", String.valueOf(portV6), true);
             }
-
-            embedBuilder.setDescription(description.toString());
-
         } else {
             embedBuilder.setDescription("Nie można uzyskać informacji o serwerze ``" + address + ":" + port + "``");
         }
