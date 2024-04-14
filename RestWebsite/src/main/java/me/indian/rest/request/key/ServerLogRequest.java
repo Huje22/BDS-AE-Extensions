@@ -25,16 +25,13 @@ public class ServerLogRequest extends HttpHandler {
     private final Gson gson;
     private final String logsDir;
 
-
     public ServerLogRequest(final RestWebsite restWebsite) {
         this.restWebsite = restWebsite;
         this.logger = restWebsite.getLogger();
         this.app = this.restWebsite.getApp();
         this.gson = GsonUtil.getGson();
         this.logsDir = DefaultsVariables.getLogsDir();
-
     }
-
 
     @Override
     public void handle() {
@@ -54,6 +51,16 @@ public class ServerLogRequest extends HttpHandler {
 
             final String logName = ctx.pathParam("log");
             final String ip = ctx.ip();
+
+            if (logName.equals("latest")) {
+                ctx.status(HttpStatus.OK)
+                        .contentType(ContentType.TEXT_PLAIN)
+                        .result(MessageUtil.listToSpacedString(Files.readAllLines(this.logger.getLogFile().toPath())));
+
+                this.logger.info("&b" + ip + "&r pobiera&3 " + logName);
+                return;
+            }
+
             final File file = new File(this.logsDir + File.separator + logName);
 
             if (file.exists()) {
@@ -73,6 +80,8 @@ public class ServerLogRequest extends HttpHandler {
     private List<String> getLogsNames() {
         final File[] logsFiles = new File(this.logsDir).listFiles(log -> log.getName().endsWith(".log"));
         final List<String> list = new ArrayList<>();
+
+        list.add("latest");
 
         if (logsFiles == null) return list;
 
