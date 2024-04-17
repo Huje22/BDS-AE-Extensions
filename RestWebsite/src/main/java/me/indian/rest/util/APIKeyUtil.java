@@ -52,6 +52,7 @@ public final class APIKeyUtil {
         CONFIG.save();
     }
 
+    //TODO: Zmienić system autoryzacji 
     public static boolean isCorrectCustomKey(final Context ctx, final List<String> keys) {
         if (isPowerfulKey(ctx)) return true;
         final String apiKey = ctx.pathParam("api-key");
@@ -65,6 +66,21 @@ public final class APIKeyUtil {
             return false;
         }
         return true;
+
+
+
+        String authorization = ctx.header("Authorization");
+
+        if (authorization == null || authorization.isEmpty()) {
+            ctx.status(401).result("Unauthorized: No Authorization header provided");
+        } else {
+            // Tutaj możesz dodać logikę weryfikacji klucza API
+            if (isValidApiKey(authorization)) {
+                ctx.result("API Key is valid");
+            } else {
+                ctx.status(403).result("Forbidden: Invalid API Key");
+            }
+        }
     }
 
 
