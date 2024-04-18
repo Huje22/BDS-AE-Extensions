@@ -117,11 +117,14 @@ public class RestWebsite extends Extension {
     }
 
     public boolean addRateLimit(final Context ctx) {
+        final String ip = ctx.ip();
         final int limit = this.config.getRateLimit();
+        if (this.config.getWhitelistedIP().contains(ip)) return false;
+
         try {
             this.limiter.incrementCounter(ctx, limit);
         } catch (final Exception exception) {
-            this.logger.alert("IP&b " + ctx.ip() + "&c przekracza limit&1 " + limit + "&c zapytań na&b minute&c!");
+            this.logger.alert("IP&b " + ip + "&c przekracza limit&1 " + limit + "&c zapytań na&b minute&c!");
             ctx.status(HttpStatus.TOO_MANY_REQUESTS)
                     .contentType(ContentType.APPLICATION_JSON)
                     .result(GsonUtil.getGson().toJson(new Info("Osiągnięto limit (" + limit + ") zapytań na minute!", HttpStatus.TOO_MANY_REQUESTS.getCode())));
