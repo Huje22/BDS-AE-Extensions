@@ -35,7 +35,7 @@ public class ServerLogRequest extends HttpHandler {
 
     @Override
     public void handle() {
-        this.app.get("/api/{api-key}/log", ctx -> {
+        this.app.get("/api/log", ctx -> {
             if (this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isLogKey(ctx)) return;
 
@@ -45,7 +45,7 @@ public class ServerLogRequest extends HttpHandler {
 
         });
 
-        this.app.get("/api/{api-key}/log/{log}", ctx -> {
+        this.app.get("/api/log/{log}", ctx -> {
             if (this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isLogKey(ctx)) return;
 

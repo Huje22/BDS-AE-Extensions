@@ -39,7 +39,7 @@ public class DiscordMessagePostRequest extends HttpHandler {
 
     @Override
     public void handle(final Javalin app) {
-        app.post("/discord/message/{api-key}", ctx -> {
+        app.post("/discord/message", ctx -> {
              if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isCorrectCustomKey(ctx, this.restAPIConfig.getDiscordKeys())) return;
 

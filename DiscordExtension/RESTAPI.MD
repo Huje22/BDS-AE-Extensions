@@ -3,7 +3,7 @@
 ### Wyślij wiadomość do kanału czatu jako gracz
 
 ```
-POST /discord/message/{api-key}
+POST /discord/message
 ```
 
 #### Przykładowy JSON
@@ -21,5 +21,5 @@ POST /discord/message/{api-key}
 #### Przykład wysłania JSON z poziomu konsoli
 
 ```
-curl -X POST -H "Content-Type: application/json" -d "{ \"name\": \"REST API\",\"message\": \"Wysyłam wiadomość na discord!\",\"messageType\":\"WEBHOOK\"}" http://localhost:PORT/discord/message/KLUCZ_API
+curl -X POST -H "Content-Type: application/json" -H "Authorization:KLUCZ API" -d "{ \"name\": \"REST API\",\"message\": \"Wysyłam wiadomość na discord!\",\"messageType\":\"WEBHOOK\"}" http://localhost:PORT/discord/message
 ```

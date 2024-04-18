@@ -2,6 +2,11 @@
 
 ---
 
+### Autoryzacja
+Niektóre endpointy wymagają autoryzacji przy użyciu klucza API. Aby uzyskać dostęp, wystarczy dodać nagłówek `Authorization` zawierający klucz API.
+
+---
+
 ## Statystyki
 
 ### Pobierz informacje o śmierciach graczy
@@ -70,7 +75,7 @@ Zwraca informacje o graczach, którzy są obecnie online oraz offline.
 ### Pobierz listę nazw plików backup za pomocą klucza autoryzacji
 
 ```
-GET /api/{api-key}/backup/
+GET /api/backup/
 ```
 
 Pobierz aktualną listę nazw plików backup
@@ -78,7 +83,7 @@ Pobierz aktualną listę nazw plików backup
 ### Pobierz konkretny backup.
 
 ```
-GET /api/{api-key}/backup/{filename}
+GET /api/backup/{filename}
 ```
 
 Pobiera dostępny backup o określonej nazwie przy użyciu klucza autoryzacji.
@@ -89,14 +94,14 @@ Pobiera dostępny backup o określonej nazwie przy użyciu klucza autoryzacji.
 ### Pobiera listę nazw plików logów servera
 
 ```
-GET /api/{api-key}/log/
+GET /api/log/
 ```
 Pobierz aktualną listę nazw plików logów servera
 
 ### Pobierz konkretny log servera.
 
 ```
-GET /api/{api-key}/log/{filename}
+GET /api/log/{filename}
 ```
 
 Zwraca `TEXT_PLAIN` z aktualnego pliku log servera.
@@ -137,7 +142,7 @@ Zwraca link do ciała gracza gracza po jego nicku
 ### Wykonaj polecenie w konsoli serwera
 
 ```
-POST /command/{api-key}
+POST /command/
 ```
 
 Wykonuje polecenie w konsoli serwera i zwraca ostatnią linię z konsoli.
@@ -153,7 +158,7 @@ Wykonuje polecenie w konsoli serwera i zwraca ostatnią linię z konsoli.
 #### Przykład wysłania JSON z poziomu konsoli
 
 ```
-curl -X POST -H "Content-Type: application/json" -d "{ \"command\": \"say To wiadomość oddana za pomocą REST API\"}" http://localhost:PORT/command/KLUCZ_API
+curl -X POST -H "Content-Type: application/json" -H "Authorization:KLUCZ API" -d "{ \"command\": \"say To wiadomość oddana za pomocą REST API\"}" http://localhost:PORT/command/KLUCZ_API
 ```
 
 ---
@@ -161,7 +166,7 @@ curl -X POST -H "Content-Type: application/json" -d "{ \"command\": \"say To wia
 # Dodatkowe
 
 ```
-POST /playerInfo/{api-key}
+POST /playerInfo/
 ```
 
 #### Przykładowy JSON

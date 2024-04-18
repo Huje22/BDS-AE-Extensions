@@ -52,11 +52,18 @@ public final class APIKeyUtil {
         CONFIG.save();
     }
 
-    //TODO: Zmienić system autoryzacji 
     public static boolean isCorrectCustomKey(final Context ctx, final List<String> keys) {
-        if (isPowerfulKey(ctx)) return true;
-        final String apiKey = ctx.pathParam("api-key");
         final String ip = ctx.ip();
+        final String apiKey = ctx.header("Authorization");
+
+        if (apiKey == null || apiKey.isEmpty()) {
+            ctx.status(HttpStatus.UNAUTHORIZED)
+                    .contentType(ContentType.APPLICATION_JSON)
+                    .result(GsonUtil.getGson().toJson(new Info("Brak klucza api", HttpStatus.UNAUTHORIZED.getCode())));
+            return false;
+        }
+
+        if (isPowerfulKey(ctx)) return true;
 
         if (!keys.contains(apiKey)) {
             ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
@@ -66,21 +73,6 @@ public final class APIKeyUtil {
             return false;
         }
         return true;
-
-
-
-        String authorization = ctx.header("Authorization");
-
-        if (authorization == null || authorization.isEmpty()) {
-            ctx.status(401).result("Unauthorized: No Authorization header provided");
-        } else {
-            // Tutaj możesz dodać logikę weryfikacji klucza API
-            if (isValidApiKey(authorization)) {
-                ctx.result("API Key is valid");
-            } else {
-                ctx.status(403).result("Forbidden: Invalid API Key");
-            }
-        }
     }
 
 
@@ -96,7 +88,7 @@ public final class APIKeyUtil {
         return isCorrectCustomKey(ctx, CONFIG.getAPIKeys().getLog());
     }
 
-    public static boolean isPowerfulKey(final Context ctx) {
-        return CONFIG.getAPIKeys().getPowerful().contains(ctx.pathParam("api-key"));
+    private static boolean isPowerfulKey(final Context ctx) {
+        return CONFIG.getAPIKeys().getPowerful().contains(ctx.header("Authorization"));
     }
 }

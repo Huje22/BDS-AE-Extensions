@@ -34,7 +34,7 @@ public class BackupRequest extends HttpHandler {
 
     @Override
     public void handle(final Javalin app) {
-        app.get("/api/{api-key}/backup/", ctx -> {
+        app.get("/api/backup/", ctx -> {
              if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isBackupKey(ctx)) return;
             final List<String> backupsNames = this.backupModule.getBackupsNames();
@@ -44,7 +44,7 @@ public class BackupRequest extends HttpHandler {
                     .result(GsonUtil.getGson().toJson(backupsNames));
         });
 
-        this.app.get("/api/{api-key}/backup/{filename}", ctx -> {
+        this.app.get("/api/backup/{filename}", ctx -> {
              if(this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isBackupKey(ctx)) return;
 
