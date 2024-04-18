@@ -1,5 +1,6 @@
 package me.indian.logblock.listener;
 
+import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
@@ -16,22 +17,22 @@ public class PlayerListener extends Listener {
         this.historyManager = logBlockExtension.getHistoryManager();
     }
 
-    @Override
+    @EventHandler
     public void onPlayerBreakBlock(final PlayerBlockBreakEvent event) {
         this.historyManager.getBrokenBlockHistory().addToHistory(event);
     }
 
-    @Override
+    @EventHandler
     public void onPlayerPlaceBlock(final PlayerBlockPlaceEvent event) {
         this.historyManager.getPlacedBlockHistory().addToHistory(event);
     }
 
-    @Override
+    @EventHandler
     public void onPlayerInteractContainerEvent(final PlayerInteractContainerEvent event) {
         this.historyManager.getOpenedContainerHistory().addToHistory(event);
     }
 
-    @Override
+    @EventHandler
     public void onPlayerInteractEntityWithContainerEvent(final PlayerInteractEntityWithContainerEvent event) {
         this.historyManager.getInteractedEntityWithContainerHistory().addToHistory(event);
     }

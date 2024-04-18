@@ -2,6 +2,7 @@ package me.indian.discord.listener;
 
 import java.util.LinkedList;
 import java.util.List;
+import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
@@ -27,12 +28,12 @@ public class ServerListener extends Listener {
         this.discordJDA = discordExtension.getDiscordJDA();
     }
 
-    @Override
+    @EventHandler
     public void onServerStart(final ServerStartEvent event) {
         this.discordJDA.sendEnabledMessage();
     }
 
-    @Override
+    @EventHandler
     public void onTpsChange(final TPSChangeEvent event) {
         this.tps = event.getTps();
         this.lastTPS = event.getLastTps();
@@ -45,7 +46,7 @@ public class ServerListener extends Listener {
         if (this.tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + this.tps + "** TPS");
     }
 
-    @Override
+    @EventHandler
     public void onServerRestart(final ServerRestartEvent event) {
         final String reason = event.getReason();
 
@@ -58,12 +59,12 @@ public class ServerListener extends Listener {
         }
     }
 
-    @Override
+    @EventHandler
     public void onServerClose(final ServerClosedEvent event) {
         this.discordJDA.sendDisabledMessage();
     }
 
-    @Override
+    @EventHandler
     public void onServerAlert(final ServerAlertEvent event) {
         final List<Field> fieldList = new LinkedList<>();
         final String additionalInfo = event.getAdditionalInfo();
@@ -89,12 +90,12 @@ public class ServerListener extends Listener {
         }
     }
 
-    @Override
+    @EventHandler
     public void onServerUpdating(final ServerUpdatingEvent event) {
         this.discordJDA.sendServerUpdateMessage(event.getVersion());
     }
 
-    @Override
+    @EventHandler
     public void onServerUncaughtException(final ServerUncaughtExceptionEvent event) {
         this.discordJDA.log("Niezłapany wyjątek", "**Wykryto niezłapany wyjątek**",
                 List.of(new Field("Wystąpił w wątku", event.getThread().getName(), true),

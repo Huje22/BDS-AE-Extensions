@@ -1,5 +1,6 @@
 package me.indian.example.listener;
 
+import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
@@ -15,6 +16,10 @@ public class ServerListener extends Listener {
         this.extension = extension;
     }
 
+
+    /**
+     * Eventy 'EventResponse' są wywoływane w 'Listener', co wymaga nadpisania ich za pomocą adnotacji '@Override'
+     */
     @Override
     public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
@@ -27,12 +32,15 @@ public class ServerListener extends Listener {
         return new PlayerChatResponse(playerName + " >> " + message, false);
     }
 
-    @Override
+    /**
+     * Eventy 'Event' są wywoływane za pomocą refleksji dzięki czemu wystarczy użyć adnotacji '@EventHandler'
+     */
+    @EventHandler
     public void onServerStart(final ServerStartEvent event) {
         this.extension.getLogger().info("Włączono server");
     }
 
-    @Override
+    @EventHandler
     public void onTpsChange(final TPSChangeEvent event) {
         //Wykonuje akcje gdy TPS ulegną wypisaniu w konsoli
     }

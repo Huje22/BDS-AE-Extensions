@@ -3,6 +3,7 @@ package me.indian.discord.listener;
 import java.util.HashMap;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerCommandEvent;
@@ -14,8 +15,8 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.discord.DiscordExtension;
-import me.indian.discord.config.MessagesConfig;
 import me.indian.discord.config.LinkingConfig;
+import me.indian.discord.config.MessagesConfig;
 import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
@@ -42,21 +43,21 @@ public class PlayerEventListener extends Listener {
         this.cachedPrefixes = new HashMap<>();
     }
 
-    @Override
+    @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         this.discordJDA.sendJoinMessage(playerName.replaceAll("\"", ""));
         this.setPlayerPrefix(playerName);
     }
 
-    @Override
+    @EventHandler
     public void onPlayerQuit(final PlayerQuitEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         this.discordJDA.sendLeaveMessage(playerName.replaceAll("\"", ""));
         this.cachedPrefixes.remove(playerName);
     }
 
-    @Override
+    @EventHandler
     public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         final String message = event.getMessage();
@@ -109,13 +110,13 @@ public class PlayerEventListener extends Listener {
         return null;
     }
 
-    @Override
+    @EventHandler
     public void onPlayerDeath(final PlayerDeathEvent event) {
         this.discordJDA.sendDeathMessage(event.getPlayer().getPlayerName().replaceAll("\"", ""), event.getDeathMessage(),
                 event.getKillerName(), event.getUsedItemName());
     }
 
-    @Override
+    @EventHandler
     public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
         this.discordJDA.log("Użycie polecenia",
                 playerCommandEvent.getCommand()

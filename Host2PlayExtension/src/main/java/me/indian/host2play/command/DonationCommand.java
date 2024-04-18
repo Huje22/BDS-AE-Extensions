@@ -44,6 +44,7 @@ public class DonationCommand extends Command {
             return true;
         }
 
+        final String playerName = this.player.getPlayerName();
         final long cooldownTime = MathUtil.secondToMillis(90);
 
         if (args.length == 2) {
@@ -62,16 +63,16 @@ public class DonationCommand extends Command {
                 return false;
             }
 
-            if (!this.cooldown.containsKey(this.playerName) || System.currentTimeMillis() - this.cooldown.get(this.playerName) > cooldownTime) {
+            if (!this.cooldown.containsKey(playerName) || System.currentTimeMillis() - this.cooldown.get(playerName) > cooldownTime) {
                 try {
                     this.sendMessage("&aTworzenie transakcji");
-                    this.cooldown.put(this.playerName, System.currentTimeMillis());
+                    this.cooldown.put(playerName, System.currentTimeMillis());
 
                     final PostReceivedData receivedData = RequestUtil.createPaymentPost(emil, moneyAmount);
 
                     if (receivedData == null) {
                         this.sendMessage("&cNie udało się utworzyć transakcji");
-                        this.cooldown.remove(this.playerName);
+                        this.cooldown.remove(playerName);
                         return true;
                     }
 
@@ -84,20 +85,20 @@ public class DonationCommand extends Command {
 
 
                     this.sendMessage("&aLink do transakcji:&b " + receivedData.data().paymentLink());
-                    this.sendLinkToDiscord(receivedData.data().paymentLink(), this.playerName);
+                    this.sendLinkToDiscord(receivedData.data().paymentLink(), playerName);
                     this.sendMessage("&aTwoja transakcja wygasa:&b " + expireDate);
 
                     this.sendMessage("&3----------");
 
-                    this.lastBuyers.put(paymentID, this.playerName);
+                    this.lastBuyers.put(paymentID, playerName);
                     return true;
                 } catch (final IOException ioException) {
-                    this.cooldown.remove(this.playerName);
+                    this.cooldown.remove(playerName);
                     this.sendMessage("&cNie udało się dokonać transakcji z powodu:&b " + ioException.getMessage());
                     return true;
                 }
             } else {
-                final long playerCooldown = this.cooldown.getOrDefault(this.playerName, 0L);
+                final long playerCooldown = this.cooldown.getOrDefault(playerName, 0L);
                 final long remainingTime = (playerCooldown + cooldownTime) - System.currentTimeMillis();
 
                 this.sendMessage("&cAby dokonać kolejnej wpłaty musisz odczekac:&b " + DateUtil.formatTime(remainingTime, List.of('m', 's')));

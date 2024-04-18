@@ -2,6 +2,7 @@ package me.indian.effect.listener;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
@@ -23,16 +24,15 @@ public class PlayerListener extends Listener {
     }
 
 
-    @Override
+    @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         this.effectsService.execute(() ->
                 this.config.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayer().getPlayerName()))));
     }
 
-    @Override
+    @EventHandler
     public void onPlayerSpawn(final PlayerSpawnEvent event) {
         this.effectsService.execute(() ->
                 this.config.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayer().getPlayerName()))));
-
     }
 }
