@@ -61,8 +61,8 @@ public class StatsChannelsManager {
         if (this.onlinePlayersChannel != null) {
 
             final TimerTask onlinePlayersTask = new TimerTask() {
-
-                int lastOnlinePlayers;
+       ZROBIONE
+                int lastOnlinePlayers = -1;
 
                 @Override
                 public void run() {
