@@ -31,6 +31,7 @@ import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.PlayerStatsUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.geyser.GeyserUtil;
@@ -755,7 +756,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private MessageEmbed getPlaytimeEmbed() {
-        final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
+        final List<String> playTime = PlayerStatsUtil.getTopPlayTime(true, 100);
         final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
         final String totalUpTime = "Łączny czas działania servera: "
                 + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's'));
@@ -769,7 +770,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private MessageEmbed getDeathsEmbed() {
-        final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
+        final List<String> deaths = PlayerStatsUtil.getTopDeaths(true, 100);
         return new EmbedBuilder()
                 .setTitle("Top 100 graczy z największą ilością śmierci")
                 .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
