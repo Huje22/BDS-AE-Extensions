@@ -8,7 +8,9 @@ import io.javalin.http.staticfiles.Location;
 import io.javalin.http.util.RateLimiter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Timer;
@@ -49,14 +51,14 @@ public class RestWebsite extends Extension {
         this.app = Javalin.create(config -> {
             config.router.ignoreTrailingSlashes = true;
             config.useVirtualThreads = true;
-            config.staticFiles.add(this.getDataFolder().getAbsolutePath(), Location.EXTERNAL);
+            config.staticFiles.add(this.getWebDir(), Location.EXTERNAL);
         });
 
         this.limiter = new RateLimiter(TimeUnit.MINUTES);
         this.logger = this.getLogger();
         this.config = this.createConfig(RestApiConfig.class, "config");
         this.httpHandlers = new HashSet<>();
-        this.htmlFile = new File(this.getDataFolder(), "Website.html");
+        this.htmlFile = new File(this.getWebDir(), "Website.html");
 
         this.createHTMLFile();
         this.refreshFileContent();
@@ -74,7 +76,6 @@ public class RestWebsite extends Extension {
         try {
             this.app.start(this.config.getPort());
             this.app.after(ctx -> ctx.res().setCharacterEncoding("UTF-8"));
-
 
             this.app.get("/", ctx -> {
                 if (!this.htmlFile.exists()) this.createHTMLFile();
@@ -196,6 +197,17 @@ public class RestWebsite extends Extension {
 
     public void reloadConfig() {
         this.config = (RestApiConfig) this.config.load(true);
+    }
+
+    public String getWebDir() {
+        final String webDir = this.getDataFolder() + File.separator + "web";
+        try {
+            Files.createDirectories(Path.of(webDir));
+        } catch (final IOException exception) {
+            this.logger.critical("&cNie udało się utworzyć miejsca z plikami strony!");
+            throw new RuntimeException(exception);
+        }
+        return webDir;
     }
 
     public Javalin getApp() {
