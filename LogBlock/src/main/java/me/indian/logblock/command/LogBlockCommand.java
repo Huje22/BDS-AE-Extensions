@@ -40,6 +40,7 @@ public class LogBlockCommand extends Command {
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.extension.getConfig().isLogBlockForAll() && !isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+            this.deniedSound();
             return true;
         }
 

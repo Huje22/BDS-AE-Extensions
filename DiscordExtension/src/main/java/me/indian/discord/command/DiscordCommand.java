@@ -56,7 +56,8 @@ public class DiscordCommand extends Command {
         }
 
         if (!isOp) {
-            this.sendMessage("Nie masz odpowiednich uprawnień do wykonania tego polecenia");
+            this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+            this.deniedSound();
             return true;
         }
 
