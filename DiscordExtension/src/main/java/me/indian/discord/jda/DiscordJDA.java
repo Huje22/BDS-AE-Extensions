@@ -2,7 +2,6 @@ package me.indian.discord.jda;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +31,7 @@ import me.indian.discord.jda.listener.MentionPatternCacheListener;
 import me.indian.discord.jda.listener.MessageListener;
 import me.indian.discord.jda.manager.LinkingManager;
 import me.indian.discord.jda.manager.StatsChannelsManager;
+import me.indian.discord.jda.voice.ProximityVoiceChat;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -43,7 +43,9 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -60,7 +62,7 @@ public class DiscordJDA {
     private final DiscordConfig discordConfig;
     private final MessagesConfig messagesConfig;
     private final BotConfig botConfig;
-    private final long serverID, channelID, logID; /* consoleID */
+    private final long serverID, channelID, logID;
     private final List<JDAListener> listeners;
     private final Map<String, Pattern> mentionPatternCache;
     private JDA jda;
@@ -79,7 +81,6 @@ public class DiscordJDA {
         this.botConfig = this.discordConfig.getBotConfig();
         this.serverID = this.botConfig.getServerID();
         this.channelID = this.botConfig.getChannelID();
-//        this.consoleID = this.botConfig.getConsoleID();
         this.logID = this.botConfig.getLogID();
         this.listeners = new ArrayList<>();
         this.mentionPatternCache = new HashMap<>();
@@ -104,11 +105,10 @@ public class DiscordJDA {
 
             this.listeners.add(new CommandListener(this.discordExtension));
             this.listeners.add(new MessageListener(this.discordExtension));
-//        this.listeners.add(new ConsoleListener(this, this.discordExtension));
             this.listeners.add(new MentionPatternCacheListener(this, this.mentionPatternCache));
 
             try {
-                this.jda = JDABuilder.create(this.botConfig.getToken(), this.getGatewayIntents())
+                this.jda = JDABuilder.create(this.botConfig.getToken(), this.botConfig.getGatewayIntents())
                         .disableCache(this.botConfig.getDisableCacheFlag())
                         .enableCache(this.botConfig.getEnableCacheFlag())
                         .setEnableShutdownHook(false)
@@ -144,14 +144,20 @@ public class DiscordJDA {
                 this.logger.debug("(log) Nie można odnaleźć kanału z ID &b " + this.logID);
             }
 
-//            this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
-//            if (this.consoleChannel == null) {
-//                this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
-//            }
-
             this.linkingManager = new LinkingManager(this.discordExtension);
             this.statsChannelsManager = new StatsChannelsManager(this.discordExtension, this);
             this.statsChannelsManager.init();
+
+            if (this.isGatewayIntent(GatewayIntent.GUILD_VOICE_STATES)) {
+                if (this.isCacheFlagEnabled(CacheFlag.VOICE_STATE)) {
+                    this.discordExtension.getBdsAutoEnable().getEventManager()
+                            .registerListener(new ProximityVoiceChat(this.discordExtension, this.discordExtension.getProximityVoiceChatConfig()), this.discordExtension);
+                } else {
+                    this.logger.error("Brak '&bCacheFlag " + CacheFlag.VOICE_STATE + "`&r ProximityVoiceChat nie będzie działać");
+                }
+            } else {
+                this.logger.error("Brak '&bGatewayIntent " + GatewayIntent.GUILD_VOICE_STATES + "`&r ProximityVoiceChat nie będzie działać");
+            }
 
             for (final JDAListener listener : this.listeners) {
                 try {
@@ -203,16 +209,6 @@ public class DiscordJDA {
         }
     }
 
-    private List<GatewayIntent> getGatewayIntents() {
-        return Arrays.asList(
-                GatewayIntent.GUILD_PRESENCES,
-                GatewayIntent.GUILD_MEMBERS,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
-                GatewayIntent.MESSAGE_CONTENT
-        );
-    }
-
     private void checkBotPermissions() {
         final Member botMember = this.getBotMember();
         if (botMember == null) return;
@@ -228,6 +224,10 @@ public class DiscordJDA {
 
     public boolean isCacheFlagEnabled(final CacheFlag cacheFlag) {
         return this.jda.getCacheFlags().contains(cacheFlag);
+    }
+
+    public boolean isGatewayIntent(final GatewayIntent gatewayIntent) {
+        return this.jda.getGatewayIntents().contains(gatewayIntent);
     }
 
     public void sendPrivateMessage(final User user, final String message) {
@@ -321,6 +321,21 @@ public class DiscordJDA {
                 .filter(member -> member.getOnlineStatus() != OnlineStatus.OFFLINE)
                 .sorted(Comparator.comparing(Member::getTimeJoined))
                 .toList();
+    }
+
+    @Nullable
+    public Category getCategoryByID(final long categoryId) {
+        return this.guild.getCategoryById(categoryId);
+    }
+
+    @Nullable
+    public List<VoiceChannel> getVoiceChannelsInCategoryById(final long categoryId) {
+        final Category category = this.getCategoryByID(categoryId);
+        if (category != null) {
+            return category.getVoiceChannels();
+        }
+
+        return null;
     }
 
     private List<Member> getGuildMembers(final Guild guild) {

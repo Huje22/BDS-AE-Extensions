@@ -5,6 +5,7 @@ import eu.okaeri.configs.annotation.Comment;
 import java.util.Arrays;
 import java.util.List;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class BotConfig extends OkaeriConfig {
@@ -17,6 +18,17 @@ public class BotConfig extends OkaeriConfig {
     private String token = "";
 
     @Comment({""})
+    @Comment({"Poczytaj o tych tym tu"})
+    @Comment({"https://github.com/discord-jda/JDA/wiki/Gateway-Intents-and-Member-Cache-Policy"})
+    private List<GatewayIntent> gatewayIntents = Arrays.asList(
+            GatewayIntent.GUILD_PRESENCES,
+            GatewayIntent.GUILD_MEMBERS,
+            GatewayIntent.GUILD_MESSAGES,
+            GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
+            GatewayIntent.MESSAGE_CONTENT,
+            GatewayIntent.GUILD_VOICE_STATES
+    );
+    @Comment({""})
     @Comment({"Poczytaj o tych flagach tutaj"})
     @Comment({"https://github.com/discord-jda/JDA/wiki/Gateway-Intents-and-Member-Cache-Policy/#cacheflags"})
     private List<CacheFlag> enableCacheFlag = Arrays.asList(
@@ -24,11 +36,12 @@ public class BotConfig extends OkaeriConfig {
             CacheFlag.CLIENT_STATUS,
             CacheFlag.ACTIVITY,
             CacheFlag.CLIENT_STATUS,
+            CacheFlag.VOICE_STATE,
             CacheFlag.ONLINE_STATUS
     );
 
+    @Comment({""})
     private List<CacheFlag> disableCacheFlag = Arrays.asList(
-            CacheFlag.VOICE_STATE,
             // CacheFlag.ACTIVITY,
             // CacheFlag.CLIENT_STATUS,
             // CacheFlag.ONLINE_STATUS,
@@ -47,10 +60,6 @@ public class BotConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"ID kanału z logami"})
     private long logID = 1L;
-
-//    @Comment({""})
-//    @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
-//    private long consoleID = 1L;
 
     @Comment({""})
     @Comment({"Czy pokazać więcej informacji o graczu online w /list ? "})
@@ -111,9 +120,9 @@ public class BotConfig extends OkaeriConfig {
         return this.logID;
     }
 
-//    public long getConsoleID() {
-//        return this.consoleID;
-//    }
+    public List<GatewayIntent> getGatewayIntents() {
+        return this.gatewayIntents;
+    }
 
     public List<CacheFlag> getEnableCacheFlag() {
         return this.enableCacheFlag;

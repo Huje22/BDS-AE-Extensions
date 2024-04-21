@@ -13,6 +13,7 @@ import me.indian.discord.command.UnlinkCommand;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.LinkingConfig;
 import me.indian.discord.config.MessagesConfig;
+import me.indian.discord.config.ProximityVoiceChatConfig;
 import me.indian.discord.config.StatsChannelsConfig;
 import me.indian.discord.hook.RestWebsiteHook;
 import me.indian.discord.jda.DiscordJDA;
@@ -31,6 +32,7 @@ public class DiscordExtension extends Extension {
     private MessagesConfig messagesConfig;
     private LinkingConfig linkingConfig;
     private StatsChannelsConfig statsChannelsConfig;
+    private ProximityVoiceChatConfig proximityVoiceChatConfig;
     private Logger logger;
     private DiscordJDA discordJDA;
     private WebHook webHook;
@@ -42,7 +44,8 @@ public class DiscordExtension extends Extension {
         this.config = this.createConfig(DiscordConfig.class, "config");
         this.messagesConfig = this.createConfig(MessagesConfig.class, "Messages");
         this.linkingConfig = this.createConfig(LinkingConfig.class, "Linking");
-        this.statsChannelsConfig = this.createConfig(StatsChannelsConfig.class,"StatsChannels");
+        this.statsChannelsConfig = this.createConfig(StatsChannelsConfig.class, "StatsChannels");
+        this.proximityVoiceChatConfig = this.createConfig(ProximityVoiceChatConfig.class, "ProximityVoiceChat");
 
         this.logger = this.getLogger();
 
@@ -85,11 +88,13 @@ public class DiscordExtension extends Extension {
     }
 
     private void startShutdown() {
-        final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
-        final StatsChannelsManager statsChannelsManager = this.discordJDA.getStatsChannelsManager();
+        if(this.discordJDA != null) {
+            final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
+            final StatsChannelsManager statsChannelsManager = this.discordJDA.getStatsChannelsManager();
 
-        if (linkingManager != null) linkingManager.saveLinkedAccounts();
-        if (statsChannelsManager != null) statsChannelsManager.onShutdown();
+            if (linkingManager != null) linkingManager.saveLinkedAccounts();
+            if (statsChannelsManager != null) statsChannelsManager.onShutdown();
+        }
     }
 
     public void shutdown() {
@@ -130,11 +135,16 @@ public class DiscordExtension extends Extension {
         return this.statsChannelsConfig;
     }
 
-    public void reloadConfigs(){
+    public ProximityVoiceChatConfig getProximityVoiceChatConfig() {
+        return this.proximityVoiceChatConfig;
+    }
+
+    public void reloadConfigs() {
         this.config = (DiscordConfig) this.config.load(true);
         this.messagesConfig = (MessagesConfig) this.messagesConfig.load(true);
         this.linkingConfig = (LinkingConfig) this.linkingConfig.load(true);
         this.statsChannelsConfig = (StatsChannelsConfig) this.statsChannelsConfig.load(true);
+        this.proximityVoiceChatConfig = (ProximityVoiceChatConfig) this.proximityVoiceChatConfig.load(true);
     }
 
     public DiscordJDA getDiscordJDA() {
