@@ -103,9 +103,8 @@ public class ProximityVoiceChat extends Listener {
                 voiceChatMember.setX(position.x());
                 voiceChatMember.setY(position.y());
                 voiceChatMember.setZ(position.z());
-            }
-
-            if (this.lobbyChannel.getMembers().contains(voiceChatMember.getMember())) {
+            }TODO
+            if (getPlayerChannel) {
                 this.playerGroupManager.addVoiceChatMember(voiceChatMember);
             }
         } else {
