@@ -4,12 +4,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import me.indian.discord.jda.voice.component.Group;
+import me.indian.discord.jda.voice.component.VoiceChatMember;
 import net.dv8tion.jda.api.entities.Member;
 
 public class PlayerGroupManager {
 
-    private final Map<String, VoiceChatMember> voiceChatMembers = new HashMap<>();
-    private final Map<String, Group> groupMap = new HashMap<>();
+    private final Map<String, VoiceChatMember> voiceChatMembers;
+    private final Map<String, Group> groupMap;
+
+    public PlayerGroupManager() {
+        this.voiceChatMembers = new HashMap<>();
+        this.groupMap = new HashMap<>();
+    }
 
     public void addVoiceChatMember(final VoiceChatMember voiceChatMember) {
         this.voiceChatMembers.put(voiceChatMember.getName(), voiceChatMember);
@@ -63,11 +70,7 @@ public class PlayerGroupManager {
     private boolean isWithinDistance(final VoiceChatMember voiceChatMember, final List<VoiceChatMember> voiceChatMembers, final int maxDistance) {
         for (final VoiceChatMember member : voiceChatMembers) {
             if (member == null || voiceChatMember == null) continue;
-
-            final double distance = this.calculateDistance(voiceChatMember, member);
-            if (distance <= maxDistance) {
-                return true;
-            }
+            if (this.calculateDistance(voiceChatMember, member) <= maxDistance) return true;
         }
         return false;
     }

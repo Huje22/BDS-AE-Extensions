@@ -18,6 +18,8 @@ import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.ProximityVoiceChatConfig;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
+import me.indian.discord.jda.voice.component.VoiceChatMember;
+import me.indian.discord.jda.voice.component.Group;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -103,8 +105,9 @@ public class ProximityVoiceChat extends Listener {
                 voiceChatMember.setX(position.x());
                 voiceChatMember.setY(position.y());
                 voiceChatMember.setZ(position.z());
-            }TODO
-            if (getPlayerChannel) {
+            }
+
+            if (this.getPlayerChannel(voiceChatMember.getMember()) != null) {
                 this.playerGroupManager.addVoiceChatMember(voiceChatMember);
             }
         } else {
@@ -155,6 +158,8 @@ public class ProximityVoiceChat extends Listener {
                     for (final VoiceChatMember voiceChatMember : groupMembers) {
                         this.movePlayerToVoiceChannel(voiceChatMember.getMember(), newVoiceChannel);
                     }
+                } else {
+                    this.logger.error("Nie udało się utworzyć kanału dla grupy&7 " + group.getId() + "&r!");
                 }
             }
         }
@@ -186,27 +191,28 @@ public class ProximityVoiceChat extends Listener {
     }
 
     private VoiceChannel createNewVoiceChannel(final String id) {
-        final VoiceChannel voiceChannel = this.voiceChannels.get(id);
+        try {
+            final VoiceChannel voiceChannel = this.voiceChannels.get(id);
 
-        if (voiceChannel != null) return voiceChannel;
+            if (voiceChannel != null) return voiceChannel;
+            if (this.voiceCategory != null) {
+                final ChannelAction<VoiceChannel> channelAction = this.voiceCategory.createVoiceChannel(id)
+                        .addPermissionOverride(this.guild.getPublicRole(), EnumSet.of(Permission.VOICE_SPEAK), EnumSet.of(Permission.VIEW_CHANNEL));
 
-        if (this.voiceCategory != null) {
-            final ChannelAction<VoiceChannel> channelAction = this.voiceCategory.createVoiceChannel(id)
-                    .addPermissionOverride(this.guild.getPublicRole(), EnumSet.of(Permission.VOICE_SPEAK), EnumSet.of(Permission.VIEW_CHANNEL));
+                final VoiceChannel createdChannel = channelAction.complete();
+                this.voiceChannels.put(id, createdChannel);
 
-            final VoiceChannel createdChannel = channelAction.complete();
-            this.voiceChannels.put(id, createdChannel);
-
-            return createdChannel;
+                return createdChannel;
+            }
+        } catch (final Exception exception) {
+            this.logger.error("Nie udało się utworzyć kanału dla grupy&7 " + id + "&r!", exception);
         }
 
         return null;
     }
 
     private void movePlayerToVoiceChannel(final Member member, final VoiceChannel voiceChannel) {
-        final List<Member> members = voiceChannel.getMembers();
-
-        if (!members.contains(member)) {
+        if (!voiceChannel.getMembers().contains(member)) {
             if (this.getPlayerChannel(member) != null) {
                 this.guild.moveVoiceMember(member, voiceChannel).queue();
             } else {
@@ -223,14 +229,13 @@ public class ProximityVoiceChat extends Listener {
 
     private void setLobbyChannel() {
         final Role linkingRole = this.guild.getRoleById(this.discordExtension.getLinkingConfig().getLinkedRoleID());
-
         final VoiceChannelManager lobbyManager = this.lobbyChannel.getManager();
 
         lobbyManager.putPermissionOverride(this.guild.getPublicRole(), null, EnumSet.of(Permission.VIEW_CHANNEL, Permission.VOICE_SPEAK))
                 .queue();
 
         if (linkingRole != null) {
-            lobbyManager.putPermissionOverride(linkingRole, null, EnumSet.of(Permission.VIEW_CHANNEL)).queue();
+            lobbyManager.putPermissionOverride(linkingRole, EnumSet.of(Permission.VIEW_CHANNEL), null).queue();
 
             if (this.proximityVoiceChatConfig.isSpeakInLobby()) {
                 lobbyManager.putPermissionOverride(linkingRole, EnumSet.of(Permission.VOICE_SPEAK), null).queue();

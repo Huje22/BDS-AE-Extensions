@@ -1,4 +1,4 @@
-package me.indian.discord.jda.voice;
+package me.indian.discord.jda.voice.component;
 
 import java.util.ArrayList;
 import java.util.List;
