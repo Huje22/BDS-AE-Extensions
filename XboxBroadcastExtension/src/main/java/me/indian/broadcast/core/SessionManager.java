@@ -72,7 +72,7 @@ public class SessionManager extends SessionManagerCore {
      * @param sessionInfo      The session information to use
      * @param friendSyncConfig The friend sync configuration to use
      */
-    public void init(final SessionInfo sessionInfo, final FriendSyncConfig friendSyncConfig) throws SessionUpdateException, SessionCreationException {
+    public void init(final SessionInfo sessionInfo, final FriendSyncConfig friendSyncConfig) throws SessionCreationException, SessionUpdateException {
         // Set the internal session information based on the session info
         this.sessionInfo = new ExpandedSessionInfo("", "", sessionInfo);
 
@@ -86,21 +86,24 @@ public class SessionManager extends SessionManagerCore {
         List<String> subSessions = new ArrayList<>();
         try {
             subSessions = Arrays.asList(Constants.OBJECT_MAPPER.readValue(Paths.get(this.cache, "sub_sessions.json").toFile(), String[].class));
-        } catch (final IOException ignored) {
-        }
+        } catch (final IOException ignored) { }
 
-        // Create the sub-session manager for each sub-session
-        for (final String subSession : subSessions) {
-            try {
-                final SubSessionManager subSessionManager = new SubSessionManager(subSession, this, Paths.get(this.cache, subSession).toString(), this.logger);
-                subSessionManager.init();
-                subSessionManager.friendManager().initAutoFriend(friendSyncConfig);
-                this.subSessionManagers.put(subSession, subSessionManager);
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się utworzyć sesji podrzędnej&b " + subSession, exception);
-                // TODO Retry creation after 30s or so
+        // Create the sub-sessions in a new thread so we don't block the main thread
+        final List<String> finalSubSessions = subSessions;
+        new Thread(() -> {
+            // Create the sub-session manager for each sub-session
+            for (final String subSession : finalSubSessions) {
+                try {
+                    final SubSessionManager subSessionManager = new SubSessionManager(subSession, this, Paths.get(this.cache, subSession).toString(), this.logger);
+                    subSessionManager.init();
+                    subSessionManager.friendManager().initAutoFriend(friendSyncConfig);
+                    this.subSessionManagers.put(subSession, subSessionManager);
+                } catch (final SessionCreationException | SessionUpdateException exception) {
+                    this.logger.error("Nie udało się utworzyć sesji podrzędnej&b " + subSession, exception);
+                    // TODO Retry creation after 30s or so
+                }
             }
-        }
+        }).start();
     }
 
     @Override

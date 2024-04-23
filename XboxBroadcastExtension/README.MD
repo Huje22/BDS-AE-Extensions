@@ -3,10 +3,6 @@
 >
 > Używanie tego rozszerzenia będzie naliczać ci czas gry w `Minecraft For Android`!
 
-TODO: Zaktualizować do
-https://github.com/rtm516/MCXboxBroadcast/compare/70286e0e2e69...3c1ddc51c056
-
-
 <div align="center">
 
 # MCXboxBroadcast
