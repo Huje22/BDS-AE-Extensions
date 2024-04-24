@@ -619,6 +619,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private boolean serverTopButton(final ButtonInteractionEvent event) {
+       //TODO: Zrobić samo TOP50
         switch (event.getComponentId()) {
             case "playtime" -> {
                 event.getHook().editOriginalEmbeds(this.getPlaytimeEmbed()).queue();
