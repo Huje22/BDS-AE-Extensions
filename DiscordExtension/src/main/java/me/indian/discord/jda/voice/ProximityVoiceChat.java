@@ -9,7 +9,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
-import me.indian.bds.event.Position;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.event.player.PlayerMovementEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.logger.Logger;
@@ -99,19 +99,15 @@ public class ProximityVoiceChat extends Listener {
             VoiceChatMember voiceChatMember = this.playerPosition.get(playerName);
 
             if (voiceChatMember == null) {
-                voiceChatMember = new VoiceChatMember(playerName, member, position.x(), position.y(), position.z());
+                voiceChatMember = new VoiceChatMember(playerName, member, position);
                 this.playerPosition.put(playerName, voiceChatMember);
             } else {
-                voiceChatMember.setX(position.x());
-                voiceChatMember.setY(position.y());
-                voiceChatMember.setZ(position.z());
+                voiceChatMember.setPosition(position);
             }
 
             if (this.getPlayerChannel(voiceChatMember.getMember()) != null) {
                 this.playerGroupManager.addVoiceChatMember(voiceChatMember);
             }
-        } else {
-            this.logger.error("Gracz &c" + playerName + "&r nie ma połączonych kont!");
         }
     }
 
@@ -134,6 +130,7 @@ public class ProximityVoiceChat extends Listener {
             public void run() {
                 ProximityVoiceChat.this.removeEmptyGroups();
                 ProximityVoiceChat.this.connectPlayersInProximity(ProximityVoiceChat.this.proximityVoiceChatConfig.getProximityThreshold());
+                ProximityVoiceChat.this.updateLobbyChannel();
             }
         };
 
@@ -216,6 +213,7 @@ public class ProximityVoiceChat extends Listener {
             if (this.getPlayerChannel(member) != null) {
                 this.guild.moveVoiceMember(member, voiceChannel).queue();
             } else {
+                //TODO: Dodaj czasowe usunięcie użytkownika jeśli za 5s nadal nie jest połączony z żadnym kanałem
                 final VoiceChatMember voiceChatMember = this.playerGroupManager.getVoiceChatMemberByMember(member);
                 if (voiceChatMember != null) {
                     this.playerGroupManager.removeFromGroups(voiceChatMember);
@@ -228,6 +226,7 @@ public class ProximityVoiceChat extends Listener {
     }
 
     private void setLobbyChannel() {
+        //TODO: Dodaj "Lobby name"
         final Role linkingRole = this.guild.getRoleById(this.discordExtension.getLinkingConfig().getLinkedRoleID());
         final VoiceChannelManager lobbyManager = this.lobbyChannel.getManager();
 
@@ -243,6 +242,11 @@ public class ProximityVoiceChat extends Listener {
                 lobbyManager.putPermissionOverride(linkingRole, null, EnumSet.of(Permission.VOICE_SPEAK)).queue();
             }
         }
+    }
+
+    private void updateLobbyChannel() {
+        //TODO:Dodaj w nazwie info ile jest dostępnych graczy na kanałach
+
     }
 
     @Nullable

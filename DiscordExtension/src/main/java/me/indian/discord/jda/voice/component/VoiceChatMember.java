@@ -1,5 +1,6 @@
 package me.indian.discord.jda.voice.component;
 
+import me.indian.bds.player.position.Position;
 import net.dv8tion.jda.api.entities.Member;
 
 public class VoiceChatMember {
@@ -7,14 +8,12 @@ public class VoiceChatMember {
     private final String name;
     private final Member member;
 
-    private double x, y, z;
+    private Position position;
 
-    public VoiceChatMember(final String name, final Member member, final double x, final double y, final double z) {
+    public VoiceChatMember(final String name, final Member member, final Position position) {
         this.name = name;
         this.member = member;
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        this.position = position;
     }
 
     public String getName() {
@@ -25,28 +24,12 @@ public class VoiceChatMember {
         return this.member;
     }
 
-    public double getX() {
-        return this.x;
+    public Position getPosition() {
+        return this.position;
     }
 
-    public void setX(final double x) {
-        this.x = x;
-    }
-
-    public double getY() {
-        return this.y;
-    }
-
-    public void setY(final double y) {
-        this.y = y;
-    }
-
-    public double getZ() {
-        return this.z;
-    }
-
-    public void setZ(final double z) {
-        this.z = z;
+    public void setPosition(final Position position) {
+        this.position = position;
     }
 
     @Override
@@ -54,7 +37,7 @@ public class VoiceChatMember {
         return "VoiceChatMember{" +
                 "name='" + this.name + '\'' +
                 ", memberId=" + this.member.getId() +
-                ", position=(" + this.x + ", " + this.y + ", " + this.z + ')' +
+                ","+ this.position +
                 '}';
     }
 }

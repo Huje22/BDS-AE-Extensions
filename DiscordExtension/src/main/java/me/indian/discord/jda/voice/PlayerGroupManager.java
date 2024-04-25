@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import me.indian.bds.player.position.Position;
 import me.indian.discord.jda.voice.component.Group;
 import me.indian.discord.jda.voice.component.VoiceChatMember;
 import net.dv8tion.jda.api.entities.Member;
@@ -75,10 +76,15 @@ public class PlayerGroupManager {
         return false;
     }
 
-    private double calculateDistance(final VoiceChatMember voiceChatMember1, final VoiceChatMember voiceChatMember2) {
-        final double xDistance = voiceChatMember1.getX() - voiceChatMember2.getX();
-        final double yDistance = voiceChatMember1.getY() - voiceChatMember2.getY();
-        final double zDistance = voiceChatMember1.getZ() - voiceChatMember2.getZ();
+    private double calculateDistance(final VoiceChatMember member, final VoiceChatMember neighbor) {
+        final Position memberPos = member.getPosition();
+        final Position neighborPos = neighbor.getPosition();
+
+        if (memberPos.dimension() != neighborPos.dimension()) return -Double.MAX_VALUE;
+
+        final double xDistance = memberPos.x() - neighborPos.x();
+        final double yDistance = memberPos.y() - neighborPos.y();
+        final double zDistance = memberPos.z() - neighborPos.z();
 
         return Math.sqrt(xDistance * xDistance + yDistance * yDistance + zDistance * zDistance);
     }
