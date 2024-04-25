@@ -2,7 +2,7 @@ package me.indian.logblock.util;
 
 import com.google.gson.Gson;
 import me.indian.bds.event.Event;
-import me.indian.bds.event.Position;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerInteractContainerEvent;

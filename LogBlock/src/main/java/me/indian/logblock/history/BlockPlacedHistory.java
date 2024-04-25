@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import me.indian.bds.event.Event;
-import me.indian.bds.event.Position;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.util.DateUtil;
 import me.indian.logblock.Config;
