@@ -9,17 +9,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
-import me.indian.bds.player.position.Position;
 import me.indian.bds.event.player.PlayerMovementEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.util.MathUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.ProximityVoiceChatConfig;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
-import me.indian.discord.jda.voice.component.VoiceChatMember;
 import me.indian.discord.jda.voice.component.Group;
+import me.indian.discord.jda.voice.component.VoiceChatMember;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -44,7 +44,7 @@ public class ProximityVoiceChat extends Listener {
     private final long categoryID, lobbyID;
     private final Category voiceCategory;
     private final VoiceChannel lobbyChannel;
-
+    private String lastLobbyName;
 
     public ProximityVoiceChat(final DiscordExtension discordExtension, final ProximityVoiceChatConfig proximityVoiceChatConfig) {
         this.discordExtension = discordExtension;
@@ -58,7 +58,6 @@ public class ProximityVoiceChat extends Listener {
         this.guild = this.discordJDA.getGuild();
         this.categoryID = this.proximityVoiceChatConfig.getCategoryID();
         this.lobbyID = this.proximityVoiceChatConfig.getLobbyID();
-
         this.voiceCategory = this.discordJDA.getCategoryByID(this.categoryID);
 
         if (this.voiceCategory == null) {
@@ -70,6 +69,8 @@ public class ProximityVoiceChat extends Listener {
         if (this.lobbyChannel == null) {
             throw new NullPointerException("Nie znaleziono kanału z ID " + this.lobbyID);
         }
+
+        this.lastLobbyName = proximityVoiceChatConfig.getLobbyName();
 
         this.setLobbyChannel();
         this.removeOldChannels();
@@ -226,7 +227,6 @@ public class ProximityVoiceChat extends Listener {
     }
 
     private void setLobbyChannel() {
-        //TODO: Dodaj "Lobby name"
         final Role linkingRole = this.guild.getRoleById(this.discordExtension.getLinkingConfig().getLinkedRoleID());
         final VoiceChannelManager lobbyManager = this.lobbyChannel.getManager();
 
@@ -234,19 +234,42 @@ public class ProximityVoiceChat extends Listener {
                 .queue();
 
         if (linkingRole != null) {
-            lobbyManager.putPermissionOverride(linkingRole, EnumSet.of(Permission.VIEW_CHANNEL), null).queue();
+            final EnumSet<Permission> allowPerms = EnumSet.of(Permission.VIEW_CHANNEL);
+            final EnumSet<Permission> denyPerms = EnumSet.noneOf(Permission.class);
 
             if (this.proximityVoiceChatConfig.isSpeakInLobby()) {
-                lobbyManager.putPermissionOverride(linkingRole, EnumSet.of(Permission.VOICE_SPEAK), null).queue();
+                allowPerms.add(Permission.VOICE_SPEAK);
             } else {
-                lobbyManager.putPermissionOverride(linkingRole, null, EnumSet.of(Permission.VOICE_SPEAK)).queue();
+                denyPerms.add(Permission.VOICE_SPEAK);
             }
+
+            lobbyManager.putPermissionOverride(linkingRole, allowPerms, denyPerms).queue();
         }
+
+        this.updateLobbyChannel();
     }
 
     private void updateLobbyChannel() {
-        //TODO:Dodaj w nazwie info ile jest dostępnych graczy na kanałach
+        final VoiceChannelManager lobbyManager = this.lobbyChannel.getManager();
+        final String lobbyName = this.proximityVoiceChatConfig.getLobbyName().replaceAll("<members>", String.valueOf(this.getMembersSize(false)));
 
+        if (!lobbyName.equals(this.lastLobbyName)) {
+            this.lastLobbyName = lobbyName;
+            lobbyManager.setName(lobbyName).queue();
+        }
+    }
+
+    public int getMembersSize(final boolean countLobby) {
+        final int lobbySize = this.lobbyChannel.getMembers().size();
+        int allSize = 0;
+
+        for (final VoiceChannel voiceChannel : this.voiceCategory.getVoiceChannels()) {
+            allSize += voiceChannel.getMembers().size();
+        }
+
+        if (countLobby) allSize += lobbySize;
+
+        return allSize;
     }
 
     @Nullable

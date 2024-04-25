@@ -21,6 +21,11 @@ public class ProximityVoiceChatConfig extends OkaeriConfig {
     private long lobbyID = 1L;
 
     @Comment({""})
+    @Comment({"Nazwa kanału Lobby"})
+    @CustomKey("LobbyName")
+    private String lobbyName = "Lobby (Dostępni gracze: <members>)";
+
+    @Comment({""})
     @Comment({"Dozwolona odległość graczy od siebie"})
     @CustomKey("ProximityThreshold")
     private int proximityThreshold = 30;
@@ -41,6 +46,10 @@ public class ProximityVoiceChatConfig extends OkaeriConfig {
 
     public long getLobbyID() {
         return this.lobbyID;
+    }
+
+    public String getLobbyName() {
+        return this.lobbyName;
     }
 
     public int getProximityThreshold() {
