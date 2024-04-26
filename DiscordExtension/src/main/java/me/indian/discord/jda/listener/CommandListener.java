@@ -32,6 +32,7 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.PlayerStatsUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.geyser.GeyserUtil;
@@ -177,7 +178,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                                 linkingEmbed.setDescription("Połączono konto z nickiem: **" + this.linkingManager.getNameByID(id) + "**" + this.hasEnoughHours(member));
                                 event.getHook().editOriginalEmbeds(linkingEmbed.build()).queue();
-                                this.serverProcess.tellrawToPlayer(this.linkingManager.getNameByID(id),
+                                ServerUtil.tellrawToPlayer(this.linkingManager.getNameByID(id),
                                         "&aPołączono konto z ID:&b " + id);
                             } else {
                                 event.getHook().editOriginal("Kod nie jest poprawny").queue();
@@ -685,7 +686,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     event.getHook().editOriginalEmbeds(this.getBackupEmbed())
                             .setActionRow(ActionRow.of(this.backupButtons).getComponents())
                             .queue();
-                    this.serverProcess.tellrawToAllAndLogger("&7[&bDiscord&7]",
+                    ServerUtil.tellrawToAllAndLogger("&7[&bDiscord&7]",
                             "&aUżytkownik&b " + this.discordJDA.getUserName(event.getMember(), event.getUser()) +
                                     "&a usunął backup&b " + fileName + "&a za pomocą&e discord"
                             , LogState.INFO);
@@ -742,7 +743,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             }
             case "stats_disable" -> {
                 this.serverProcess.setCanRun(false);
-                this.serverProcess.kickAllPlayers("&aServer został wyłączony za pośrednictwem&b discord");
+                ServerUtil.kickAllPlayers("&aServer został wyłączony za pośrednictwem&b discord");
                 this.serverProcess.sendToConsole("stop");
 
                 this.discordJDA.log("Wyłączenie servera",

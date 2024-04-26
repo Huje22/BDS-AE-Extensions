@@ -10,6 +10,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ServerUtil;
 
 public class AutoMessagesExtension extends Extension {
 
@@ -36,9 +37,9 @@ public class AutoMessagesExtension extends Extension {
                     if (autoMessagesConfig.isRandom()) {
                         final int message = random.nextInt(messages.size());
 
-                        serverProcess.tellrawToAll(prefix + messages.get(message));
+                        ServerUtil.tellrawToAll(prefix + messages.get(message));
                     } else {
-                        serverProcess.tellrawToAll(prefix + this.iterator.next());
+                        ServerUtil.tellrawToAll(prefix + this.iterator.next());
                     }
                 }
             }

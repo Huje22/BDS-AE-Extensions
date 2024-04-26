@@ -14,6 +14,7 @@ import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.LinkingConfig;
 import me.indian.discord.config.MessagesConfig;
@@ -93,7 +94,7 @@ public class PlayerEventListener extends Listener {
                 this.discordJDA.sendPlayerMessage(playerName.replaceAll("\"", ""), message);
             }
             if (memberMutedOnDiscord) {
-                this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerName, "&cZostałeś wyciszony na discord!");
+                ServerUtil.tellrawToPlayer(playerName, "&cZostałeś wyciszony na discord!");
                 this.discordJDA.log("Wyciszenie na Discord",
                         "Wiadomość została usunięta z powodu wyciszenia na Discord, jej treść to:\n```" +
                                 message + "```",

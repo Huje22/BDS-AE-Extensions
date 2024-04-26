@@ -4,6 +4,7 @@ import io.javalin.Javalin;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.jda.manager.LinkingManager;
 import me.indian.host2play.Host2PlayExtension;
@@ -58,12 +59,12 @@ public class NotificationEndpoint extends HttpHandler {
                 final String playerName = this.donationCommand.getBuyerName(notification.paymentId());
 
                 if (playerName != null) {
-                    this.extension.getBdsAutoEnable().getServerProcess().tellrawToAllAndLogger("",
+                    ServerUtil.tellrawToAllAndLogger("",
                             "&aGracz &l" + playerName + "&r&a zasponsorował server, pięniędzmi o wysokości:&b " + paymentData.amount() + "&e PLN", LogState.INFO);
                     this.sendDiscordAlert(playerName,
                             "Gracz **" + playerName + "** zasponsorował server, pięniędzmi o wysokości: **" + paymentData.amount() + "** PLN", paymentData);
                 } else {
-                    this.extension.getBdsAutoEnable().getServerProcess().tellrawToAllAndLogger("",
+                    ServerUtil.tellrawToAllAndLogger("",
                             "&aUżytkownik z emilem &b" + paymentData.customerEmail() + "&r&a zasponsorował server, pięniędzmi o wysokości:&b " + paymentData.amount() + "&e PLN",
                             LogState.INFO);
                     this.sendDiscordAlert("",

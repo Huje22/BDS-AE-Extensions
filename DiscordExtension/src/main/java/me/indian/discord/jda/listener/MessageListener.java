@@ -13,6 +13,7 @@ import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.MessagesConfig;
@@ -206,7 +207,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
             msg = MessageUtil.fixMessage(msg);
 
-            if (this.serverProcess.isEnabled()) this.serverProcess.tellrawToAll(msg);
+            if (this.serverProcess.isEnabled()) ServerUtil.tellrawToAll(msg);
             this.logger.info(msg);
             this.discordJDA.writeConsole(ConsoleColors.removeColors(msg));
             this.addMessage(message.getIdLong(), message);
