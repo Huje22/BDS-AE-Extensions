@@ -620,7 +620,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private boolean serverTopButton(final ButtonInteractionEvent event) {
-       //TODO: Zrobić samo TOP50
         switch (event.getComponentId()) {
             case "playtime" -> {
                 event.getHook().editOriginalEmbeds(this.getPlaytimeEmbed()).queue();
@@ -758,13 +757,13 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private MessageEmbed getPlaytimeEmbed() {
-        final List<String> playTime = PlayerStatsUtil.getTopPlayTime(true, 100);
+        final List<String> playTime = PlayerStatsUtil.getTopPlayTime(true, 50);
         final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
         final String totalUpTime = "Łączny czas działania servera: "
                 + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's'));
 
         return new EmbedBuilder()
-                .setTitle("Top 100 graczy z największą ilością przegranego czasu")
+                .setTitle("Top 50 graczy z największą ilością przegranego czasu")
                 .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
                 .setColor(Color.BLUE)
                 .setFooter(totalUpTime)
@@ -772,9 +771,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private MessageEmbed getDeathsEmbed() {
-        final List<String> deaths = PlayerStatsUtil.getTopDeaths(true, 100);
+        final List<String> deaths = PlayerStatsUtil.getTopDeaths(true, 50);
         return new EmbedBuilder()
-                .setTitle("Top 100 graczy z największą ilością śmierci")
+                .setTitle("Top 50 graczy z największą ilością śmierci")
                 .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
                 .setColor(Color.BLUE)
                 .build();
