@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.player.position.Position;
 import me.indian.discord.jda.voice.component.Group;
 import me.indian.discord.jda.voice.component.VoiceChatMember;
@@ -13,10 +15,13 @@ public class PlayerGroupManager {
 
     private final Map<String, VoiceChatMember> voiceChatMembers;
     private final Map<String, Group> groupMap;
+    private final Lock removeMembersLock, groupRemoveLock;
 
     public PlayerGroupManager() {
         this.voiceChatMembers = new HashMap<>();
         this.groupMap = new HashMap<>();
+        this.removeMembersLock = new ReentrantLock();
+        this.groupRemoveLock = new ReentrantLock();
     }
 
     public void addVoiceChatMember(final VoiceChatMember voiceChatMember) {
@@ -24,7 +29,13 @@ public class PlayerGroupManager {
     }
 
     public void removeVoiceChatMember(final VoiceChatMember voiceChatMember) {
-        this.voiceChatMembers.remove(voiceChatMember.getName());
+        this.removeMembersLock.lock();
+
+        try {
+            this.voiceChatMembers.remove(voiceChatMember.getName());
+        } finally {
+            this.removeMembersLock.unlock();
+        }
     }
 
     public List<Group> createGroups(final int maxDistance) {
@@ -40,7 +51,13 @@ public class PlayerGroupManager {
     }
 
     public void removeGroup(final Group group) {
-        this.groupMap.remove(group.getId());
+        this.groupRemoveLock.lock();
+
+        try {
+            this.groupMap.remove(group.getId());
+        } finally {
+            this.groupRemoveLock.unlock();
+        }
     }
 
     public void removeFromGroups(final VoiceChatMember voiceChatMember) {
@@ -63,6 +80,7 @@ public class PlayerGroupManager {
                 return group;
             }
         }
+
         final Group newGroup = new Group(UUID.randomUUID().toString());
         this.groupMap.put(newGroup.getId(), newGroup);
         return newGroup;
@@ -71,17 +89,17 @@ public class PlayerGroupManager {
     private boolean isWithinDistance(final VoiceChatMember voiceChatMember, final List<VoiceChatMember> voiceChatMembers, final int maxDistance) {
         for (final VoiceChatMember member : voiceChatMembers) {
             if (member == null || voiceChatMember == null) continue;
-            if (this.calculateDistance(voiceChatMember, member) <= maxDistance) return true;
+
+            final Position memberPos = member.getPosition();
+            final Position neighborPos = voiceChatMember.getPosition();
+
+            if (memberPos.dimension() != neighborPos.dimension()) return false;
+            if (this.calculateDistance(memberPos, neighborPos) <= maxDistance) return true;
         }
         return false;
     }
 
-    private double calculateDistance(final VoiceChatMember member, final VoiceChatMember neighbor) {
-        final Position memberPos = member.getPosition();
-        final Position neighborPos = neighbor.getPosition();
-
-        if (memberPos.dimension() != neighborPos.dimension()) return -Double.MAX_VALUE;
-
+    private double calculateDistance(final Position memberPos, final Position neighborPos) {
         final double xDistance = memberPos.x() - neighborPos.x();
         final double yDistance = memberPos.y() - neighborPos.y();
         final double zDistance = memberPos.z() - neighborPos.z();

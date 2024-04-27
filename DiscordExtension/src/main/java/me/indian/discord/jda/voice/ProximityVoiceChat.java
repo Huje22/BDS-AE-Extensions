@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import me.indian.bds.event.EventHandler;
 import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerMovementEvent;
@@ -14,6 +16,7 @@ import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.player.position.Position;
 import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.ProximityVoiceChatConfig;
 import me.indian.discord.jda.DiscordJDA;
@@ -37,9 +40,12 @@ public class ProximityVoiceChat extends Listener {
     private final DiscordJDA discordJDA;
     private final LinkingManager linkingManager;
     private final Logger logger;
+    private final ThreadUtil threadUtil;
+    private final ExecutorService service;
     private final PlayerGroupManager playerGroupManager;
     private final Map<String, VoiceChatMember> playerPosition;
     private final Map<String, VoiceChannel> voiceChannels;
+    private final List<String> toTimeRemove;
     private final Guild guild;
     private final long categoryID, lobbyID;
     private final Category voiceCategory;
@@ -52,9 +58,12 @@ public class ProximityVoiceChat extends Listener {
         this.discordJDA = discordExtension.getDiscordJDA();
         this.linkingManager = this.discordJDA.getLinkingManager();
         this.logger = discordExtension.getLogger();
+        this.threadUtil = new ThreadUtil("Proximity Voice Chat");
+        this.service = Executors.newCachedThreadPool(this.threadUtil);
         this.playerGroupManager = new PlayerGroupManager();
         this.playerPosition = new HashMap<>();
         this.voiceChannels = new HashMap<>();
+        this.toTimeRemove = new ArrayList<>();
         this.guild = this.discordJDA.getGuild();
         this.categoryID = this.proximityVoiceChatConfig.getCategoryID();
         this.lobbyID = this.proximityVoiceChatConfig.getLobbyID();
@@ -135,7 +144,7 @@ public class ProximityVoiceChat extends Listener {
             }
         };
 
-        new Timer("Proximity Voice Chat").scheduleAtFixedRate(timerTask, 0, MathUtil.secondToMillis(this.proximityVoiceChatConfig.getRefreshTime()));
+        new Timer(this.threadUtil.getThreadName()).scheduleAtFixedRate(timerTask, 0, MathUtil.secondToMillis(this.proximityVoiceChatConfig.getRefreshTime()));
     }
 
     public void connectPlayersInProximity(final int proximityThreshold) {
@@ -210,20 +219,19 @@ public class ProximityVoiceChat extends Listener {
     }
 
     private void movePlayerToVoiceChannel(final Member member, final VoiceChannel voiceChannel) {
-        if (!voiceChannel.getMembers().contains(member)) {
-            if (this.getPlayerChannel(member) != null) {
-                this.guild.moveVoiceMember(member, voiceChannel).queue();
-            } else {
-                //TODO: Dodaj czasowe usunięcie użytkownika jeśli za 5s nadal nie jest połączony z żadnym kanałem
-                final VoiceChatMember voiceChatMember = this.playerGroupManager.getVoiceChatMemberByMember(member);
-                if (voiceChatMember != null) {
-                    this.playerGroupManager.removeFromGroups(voiceChatMember);
-                    this.playerGroupManager.removeVoiceChatMember(voiceChatMember);
+        this.service.execute(() -> {
+            if (!voiceChannel.getMembers().contains(member)) {
+                if (this.getPlayerChannel(member) != null) {
+                    try {
+                        this.guild.moveVoiceMember(member, voiceChannel).queue();
+                    } catch (final Exception exception) {
+                        this.guild.moveVoiceMember(member, voiceChannel).queue();
+                    }
+                } else {
+                    this.timeRemove(this.playerGroupManager.getVoiceChatMemberByMember(member));
                 }
-
-                this.logger.error("Gracz &c" + member.getUser().getName() + "&r nie jest na żadnym kanale!");
             }
-        }
+        });
     }
 
     private void setLobbyChannel() {
@@ -260,16 +268,29 @@ public class ProximityVoiceChat extends Listener {
     }
 
     public int getMembersSize(final boolean countLobby) {
-        final int lobbySize = this.lobbyChannel.getMembers().size();
         int allSize = 0;
 
         for (final VoiceChannel voiceChannel : this.voiceCategory.getVoiceChannels()) {
+            if (voiceChannel == this.lobbyChannel && !countLobby) continue;
             allSize += voiceChannel.getMembers().size();
         }
 
-        if (countLobby) allSize += lobbySize;
-
         return allSize;
+    }
+
+    private void timeRemove(final VoiceChatMember voiceChatMember) {
+        if (voiceChatMember != null) {
+            if (this.toTimeRemove.contains(voiceChatMember.getName())) return;
+            this.toTimeRemove.add(voiceChatMember.getName());
+            ThreadUtil.sleep(5);
+            if (this.getPlayerChannel(voiceChatMember.getMember()) == null) {
+                this.toTimeRemove.remove(voiceChatMember.getName());
+                this.playerGroupManager.removeFromGroups(voiceChatMember);
+                this.playerGroupManager.removeVoiceChatMember(voiceChatMember);
+
+                this.logger.error("Gracz &c" + voiceChatMember.getName() + "&r nie jest na żadnym kanale!");
+            }
+        }
     }
 
     @Nullable

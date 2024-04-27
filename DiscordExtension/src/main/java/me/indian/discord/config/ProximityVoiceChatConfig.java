@@ -22,8 +22,9 @@ public class ProximityVoiceChatConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Nazwa kanału Lobby"})
+    @Comment({"UWAGA: Discord to rozjebane gówno i nie zawsze chce zmienić nazwe kanału"})
     @CustomKey("LobbyName")
-    private String lobbyName = "Lobby (Dostępni gracze: <members>)";
+    private String lobbyName = "Lobby (Gracze: <members>)";
 
     @Comment({""})
     @Comment({"Dozwolona odległość graczy od siebie"})
