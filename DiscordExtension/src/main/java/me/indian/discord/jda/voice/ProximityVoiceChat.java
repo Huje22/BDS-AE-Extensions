@@ -219,19 +219,13 @@ public class ProximityVoiceChat extends Listener {
     }
 
     private void movePlayerToVoiceChannel(final Member member, final VoiceChannel voiceChannel) {
-        this.service.execute(() -> {
-            if (!voiceChannel.getMembers().contains(member)) {
-                if (this.getPlayerChannel(member) != null) {
-                    try {
-                        this.guild.moveVoiceMember(member, voiceChannel).queue();
-                    } catch (final Exception exception) {
-                        this.guild.moveVoiceMember(member, voiceChannel).queue();
-                    }
-                } else {
-                    this.timeRemove(this.playerGroupManager.getVoiceChatMemberByMember(member));
-                }
+        if (!voiceChannel.getMembers().contains(member)) {
+            if (this.getPlayerChannel(member) != null) {
+                this.guild.moveVoiceMember(member, voiceChannel).queue();
+            } else {
+                this.timeRemove(this.playerGroupManager.getVoiceChatMemberByMember(member));
             }
-        });
+        }
     }
 
     private void setLobbyChannel() {
