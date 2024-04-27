@@ -36,6 +36,8 @@ public abstract class History {
 
     protected <T> boolean saveToFile(final Map<Position, Map<LocalDateTime, T>> map) {
         if (map.isEmpty()) return true;
+        Event event = null;
+
         try {
             String date = String.valueOf(LocalDate.now(DateUtil.POLISH_ZONE));
             final String dateNow = String.valueOf(LocalDate.now(DateUtil.POLISH_ZONE));
@@ -67,17 +69,17 @@ public abstract class History {
 
                     for (final Map.Entry<LocalDateTime, T> sortedEntry : sortedEntries) {
                         final LocalDateTime dateTime = sortedEntry.getKey();
-                        final T value = sortedEntry.getValue();
+                        event = (Event) sortedEntry.getValue();
 
-                        writer.write(MarkDownUtil.formatInfo(this.getTime(dateTime), (Event) value));
+                        writer.write(MarkDownUtil.formatInfo(this.getTime(dateTime), event));
                     }
                 }
             }
 
-            this.logBlockExtension.getLogger().info("&aZapisano pomyślnie plik&e " + "BlockPlaceHistory.md");
+            this.logBlockExtension.getLogger().info("&aZapisano pomyślnie plik&e " + event.getEventName());
             return true;
         } catch (final Exception exception) {
-            this.logBlockExtension.getLogger().critical("&cNie udało się zapisać pliku&e " + "BlockPlaceHistory.md", exception);
+            this.logBlockExtension.getLogger().critical("&cNie udało się zapisać pliku&e " + event.getEventName(), exception);
             return false;
         }
     }
@@ -85,8 +87,6 @@ public abstract class History {
     public abstract void saveHistory();
 
     protected abstract void clearHistory();
-
-
 
     protected String getTime(final LocalDateTime localDateTime) {
         return localDateTime.format(DateTimeFormatter.ofPattern("HH:mm:ss dd-MM-yyyy"));
