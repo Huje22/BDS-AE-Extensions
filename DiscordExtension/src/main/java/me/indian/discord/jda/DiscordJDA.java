@@ -25,6 +25,7 @@ import me.indian.discord.config.ProximityVoiceChatConfig;
 import me.indian.discord.config.sub.BotConfig;
 import me.indian.discord.embed.component.Field;
 import me.indian.discord.embed.component.Footer;
+import me.indian.discord.jda.command.SlashCommandManager;
 import me.indian.discord.jda.listener.CommandListener;
 import me.indian.discord.jda.listener.GuildJoinListener;
 import me.indian.discord.jda.listener.JDAListener;
@@ -48,8 +49,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.Category;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.Nullable;
@@ -68,9 +67,10 @@ public class DiscordJDA {
     private final Map<String, Pattern> mentionPatternCache;
     private JDA jda;
     private Guild guild;
-    private TextChannel textChannel, consoleChannel, logChannel;
+    private TextChannel textChannel, logChannel;
     private StatsChannelsManager statsChannelsManager;
     private LinkingManager linkingManager;
+    private SlashCommandManager slashCommandManager;
 
     public DiscordJDA(final DiscordExtension discordExtension) {
         this.discordExtension = discordExtension;
@@ -149,6 +149,9 @@ public class DiscordJDA {
             this.statsChannelsManager = new StatsChannelsManager(this.discordExtension, this);
             this.statsChannelsManager.init();
 
+            this.slashCommandManager = new SlashCommandManager(this.discordExtension);
+            this.jda.addEventListener(this.slashCommandManager);
+
             final ProximityVoiceChatConfig proximityVoiceChatConfig = this.discordExtension.getProximityVoiceChatConfig();
             if (this.isGatewayIntent(GatewayIntent.GUILD_VOICE_STATES)) {
                 if (this.isCacheFlagEnabled(CacheFlag.VOICE_STATE)) {
@@ -179,34 +182,7 @@ public class DiscordJDA {
             }
 
             this.checkBotPermissions();
-
-            this.guild.updateCommands().addCommands(
-                    Commands.slash("list", "lista graczy online."),
-                    Commands.slash("playerinfo", "Informacje o danym graczu")
-                            .addOption(OptionType.MENTIONABLE, "player", "Gracz o którym mamy pozyskać info", true),
-                    Commands.slash("backup", "Tworzenie bądź ostatni czas backupa"),
-                    Commands.slash("difficulty", "Zmienia poziom trudności"),
-                    Commands.slash("version", "Wersja BDS-Auto-Enable i severa, umożliwia update servera"),
-                    Commands.slash("ping", "Aktualny ping bot z serwerami discord"),
-                    Commands.slash("stats", "Statystyki Servera i aplikacji."),
-                    Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
-                            .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
-                    Commands.slash("link", "Łączy konto Discord z kontem nickiem Minecraft.")
-                            .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", false),
-                    Commands.slash("unlink", "Rozłącza konto Discord z kontem nickiem Minecraft")
-                            .addOption(OptionType.STRING, "name", "Nick użytkownika którego konto ma zostać rozłączone", false),
-                    Commands.slash("ip", "Informacje o ip ustawione w config"),
-                    Commands.slash("top", "Topka graczy w różnych kategoriach"),
-                    Commands.slash("allowlist", "Zarządzanie białą listą.")
-                            .addOption(OptionType.STRING, "add", "Nazwa gracza do dodania", false)
-                            .addOption(OptionType.STRING, "remove", "Nazwa gracza do usunięcia", false),
-                    Commands.slash("server", "Informacje o danym serwerze")
-                            .addOption(OptionType.STRING, "ip", "Adres IP servera", true)
-                            .addOption(OptionType.INTEGER, "port", "Port servera", false)
-            ).queue();
-
             this.customStatusUpdate();
-
 
             if (this.botConfig.isLeaveServers()) {
                 this.leaveGuilds();
@@ -557,10 +533,10 @@ public class DiscordJDA {
     }
 
     public void writeConsole(final String message) {
-        if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-            if (message.isEmpty()) return;
-            this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
-        }
+//        if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
+//            if (message.isEmpty()) return;
+//            this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
+//        }
     }
 
     public void writeConsole(final String message, final Throwable throwable) {
@@ -654,10 +630,6 @@ public class DiscordJDA {
         return this.textChannel;
     }
 
-    public TextChannel getConsoleChannel() {
-        return this.consoleChannel;
-    }
-
     @Nullable
     public StatsChannelsManager getStatsChannelsManager() {
         return this.statsChannelsManager;
@@ -666,5 +638,10 @@ public class DiscordJDA {
     @Nullable
     public LinkingManager getLinkingManager() {
         return this.linkingManager;
+    }
+
+    @Nullable
+    public SlashCommandManager getSlashCommandManager() {
+        return this.slashCommandManager;
     }
 }

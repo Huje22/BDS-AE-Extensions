@@ -20,6 +20,7 @@ import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.LinkingManager;
 import me.indian.discord.jda.manager.StatsChannelsManager;
 import me.indian.discord.listener.BackupListener;
+import me.indian.discord.listener.ExtensionDisableListener;
 import me.indian.discord.listener.PlayerEventListener;
 import me.indian.discord.listener.ServerListener;
 import me.indian.discord.webhook.WebHook;
@@ -68,6 +69,7 @@ public class DiscordExtension extends Extension {
             eventManager.registerListener(new BackupListener(this), this);
             eventManager.registerListener(new PlayerEventListener(this), this);
             eventManager.registerListener(new ServerListener(this), this);
+            eventManager.registerListener(new ExtensionDisableListener(this.discordJDA), this);
         }
 
         try {

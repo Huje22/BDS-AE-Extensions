@@ -32,7 +32,7 @@ public class ConsoleListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void init() {
-        this.consoleChannel = this.discordJDA.getConsoleChannel();
+//        this.consoleChannel = this.discordJDA.getConsoleChannel();
     }
 
     @Override
