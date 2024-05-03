@@ -11,6 +11,11 @@ import eu.okaeri.configs.annotation.Header;
 public class ProximityVoiceChatConfig extends OkaeriConfig {
 
     @Comment({""})
+    @Comment({""})
+    @CustomKey("Enable")
+    private boolean enable = true;
+
+    @Comment({""})
     @Comment({"ID Kategorii voice chatu"})
     @CustomKey("CategoryID")
     private long categoryID = 1L;
@@ -40,6 +45,14 @@ public class ProximityVoiceChatConfig extends OkaeriConfig {
     @Comment({"Czy użytkownicy mogą odzywać się na lobby?"})
     @CustomKey("SpeakInLobby")
     private boolean speakInLobby = true;
+
+    public boolean isEnable() {
+        return this.enable;
+    }
+
+    public void setEnable(final boolean enable) {
+        this.enable = enable;
+    }
 
     public long getCategoryID() {
         return this.categoryID;

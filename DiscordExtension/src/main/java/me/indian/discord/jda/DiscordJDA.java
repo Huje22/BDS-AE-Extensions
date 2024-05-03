@@ -21,6 +21,7 @@ import me.indian.bds.watchdog.module.pack.PackModule;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.config.DiscordConfig;
 import me.indian.discord.config.MessagesConfig;
+import me.indian.discord.config.ProximityVoiceChatConfig;
 import me.indian.discord.config.sub.BotConfig;
 import me.indian.discord.embed.component.Field;
 import me.indian.discord.embed.component.Footer;
@@ -148,14 +149,21 @@ public class DiscordJDA {
             this.statsChannelsManager = new StatsChannelsManager(this.discordExtension, this);
             this.statsChannelsManager.init();
 
+            final ProximityVoiceChatConfig proximityVoiceChatConfig = this.discordExtension.getProximityVoiceChatConfig();
             if (this.isGatewayIntent(GatewayIntent.GUILD_VOICE_STATES)) {
                 if (this.isCacheFlagEnabled(CacheFlag.VOICE_STATE)) {
-                    this.discordExtension.getBdsAutoEnable().getEventManager()
-                            .registerListener(new ProximityVoiceChat(this.discordExtension, this.discordExtension.getProximityVoiceChatConfig()), this.discordExtension);
+                    if (proximityVoiceChatConfig.isEnable()) {
+                        this.discordExtension.getBdsAutoEnable().getEventManager()
+                                .registerListener(new ProximityVoiceChat(this.discordExtension, this.discordExtension.getProximityVoiceChatConfig()), this.discordExtension);
+                    }
                 } else {
+                    proximityVoiceChatConfig.setEnable(false);
+                    proximityVoiceChatConfig.save();
                     this.logger.error("Brak '&bCacheFlag " + CacheFlag.VOICE_STATE + "`&r ProximityVoiceChat nie będzie działać");
                 }
             } else {
+                proximityVoiceChatConfig.setEnable(false);
+                proximityVoiceChatConfig.save();
                 this.logger.error("Brak '&bGatewayIntent " + GatewayIntent.GUILD_VOICE_STATES + "`&r ProximityVoiceChat nie będzie działać");
             }
 
