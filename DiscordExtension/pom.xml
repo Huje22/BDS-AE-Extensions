@@ -34,6 +34,7 @@
             <artifactId>JDA</artifactId>
             <version>5.0.0-beta.22</version>
             <scope>compile</scope>
+                 <!-- Zaktualizować versie -->
         </dependency>
 
         <!--        Z jakiegoś powodu intelij nie czyta mi zależności javalin z `Rest Website-1.0.jar` wiec -->
