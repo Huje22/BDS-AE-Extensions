@@ -157,7 +157,7 @@ public class BackupCommand extends ListenerAdapter implements SlashCommand {
                         .withEmoji(Emoji.fromUnicode("🗑️")));
             }
 
-            description.add("Nazwa: `" + fileName + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile(), true) + "`");
+            description.add("Nazwa: `" + fileName + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile()) + "`");
         }
 
         return new EmbedBuilder()
