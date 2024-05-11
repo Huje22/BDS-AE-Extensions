@@ -43,7 +43,7 @@ public class LinkingConfig extends OkaeriConfig {
     private boolean useCustomRolesInChat = false;
 
     @Comment({""})
-    @Comment({"Czy używać custom roli w nazwie"})
+    @Comment({"Czy używać custom roli w nazwie gracza"})
     private boolean useCustomRolesInName = true;
 
     @Comment({""})
@@ -52,7 +52,7 @@ public class LinkingConfig extends OkaeriConfig {
 
     public LinkingConfig() {
         if (this.customRoles.isEmpty()) {
-            this.customRoles.put(1138353019667361833L, "&bOWNER&f");
+            this.customRoles.put(1138353019667361833L, "&1OWNER&f");
         }
     }
 

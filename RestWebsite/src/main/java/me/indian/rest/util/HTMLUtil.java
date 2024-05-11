@@ -57,9 +57,9 @@ public final class HTMLUtil {
                     </details>                     
                     """.replaceAll("<playerName>", player)
                     .replaceAll("<playTime>",
-                            quote("Czas gry: " + b(DateUtil.formatTime(statsManager.getPlayTime(player), List.of('d', 'h', 'm', 's')))))
-                    .replaceAll("<deaths>",
-                            quote("Śmierci: " + b(String.valueOf(statsManager.getDeaths(player)))));
+                            quote("Czas gry: " + b(DateUtil.formatTimeDynamic(statsManager.getPlayTime(player))))
+                                    .replaceAll("<deaths>",
+                                            quote("Śmierci: " + b(String.valueOf(statsManager.getDeaths(player))))));
         }
 
         return online;

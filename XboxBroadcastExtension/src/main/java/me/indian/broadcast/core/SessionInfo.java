@@ -1,6 +1,7 @@
 package me.indian.broadcast.core;
 
 import eu.okaeri.configs.OkaeriConfig;
+import me.indian.bds.util.MessageUtil;
 
 public class SessionInfo extends OkaeriConfig {
 
@@ -18,7 +19,7 @@ public class SessionInfo extends OkaeriConfig {
     }
 
     public void setHostName(final String hostName) {
-        this.hostName = hostName;
+        this.hostName = MessageUtil.colorize(hostName);
     }
 
     public String getWorldName() {
@@ -26,7 +27,7 @@ public class SessionInfo extends OkaeriConfig {
     }
 
     public void setWorldName(final String worldName) {
-        this.worldName = worldName;
+        this.worldName = MessageUtil.colorize(worldName);
     }
 
     public String getVersion() {

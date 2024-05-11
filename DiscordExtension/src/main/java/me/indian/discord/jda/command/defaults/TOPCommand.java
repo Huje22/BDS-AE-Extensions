@@ -68,8 +68,7 @@ public class TOPCommand extends ListenerAdapter implements SlashCommand {
     private MessageEmbed getPlaytimeEmbed() {
         final List<String> playTime = PlayerStatsUtil.getTopPlayTime(true, 50);
         final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
-        final String totalUpTime = "Łączny czas działania servera: "
-                + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's'));
+        final String totalUpTime = "Łączny czas działania servera: " + DateUtil.formatTimeDynamic(serverStats.getTotalUpTime());
 
         return new EmbedBuilder()
                 .setTitle("Top 50 graczy z największą ilością przegranego czasu")

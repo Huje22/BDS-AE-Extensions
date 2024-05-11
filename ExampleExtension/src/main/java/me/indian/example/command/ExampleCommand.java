@@ -63,7 +63,7 @@ public class ExampleCommand extends Command {
 
                 //Z pomocą `StatsManagera` patrzymy ile gracz ma czasu przegranego na serwerze w mili sekundach
                 //Musimy to jeszcze sformatować
-                this.sendMessage(DateUtil.formatTime(this.statsManager.getPlayTime(name), List.of('d', 'h', 'm', 's', 'i')));
+                this.sendMessage(DateUtil.formatTimeDynamic(this.statsManager.getPlayTime(name)));
 
             } else {
                 this.sendMessage("&cMusisz podać nick gracza");

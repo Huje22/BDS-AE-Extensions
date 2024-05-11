@@ -109,7 +109,7 @@ public class PlayerInfoCommand implements SlashCommand {
                     embedBuilder.addField("Longest Login Streak", String.valueOf(player.getLoginStreak()), true);
 
                     embedBuilder.addField("Śmierci", String.valueOf(player.getDeaths()), false);
-                    embedBuilder.addField("Czas gry", DateUtil.formatTime(player.getPlaytime(), List.of('d', 'h', 'm', 's')), false);
+                    embedBuilder.addField("Czas gry", DateUtil.formatTimeDynamic(player.getPlaytime()), false);
                     embedBuilder.addField("Postawione bloki", String.valueOf(player.getBlockPlaced()), true);
                     embedBuilder.addField("Zniszczone bloki", String.valueOf(player.getBlockBroken()), true);
 

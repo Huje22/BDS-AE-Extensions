@@ -163,7 +163,7 @@ public class BackupCommand extends ListenerAdapter implements SlashCommand {
         return new EmbedBuilder()
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
-                        "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's')) + "`\n" +
+                        "Następny backup za: `" + DateUtil.formatTimeDynamic(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 2 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)

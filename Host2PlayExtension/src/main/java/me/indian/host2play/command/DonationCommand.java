@@ -6,7 +6,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import me.indian.bds.command.Command;
 import me.indian.bds.util.DateUtil;
@@ -101,7 +100,7 @@ public class DonationCommand extends Command {
                 final long playerCooldown = this.cooldown.getOrDefault(playerName, 0L);
                 final long remainingTime = (playerCooldown + cooldownTime) - System.currentTimeMillis();
 
-                this.sendMessage("&cAby dokonać kolejnej wpłaty musisz odczekac:&b " + DateUtil.formatTime(remainingTime, List.of('m', 's')));
+                this.sendMessage("&cAby dokonać kolejnej wpłaty musisz odczekać:&b " + DateUtil.formatTimeDynamic(remainingTime));
                 return true;
             }
         }

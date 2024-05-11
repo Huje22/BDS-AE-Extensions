@@ -56,9 +56,8 @@ public class ListCommand implements SlashCommand {
                 for (final String player : players) {
                     if (counter != 24) {
                         embed.addField(player,
-                                "> Czas gry: **" + DateUtil.formatTime(this.statsManager.getPlayTime(player), List.of('d', 'h', 'm', 's'))
-                                        + "**  \n> Śmierci:** " + this.statsManager.getDeaths(player) + "**",
-                                true);
+                                "> Czas gry: **" + DateUtil.formatTimeDynamic(this.statsManager.getPlayTime(player))
+                                        + "**  \n> Śmierci:** " + this.statsManager.getDeaths(player) + "**",true);
                         counter++;
                     } else {
                         embed.addField("**I pozostałe**", players.size() - 24 + " osób", false);
