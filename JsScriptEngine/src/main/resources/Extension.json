@@ -1,0 +1,8 @@
+{
+  "mainClass": "me.indian.js.ScriptExtension",
+  "version": "1.0-Alpha",
+  "name": "ScriptExtension",
+  "prefix": "JavaScript",
+  "description": "Rozserzenie pozwalające na tworzenie skryptów w JavaScript",
+  "author": "IndianPL"
+}
