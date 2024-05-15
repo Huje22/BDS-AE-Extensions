@@ -1,6 +1,5 @@
 package me.indian.js;
 
-import com.google.gson.Gson;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,30 +17,23 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
-import me.indian.js.config.Config;
 import org.jetbrains.annotations.Nullable;
 
 public class ScriptManager {
 
-
     private final ScriptExtension scriptExtension;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
-    private final Config config;
     private final ScriptEngineManager manager;
     private final Map<String, Script> scriptMap;
-    private final Gson gson;
     private final File[] scriptFiles;
-
 
     public ScriptManager(final ScriptExtension scriptExtension) {
         this.scriptExtension = scriptExtension;
         this.bdsAutoEnable = scriptExtension.getBdsAutoEnable();
         this.logger = this.scriptExtension.getLogger();
-        this.config = scriptExtension.getConfig();
         this.manager = new ScriptEngineManager();
         this.scriptMap = new HashMap<>();
-        this.gson = GsonUtil.getGson();
         this.scriptFiles = new File(this.scriptsPath()).listFiles(File::isDirectory);
 
         this.printEngines(this.manager);
@@ -78,6 +70,11 @@ public class ScriptManager {
     }
 
     private void printEngines(final ScriptEngineManager scriptEngineManager) {
+        if(scriptEngineManager.getEngineFactories().isEmpty()){
+                this.logger.error("&cBrak silników&b JavaScript");
+            return;
+        }
+
         this.logger.print();
         for (final ScriptEngineFactory factory : scriptEngineManager.getEngineFactories()) {
             this.logger.print();
@@ -137,7 +134,6 @@ public class ScriptManager {
             this.loadScript(file);
         }
     }
-
 
     @Nullable
     public ScriptDescription loadScriptDescription(final Path scriptPath) {
