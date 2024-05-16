@@ -138,6 +138,7 @@ public class ScriptManager {
     }
 
     public void invokeScript(final Script script) throws IOException, ScriptException {
+        //TODO: Jak to gówno bedzie przydatne dodaj Wielowątkowość
         final ScriptDescription scriptDescription = script.getScriptDescription();
         final String scriptMain = scriptDescription.main();
         final File index = new File(script.getScriptPath() + File.separator + scriptMain);
