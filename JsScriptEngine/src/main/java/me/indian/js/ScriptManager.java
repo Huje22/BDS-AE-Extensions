@@ -15,6 +15,7 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.logger.impl.ExtensionLogger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,7 @@ public class ScriptManager {
     private final ScriptEngineManager manager;
     private final Map<String, Script> scriptMap;
     private final File[] scriptFiles;
+    private final Map<String, Logger> engineLoggers;
 
     public ScriptManager(final ScriptExtension scriptExtension) {
         this.scriptExtension = scriptExtension;
@@ -35,8 +37,9 @@ public class ScriptManager {
         this.manager = new ScriptEngineManager();
         this.scriptMap = new HashMap<>();
         this.scriptFiles = new File(this.scriptsPath()).listFiles(File::isDirectory);
+        this.engineLoggers = new HashMap<>();
 
-        this.printEngines(this.manager);
+        if (scriptExtension.getConfig().isPrintEngines()) this.printEngines(this.manager);
     }
 
     private ScriptEngine getEngineByName(final String engineName) {
@@ -65,13 +68,33 @@ public class ScriptManager {
     private void putVariables(final ScriptEngine scriptEngine) {
         scriptEngine.put("bds", this.bdsAutoEnable);
         scriptEngine.put("server", this.bdsAutoEnable.getServerProcess());
-        scriptEngine.put("console", this.logger);
-        scriptEngine.put("logger", this.logger);
+        scriptEngine.put("console", this.getEngineLogger(scriptEngine));
+        scriptEngine.put("logger", this.getEngineLogger(scriptEngine));
+        scriptEngine.put("properties", this.bdsAutoEnable.getServerProperties());
+        scriptEngine.put("serverManager", this.bdsAutoEnable.getServerManager());
+        scriptEngine.put("versionManager", this.bdsAutoEnable.getVersionManager());
+        scriptEngine.put("eventManager", this.bdsAutoEnable.getEventManager());
+        scriptEngine.put("extensionManager", this.bdsAutoEnable.getExtensionManager());
+        scriptEngine.put("allowlistManager", this.bdsAutoEnable.getAllowlistManager());
+        scriptEngine.put("packManager", this.bdsAutoEnable.getPackManager());
+        scriptEngine.put("commandManager", this.bdsAutoEnable.getCommandManager());
+        scriptEngine.put("watchDog", this.bdsAutoEnable.getWatchDog());
+    }
+
+    private Logger getEngineLogger(final ScriptEngine scriptEngine) {
+        final String name = scriptEngine.getFactory().getLanguageVersion();
+
+        if(this.engineLoggers.containsKey(name)) return this.engineLoggers.get(name);
+        final Logger engineLogger = new ExtensionLogger(this.bdsAutoEnable, name);
+
+        this.engineLoggers.put(name, engineLogger);
+
+        return engineLogger;
     }
 
     private void printEngines(final ScriptEngineManager scriptEngineManager) {
-        if(scriptEngineManager.getEngineFactories().isEmpty()){
-                this.logger.error("&cBrak silników&b JavaScript");
+        if (scriptEngineManager.getEngineFactories().isEmpty()) {
+            this.logger.error("&cBrak silników&b JavaScript");
             return;
         }
 
@@ -109,7 +132,7 @@ public class ScriptManager {
             try {
                 this.invokeScript(script);
             } catch (final IOException | ScriptException exception) {
-                this.logger.error("&cNie udało się wykonać skryptu ");
+                this.logger.error("&cNie udało się wykonać skryptu&b " + script.getScriptDescription().name(), exception);
             }
         }
     }
