@@ -1,1 +1,3 @@
 Work In Progress.....
+
+Jebane gówno nie chce działać jak spróbowałem pobrac GralvmJS
