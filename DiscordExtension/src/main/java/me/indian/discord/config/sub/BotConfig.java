@@ -92,7 +92,7 @@ public class BotConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Wiadomość w statusie bota"})
-    @Comment({"<time> - czas w minutach przez jaki server jest online"})
+    @Comment({"<time> - czas przez jaki server jest online"})
     private String activityMessage = "Minecraft <time>";
 
     @Comment({""})

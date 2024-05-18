@@ -14,6 +14,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.HTTPUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
@@ -356,7 +357,7 @@ public class DiscordJDA {
     }
 
     private Activity getCustomActivity() {
-        final String replacement = String.valueOf(MathUtil.millisTo((System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime()), TimeUnit.MINUTES));
+        final String replacement = String.valueOf(DateUtil.formatTimeDynamic(System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime(), true));
         final String activityMessage = this.botConfig.getActivityMessage().replaceAll("<time>", replacement);
 
         //TODO: Dodaj czas formatowany za pomocą DateUtil
@@ -381,7 +382,7 @@ public class DiscordJDA {
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
-                return Activity.playing(activityMessage.replaceAll("<time>", replacement));
+                return Activity.playing(activityMessage);
             }
         }
     }
