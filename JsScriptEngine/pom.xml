@@ -27,7 +27,12 @@
             <systemPath>${project.basedir}/../libs/BDS-Auto-Enable-0.0.1.jar</systemPath>
         </dependency>
 
-<!--      NASHRON JEST ZAWART W BDS-AUTO-ENABLE-->
+        <dependency>
+            <groupId>org.openjdk.nashorn</groupId>
+            <artifactId>nashorn-core</artifactId>
+            <version>15.4</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
