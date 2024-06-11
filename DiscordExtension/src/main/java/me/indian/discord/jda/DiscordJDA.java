@@ -360,7 +360,6 @@ public class DiscordJDA {
         final String replacement = String.valueOf(DateUtil.formatTimeDynamic(System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime(), true));
         final String activityMessage = this.botConfig.getActivityMessage().replaceAll("<time>", replacement);
 
-        //TODO: Dodaj czas formatowany za pomocą DateUtil
         switch (this.botConfig.getActivity()) {
             case PLAYING -> {
                 return Activity.playing(activityMessage);

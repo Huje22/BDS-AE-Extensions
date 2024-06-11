@@ -3,7 +3,6 @@
 ----
 
 ### Na Teraz
-- Dodać przeładowania configu do rozszerzeń 
 
 
 
