@@ -9,7 +9,7 @@ import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.logblock.LogBlockExtension;
 import me.indian.logblock.history.HistoryManager;
 
-public class PlayerListener extends Listener {
+public class PlayerListener implements Listener {
 
     private final HistoryManager historyManager;
 
@@ -18,22 +18,22 @@ public class PlayerListener extends Listener {
     }
 
     @EventHandler
-    public void onPlayerBreakBlock(final PlayerBlockBreakEvent event) {
+    private void onPlayerBreakBlock(final PlayerBlockBreakEvent event) {
         this.historyManager.getBrokenBlockHistory().addToHistory(event);
     }
 
     @EventHandler
-    public void onPlayerPlaceBlock(final PlayerBlockPlaceEvent event) {
+    private void onPlayerPlaceBlock(final PlayerBlockPlaceEvent event) {
         this.historyManager.getPlacedBlockHistory().addToHistory(event);
     }
 
     @EventHandler
-    public void onPlayerInteractContainerEvent(final PlayerInteractContainerEvent event) {
+    private void onPlayerInteractContainerEvent(final PlayerInteractContainerEvent event) {
         this.historyManager.getOpenedContainerHistory().addToHistory(event);
     }
 
     @EventHandler
-    public void onPlayerInteractEntityWithContainerEvent(final PlayerInteractEntityWithContainerEvent event) {
+    private void onPlayerInteractEntityWithContainerEvent(final PlayerInteractEntityWithContainerEvent event) {
         this.historyManager.getInteractedEntityWithContainerHistory().addToHistory(event);
     }
 }

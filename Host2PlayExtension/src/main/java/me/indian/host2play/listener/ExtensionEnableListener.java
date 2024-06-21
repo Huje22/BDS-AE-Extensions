@@ -5,7 +5,7 @@ import me.indian.bds.event.Listener;
 import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.host2play.Host2PlayExtension;
 
-public class ExtensionEnableListener extends Listener {
+public class ExtensionEnableListener implements Listener {
 
     private final Host2PlayExtension host2PlayExtension;
 
@@ -14,7 +14,7 @@ public class ExtensionEnableListener extends Listener {
     }
 
     @EventHandler
-    public void onExtensionEnable(final ExtensionEnableEvent event) {
+    private void onExtensionEnable(final ExtensionEnableEvent event) {
         if (event.getExtension() instanceof Host2PlayExtension) {
             this.host2PlayExtension.getBdsAutoEnable().getExtensionManager().disableExtension(this.host2PlayExtension);
         }

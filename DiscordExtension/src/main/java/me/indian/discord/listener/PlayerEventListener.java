@@ -24,7 +24,7 @@ import me.indian.discord.jda.manager.LinkingManager;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 
-public class PlayerEventListener extends Listener {
+public class PlayerEventListener implements Listener {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
@@ -45,21 +45,21 @@ public class PlayerEventListener extends Listener {
     }
 
     @EventHandler
-    public void onPlayerJoin(final PlayerJoinEvent event) {
+    private void onPlayerJoin(final PlayerJoinEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         this.discordJDA.sendJoinMessage(playerName.replaceAll("\"", ""));
         this.setPlayerPrefix(playerName);
     }
 
     @EventHandler
-    public void onPlayerQuit(final PlayerQuitEvent event) {
+    private void onPlayerQuit(final PlayerQuitEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         this.discordJDA.sendLeaveMessage(playerName.replaceAll("\"", ""));
         this.cachedPrefixes.remove(playerName);
     }
 
     @EventHandler
-    public PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
+    private PlayerChatResponse onPlayerChat(final PlayerChatEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         final String message = event.getMessage();
         final boolean appHandled = event.isAppHandled();
@@ -112,13 +112,13 @@ public class PlayerEventListener extends Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(final PlayerDeathEvent event) {
+    private void onPlayerDeath(final PlayerDeathEvent event) {
         this.discordJDA.sendDeathMessage(event.getPlayer().getPlayerName().replaceAll("\"", ""), event.getDeathMessage(),
                 event.getKillerName(), event.getUsedItemName());
     }
 
     @EventHandler
-    public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
+    private void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
         this.discordJDA.log("Użycie polecenia",
                 playerCommandEvent.getCommand()
                 , new Footer(playerCommandEvent.getPlayer().getPlayerName()));

@@ -6,7 +6,7 @@ import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.command.SlashCommandManager;
 
-public class ExtensionDisableListener extends Listener {
+public class ExtensionDisableListener implements Listener {
 
     private final SlashCommandManager slashCommandManager;
 
@@ -15,7 +15,7 @@ public class ExtensionDisableListener extends Listener {
     }
 
     @EventHandler
-    public void onExtensionDisable(final ExtensionDisableEvent event) {
+    private void onExtensionDisable(final ExtensionDisableEvent event) {
         this.slashCommandManager.unregister(event.getExtension());
     }
 }

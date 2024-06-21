@@ -7,7 +7,7 @@ import me.indian.bds.event.watchdog.BackupDoneEvent;
 import me.indian.bds.event.watchdog.BackupFailEvent;
 import me.indian.discord.DiscordExtension;
 
-public class BackupListener extends Listener {
+public class BackupListener implements Listener {
 
     private final DiscordExtension discordExtension;
     private final BDSAutoEnable bdsAutoEnable;
@@ -18,13 +18,12 @@ public class BackupListener extends Listener {
     }
 
     @EventHandler
-    public void onBackupDone(final BackupDoneEvent event) {
+    private void onBackupDone(final BackupDoneEvent event) {
         this.discordExtension.getDiscordJDA().sendBackupDoneMessage();
-
     }
 
     @EventHandler
-    public void onBackupFail(final BackupFailEvent event) {
+    private void onBackupFail(final BackupFailEvent event) {
         this.discordExtension.getDiscordJDA().sendBackupFailMessage(event.getException());
     }
 }

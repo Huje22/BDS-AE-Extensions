@@ -11,7 +11,7 @@ import me.indian.bds.util.ThreadUtil;
 import me.indian.effect.EffectsExtension;
 import me.indian.effect.config.EffectsConfig;
 
-public class PlayerListener extends Listener {
+public class PlayerListener implements Listener {
 
     private final ServerProcess serverProcess;
     private final ExecutorService effectsService;
@@ -25,13 +25,13 @@ public class PlayerListener extends Listener {
 
 
     @EventHandler
-    public void onPlayerJoin(final PlayerJoinEvent event) {
+    private void onPlayerJoin(final PlayerJoinEvent event) {
         this.effectsService.execute(() ->
                 this.config.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayer().getPlayerName()))));
     }
 
     @EventHandler
-    public void onPlayerSpawn(final PlayerSpawnEvent event) {
+    private void onPlayerSpawn(final PlayerSpawnEvent event) {
         this.effectsService.execute(() ->
                 this.config.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", event.getPlayer().getPlayerName()))));
     }

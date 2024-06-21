@@ -27,7 +27,6 @@ import me.indian.discord.config.sub.BotConfig;
 import me.indian.discord.embed.component.Field;
 import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.command.SlashCommandManager;
-import me.indian.discord.jda.listener.CommandListener;
 import me.indian.discord.jda.listener.GuildJoinListener;
 import me.indian.discord.jda.listener.JDAListener;
 import me.indian.discord.jda.listener.MentionPatternCacheListener;
@@ -105,7 +104,6 @@ public class DiscordJDA {
                 return;
             }
 
-            this.listeners.add(new CommandListener(this.discordExtension));
             this.listeners.add(new MessageListener(this.discordExtension));
             this.listeners.add(new MentionPatternCacheListener(this, this.mentionPatternCache));
 

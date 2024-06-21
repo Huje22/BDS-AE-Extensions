@@ -33,7 +33,7 @@ import net.dv8tion.jda.api.managers.channel.concrete.VoiceChannelManager;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 import org.jetbrains.annotations.Nullable;
 
-public class ProximityVoiceChat extends Listener {
+public class ProximityVoiceChat implements Listener {
 
     private final DiscordExtension discordExtension;
     private final ProximityVoiceChatConfig proximityVoiceChatConfig;
@@ -99,7 +99,7 @@ public class ProximityVoiceChat extends Listener {
     }
 
     @EventHandler
-    public void onPlayerMovement(final PlayerMovementEvent event) {
+    private void onPlayerMovement(final PlayerMovementEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         final Position position = event.getPosition();
 
@@ -122,7 +122,7 @@ public class ProximityVoiceChat extends Listener {
     }
 
     @EventHandler
-    public void onPlayerQuit(final PlayerQuitEvent event) {
+    private void onPlayerQuit(final PlayerQuitEvent event) {
         final String playerName = event.getPlayer().getPlayerName();
         final VoiceChatMember voiceChatMember = this.playerPosition.get(playerName);
 

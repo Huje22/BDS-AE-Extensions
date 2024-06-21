@@ -19,7 +19,7 @@ import me.indian.discord.embed.component.Footer;
 import me.indian.discord.jda.DiscordJDA;
 import me.indian.discord.jda.manager.StatsChannelsManager;
 
-public class ServerListener extends Listener {
+public class ServerListener implements Listener {
 
     private final DiscordJDA discordJDA;
     private double tps, lastTPS;
@@ -29,12 +29,12 @@ public class ServerListener extends Listener {
     }
 
     @EventHandler
-    public void onServerStart(final ServerStartEvent event) {
+    private void onServerStart(final ServerStartEvent event) {
         this.discordJDA.sendEnabledMessage();
     }
 
     @EventHandler
-    public void onTpsChange(final TPSChangeEvent event) {
+    private void onTpsChange(final TPSChangeEvent event) {
         this.tps = event.getTps();
         this.lastTPS = event.getLastTps();
 
@@ -47,7 +47,7 @@ public class ServerListener extends Listener {
     }
 
     @EventHandler
-    public void onServerRestart(final ServerRestartEvent event) {
+    private void onServerRestart(final ServerRestartEvent event) {
         final String reason = event.getReason();
 
         if (reason == null) return;
@@ -60,12 +60,12 @@ public class ServerListener extends Listener {
     }
 
     @EventHandler
-    public void onServerClose(final ServerClosedEvent event) {
+    private void onServerClose(final ServerClosedEvent event) {
         this.discordJDA.sendDisabledMessage();
     }
 
     @EventHandler
-    public void onServerAlert(final ServerAlertEvent event) {
+    private void onServerAlert(final ServerAlertEvent event) {
         final List<Field> fieldList = new LinkedList<>();
         final String additionalInfo = event.getAdditionalInfo();
         final Throwable throwable = event.getThrowable();
@@ -91,12 +91,12 @@ public class ServerListener extends Listener {
     }
 
     @EventHandler
-    public void onServerUpdating(final ServerUpdatingEvent event) {
+    private void onServerUpdating(final ServerUpdatingEvent event) {
         this.discordJDA.sendServerUpdateMessage(event.getVersion());
     }
 
     @EventHandler
-    public void onServerUncaughtException(final ServerUncaughtExceptionEvent event) {
+    private void onServerUncaughtException(final ServerUncaughtExceptionEvent event) {
         this.discordJDA.log("Niezłapany wyjątek", "**Wykryto niezłapany wyjątek**",
                 List.of(new Field("Wystąpił w wątku", event.getThread().getName(), true),
                         new Field("Wyjątek", "```" + MessageUtil.getStackTraceAsString(event.getThrowable()) + "```", false)),
