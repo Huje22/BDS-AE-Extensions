@@ -53,6 +53,7 @@ public class RestWebsite extends Extension {
             config.useVirtualThreads = true;
             config.staticFiles.add(this.getWebDir(), Location.EXTERNAL);
         });
+        //TODO: Dodać obsługe ssl https://javalin.io/tutorials/javalin-ssl-tutorial#2-add-the-javalin-ssl-dependency
 
         this.limiter = new RateLimiter(TimeUnit.MINUTES);
         this.logger = this.getLogger();
