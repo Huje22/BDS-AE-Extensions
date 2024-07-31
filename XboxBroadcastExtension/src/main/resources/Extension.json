@@ -1,8 +1,0 @@
-{
-  "mainClass": "me.indian.broadcast.XboxBroadcastExtension",
-  "version": "1.0-Beta",
-  "name": "XboxBroadcastExtension",
-  "prefix": "Xbox",
-  "description": "Udostępnij twój serwer w sesji Xbox Live",
-  "author": "IndianPL"
-}
