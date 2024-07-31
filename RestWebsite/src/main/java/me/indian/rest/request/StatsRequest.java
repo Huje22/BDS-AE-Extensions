@@ -33,41 +33,41 @@ public class StatsRequest extends HttpHandler {
     @Override
     public void handle(final Javalin app) {
         app.get("/api/stats/playtime", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             ctx.contentType(ContentType.APPLICATION_JSON).status(HttpURLConnection.HTTP_OK)
                     .result(this.gson.toJson(this.statsManager.getPlayTime()));
         });
 
         app.get("/api/stats/deaths", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             ctx.contentType(ContentType.APPLICATION_JSON)
                     .status(HttpURLConnection.HTTP_OK)
                     .result(this.gson.toJson(this.statsManager.getDeaths()));
         });
 
         app.get("/api/stats/players", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             ctx.contentType(ContentType.APPLICATION_JSON)
                     .status(HttpURLConnection.HTTP_OK)
                     .result(this.playersJson());
         });
 
         app.get("/api/stats/block/placed", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             ctx.contentType(ContentType.APPLICATION_JSON)
                     .status(HttpURLConnection.HTTP_OK)
                     .result(this.gson.toJson(this.statsManager.getBlockPlaced()));
         });
 
         app.get("/api/stats/block/broken", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             ctx.contentType(ContentType.APPLICATION_JSON)
                     .status(HttpURLConnection.HTTP_OK)
                     .result(this.gson.toJson(this.statsManager.getBlockBroken()));
         });
 
         app.get("/api/stats/player/name/{player}", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             final String playerName = ctx.pathParam("player");
             final PlayerStatistics player = this.statsManager.getPlayer(playerName);
 
@@ -82,7 +82,7 @@ public class StatsRequest extends HttpHandler {
         });
 
         app.get("/api/stats/player/xuid/{xuid}", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             try {
                 final long xuid = Long.parseLong(ctx.pathParam("xuid"));
                 final PlayerStatistics player = this.statsManager.getPlayer(xuid);

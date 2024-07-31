@@ -14,7 +14,7 @@ public class XboxBroadcastCommand extends Command {
         this.xboxBroadcastExtension = xboxBroadcastExtension;
         this.sessionManager = this.xboxBroadcastExtension.getSessionManager();
 
-        this.addOption("reload" , "Przeładowuje konfiguracje");
+        this.addOption("reload", "Przeładowuje konfiguracje");
         this.addOption("restart", "Ponowne uruchomienie połączenia z Xbox Live.");
         this.addOption("account list", "Lista kont");
         this.addOption("account <add/remove> <sub-session-id>", "Dodaj/Usuń konto");

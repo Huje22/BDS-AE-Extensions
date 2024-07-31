@@ -84,7 +84,7 @@ public class ScriptManager {
     private Logger getEngineLogger(final ScriptEngine scriptEngine) {
         final String name = scriptEngine.getFactory().getLanguageVersion();
 
-        if(this.engineLoggers.containsKey(name)) return this.engineLoggers.get(name);
+        if (this.engineLoggers.containsKey(name)) return this.engineLoggers.get(name);
         final Logger engineLogger = new ExtensionLogger(this.bdsAutoEnable, name);
 
         this.engineLoggers.put(name, engineLogger);

@@ -1,10 +1,9 @@
 package me.indian.broadcast.core;
 
+import java.util.concurrent.ScheduledExecutorService;
 import me.indian.bds.logger.Logger;
 import me.indian.broadcast.core.exceptions.SessionUpdateException;
 import me.indian.broadcast.core.models.session.JoinSessionRequest;
-
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Simple manager to authenticate and create sessions on Xbox

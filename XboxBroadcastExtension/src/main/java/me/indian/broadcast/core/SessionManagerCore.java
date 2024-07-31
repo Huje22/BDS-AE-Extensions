@@ -30,13 +30,12 @@ import me.indian.broadcast.core.models.session.SocialSummaryResponse;
  * Simple manager to authenticate and create sessions on Xbox
  */
 public abstract class SessionManagerCore {
-    private final LiveTokenManager liveTokenManager;
-    private final XboxTokenManager xboxTokenManager;
-    private final FriendManager friendManager;
     protected final HttpClient httpClient;
     protected final Logger logger;
     protected final String cache;
-
+    private final LiveTokenManager liveTokenManager;
+    private final XboxTokenManager xboxTokenManager;
+    private final FriendManager friendManager;
     protected RtaWebsocketClient rtaWebsocket;
     protected ExpandedSessionInfo sessionInfo;
     protected String lastSessionResponse;
@@ -133,7 +132,7 @@ public abstract class SessionManagerCore {
             String msaToken = getMsaToken();
             if (!msaToken.isEmpty()) {
                 String deviceToken = xboxTokenManager.getDeviceToken();
-                SISUAuthenticationResponse sisuAuthenticationResponse =  xboxTokenManager.getSISUToken(msaToken, deviceToken);
+                SISUAuthenticationResponse sisuAuthenticationResponse = xboxTokenManager.getSISUToken(msaToken, deviceToken);
                 if (sisuAuthenticationResponse != null) {
                     return xboxTokenManager.getXSTSToken(sisuAuthenticationResponse);
                 } else {

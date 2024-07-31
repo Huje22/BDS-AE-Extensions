@@ -33,7 +33,7 @@ public class ExampleCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if(this.player != null){
+        if (this.player != null) {
             this.sendMessage("&aPolecenie wykonane przez&3 gracza&b " + this.player.getPlayerName());
         } else {
             this.sendMessage("&aPolecenie wykonane przez&3 konsole");

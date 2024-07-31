@@ -11,11 +11,13 @@
         <module name="XboxBroadcastExtension" />
         <module name="Host2PlayExtension" />
         <module name="AutoMessages" />
-        <module name="DiscordExtension" />
         <module name="LogBlock" />
         <module name="JsScriptEngine" />
         <module name="ExampleExtension" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="DiscordExtension" target="17" />
+    </bytecodeTargetLevel>
   </component>
 </project>

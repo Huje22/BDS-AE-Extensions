@@ -36,7 +36,7 @@ public class PlayerInfoPostRequest extends HttpHandler {
     @Override
     public void handle(final Javalin app) {
         app.post("/playerInfo", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isServerKey(ctx)) {
                 ctx.status(HttpStatus.UNAUTHORIZED);
                 return;
@@ -61,7 +61,8 @@ public class PlayerInfoPostRequest extends HttpHandler {
             if (!this.serverProcess.isEnabled()) {
                 ctx.status(HttpStatus.SERVICE_UNAVAILABLE)
                         .contentType(ContentType.APPLICATION_JSON)
-                        .result(this.gson.toJson(new Info("Server jest wyłączony", HttpStatus.SERVICE_UNAVAILABLE.getCode())));;
+                        .result(this.gson.toJson(new Info("Server jest wyłączony", HttpStatus.SERVICE_UNAVAILABLE.getCode())));
+                ;
                 return;
             }
 

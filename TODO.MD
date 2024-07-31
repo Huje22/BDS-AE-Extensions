@@ -4,10 +4,9 @@
 
 ### Na Teraz
 
+### Na kiedyś
 
-
-### Na kiedyś 
 * <h3>PlaceholderAPI</h3>
-Spróbować zrobić własne placeholderAPI<br>
-  - <u>Pojebane gówno</u> 
+  Spróbować zrobić własne placeholderAPI<br>
+    - <u>Pojebane gówno</u> 
 

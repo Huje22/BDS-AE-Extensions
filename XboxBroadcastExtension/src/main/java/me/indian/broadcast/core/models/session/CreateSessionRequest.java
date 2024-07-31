@@ -1,8 +1,7 @@
 package me.indian.broadcast.core.models.session;
 
-import me.indian.broadcast.core.ExpandedSessionInfo;
-
 import java.util.Collections;
+import me.indian.broadcast.core.ExpandedSessionInfo;
 
 public class CreateSessionRequest extends JoinSessionRequest {
     public SessionProperties properties;

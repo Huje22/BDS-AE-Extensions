@@ -84,7 +84,7 @@ public final class APIKeyUtil {
         return isCorrectCustomKey(ctx, CONFIG.getAPIKeys().getBackup());
     }
 
-    public static boolean isLogKey(final Context ctx){
+    public static boolean isLogKey(final Context ctx) {
         return isCorrectCustomKey(ctx, CONFIG.getAPIKeys().getLog());
     }
 

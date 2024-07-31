@@ -11,7 +11,7 @@ public class Config extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy wypisać dostępne silniki JavaScript przy starcje?"})
-    private boolean printEngines= true;
+    private boolean printEngines = true;
 
     public boolean isPrintEngines() {
         return this.printEngines;

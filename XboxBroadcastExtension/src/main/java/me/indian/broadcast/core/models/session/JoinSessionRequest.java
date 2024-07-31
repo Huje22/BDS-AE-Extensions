@@ -1,13 +1,12 @@
 package me.indian.broadcast.core.models.session;
 
+import java.util.HashMap;
+import java.util.Map;
 import me.indian.broadcast.core.ExpandedSessionInfo;
 import me.indian.broadcast.core.models.session.member.MemberConstantsSystem;
 import me.indian.broadcast.core.models.session.member.MemberPropertiesSystem;
 import me.indian.broadcast.core.models.session.member.MemberSubscription;
 import me.indian.broadcast.core.models.session.member.SessionMember;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class JoinSessionRequest {
     public Map<String, SessionMember> members;

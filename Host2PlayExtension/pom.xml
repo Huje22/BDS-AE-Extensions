@@ -54,7 +54,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.0.0-beta.20</version>
+            <version>5.0.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -65,7 +65,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
-               <configuration>
+                <configuration>
                     <source>17</source>
                     <target>17</target>
                 </configuration>

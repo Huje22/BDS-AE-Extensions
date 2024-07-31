@@ -1,8 +1,7 @@
 package me.indian.broadcast.core.models.session;
 
-import me.indian.broadcast.core.models.session.member.SessionMember;
-
 import java.util.Map;
+import me.indian.broadcast.core.models.session.member.SessionMember;
 
 public record CreateSessionResponse(
         String branch,

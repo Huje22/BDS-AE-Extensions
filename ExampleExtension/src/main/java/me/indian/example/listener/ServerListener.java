@@ -45,7 +45,7 @@ public class ServerListener implements Listener {
     }
 
     @EventHandler
-    private ServerConsoleCommandResponse onServerCommand(final ServerConsoleCommandEvent event){
-        return new ServerConsoleCommandResponse(() -> this.extension.getLogger().alert("Wykonano polecenie: "+ event.getCommand()));
+    private ServerConsoleCommandResponse onServerCommand(final ServerConsoleCommandEvent event) {
+        return new ServerConsoleCommandResponse(() -> this.extension.getLogger().alert("Wykonano polecenie: " + event.getCommand()));
     }
 }

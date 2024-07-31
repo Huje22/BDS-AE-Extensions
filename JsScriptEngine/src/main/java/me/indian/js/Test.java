@@ -11,9 +11,9 @@ public class Test {
 
     public static void main(String[] args) {
 
-        final ScriptEngineManager scriptEngineManager =new ScriptEngineManager();
+        final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
 
-        if(scriptEngineManager.getEngineFactories().isEmpty()){
+        if (scriptEngineManager.getEngineFactories().isEmpty()) {
             System.out.println("&cBrak silników&b JavaScript");
             return;
         }
@@ -31,7 +31,6 @@ public class Test {
             System.out.println("-------");
         }
         System.out.println();
-
 
 
         ScriptEngine engine = scriptEngineManager.getEngineByName("js");

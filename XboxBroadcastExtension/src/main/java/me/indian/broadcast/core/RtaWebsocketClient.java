@@ -11,8 +11,8 @@ import org.java_websocket.handshake.ServerHandshake;
  * Handle the connection and authentication with the RTA websocket
  */
 public class RtaWebsocketClient extends WebSocketClient {
-    private String connectionId;
     private final Logger logger;
+    private String connectionId;
     private boolean firstConnectionId = true;
 
     /**

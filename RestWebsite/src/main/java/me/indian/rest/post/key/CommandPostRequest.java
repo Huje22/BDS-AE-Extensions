@@ -33,7 +33,7 @@ public class CommandPostRequest extends HttpHandler {
     @Override
     public void handle(final Javalin app) {
         app.post("/command", ctx -> {
-             if(this.restWebsite.addRateLimit(ctx)) return;
+            if (this.restWebsite.addRateLimit(ctx)) return;
             if (!APIKeyUtil.isServerKey(ctx)) return;
 
             final String ip = ctx.ip();

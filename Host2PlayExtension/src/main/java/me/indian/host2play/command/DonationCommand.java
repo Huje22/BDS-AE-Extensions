@@ -22,7 +22,7 @@ public class DonationCommand extends Command {
 
 
     //TODO:Fix that
-    
+
     private final Host2PlayExtension extension;
     private final Map<String, Long> cooldown;
     private final Map<String, String> lastBuyers;

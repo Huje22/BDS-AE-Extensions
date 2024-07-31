@@ -9,7 +9,7 @@ public class HistoryManager {
     private final BlockPlacedHistory blockPlacedHistory;
     private final OpenedContainerHistory openedContainerHistory;
     private final InteractedEntityWithContainerHistory interactedEntityWithContainerHistory;
-    
+
     public HistoryManager(final LogBlockExtension extension) {
         this.extension = extension;
         this.blockBrokenHistory = new BlockBrokenHistory(extension);

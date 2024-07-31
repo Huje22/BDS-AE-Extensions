@@ -11,7 +11,6 @@ public class Script {
     private final ScriptDescription scriptDescription;
 
 
-
     public Script(final Path scriptPath, final ScriptEngine scriptEngine, final ScriptDescription scriptDescription) {
         this.scriptPath = scriptPath;
         this.scriptEngine = scriptEngine;

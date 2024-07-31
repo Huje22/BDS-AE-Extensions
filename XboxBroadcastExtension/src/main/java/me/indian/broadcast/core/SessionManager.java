@@ -86,7 +86,8 @@ public class SessionManager extends SessionManagerCore {
         List<String> subSessions = new ArrayList<>();
         try {
             subSessions = Arrays.asList(Constants.OBJECT_MAPPER.readValue(Paths.get(this.cache, "sub_sessions.json").toFile(), String[].class));
-        } catch (final IOException ignored) { }
+        } catch (final IOException ignored) {
+        }
 
         // Create the sub-sessions in a new thread so we don't block the main thread
         final List<String> finalSubSessions = subSessions;

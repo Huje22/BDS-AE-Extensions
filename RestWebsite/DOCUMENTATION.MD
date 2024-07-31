@@ -3,7 +3,9 @@
 ---
 
 ### Autoryzacja
-Niektóre endpointy wymagają autoryzacji przy użyciu klucza API. Aby uzyskać dostęp, wystarczy dodać nagłówek `Authorization` zawierający klucz API.
+
+Niektóre endpointy wymagają autoryzacji przy użyciu klucza API. Aby uzyskać dostęp, wystarczy dodać
+nagłówek `Authorization` zawierający klucz API.
 
 ---
 
@@ -71,7 +73,6 @@ Zwraca informacje o graczach, którzy są obecnie online oraz offline.
 
 ### Pobierz backup za pomocą klucza autoryzacji
 
-
 ### Pobierz listę nazw plików backup za pomocą klucza autoryzacji
 
 ```
@@ -89,6 +90,7 @@ GET /api/backup/{filename}
 Pobiera dostępny backup o określonej nazwie przy użyciu klucza autoryzacji.
 
 ---
+
 ## Logi
 
 ### Pobiera listę nazw plików logów servera
@@ -96,6 +98,7 @@ Pobiera dostępny backup o określonej nazwie przy użyciu klucza autoryzacji.
 ```
 GET /api/log/
 ```
+
 Pobierz aktualną listę nazw plików logów servera
 
 ### Pobierz konkretny log servera.
@@ -111,12 +114,15 @@ Zwraca `TEXT_PLAIN` z aktualnego pliku log servera.
 ## Skin
 
 ### Pobiera skórkę głowy gracza na podstawie jego XUID
+
 ```
 GET /api/skin/head/xuid/{xuid}
 ```
+
 Zwraca link do głowy gracza po jego XUID
 
 ### Pobiera skórkę głowy gracza na podstawie nicku
+
 ```
 GET /api/skin/head/name/{name}
 ```
@@ -124,15 +130,19 @@ GET /api/skin/head/name/{name}
 Zwraca link do głowy gracza po jego nicku
 
 ### Pobiera skórkę ciała gracza na podstawie jego XUID
+
 ```
 GET /api/skin/body/xuid/{xuid}
 ```
+
 Zwraca link do ciała gracza gracza po jego XUID
 
 ### Pobiera skórkę ciała gracza na podstawie nicku
+
 ```
 GET /api/skin/body/name/{name}
 ```
+
 Zwraca link do ciała gracza gracza po jego nicku
 
 ---
