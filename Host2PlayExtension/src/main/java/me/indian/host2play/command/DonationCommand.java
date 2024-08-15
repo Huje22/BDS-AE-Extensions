@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 import me.indian.bds.command.Command;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.jda.manager.LinkingManager;
 import me.indian.host2play.Host2PlayExtension;
@@ -44,7 +43,7 @@ public class DonationCommand extends Command {
         }
 
         final String playerName = this.player.getPlayerName();
-        final long cooldownTime = MathUtil.secondToMillis(90);
+        final long cooldownTime = DateUtil.secondToMillis(90);
 
         if (args.length == 2) {
             final String emil = args[0];

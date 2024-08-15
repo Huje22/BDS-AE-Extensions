@@ -9,7 +9,7 @@ import me.indian.automessages.config.AutoMessagesConfig;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.ServerUtil;
 
 public class AutoMessagesExtension extends Extension {
@@ -45,7 +45,7 @@ public class AutoMessagesExtension extends Extension {
             }
         };
         if (autoMessagesConfig.isEnabled()) {
-            this.timer.scheduleAtFixedRate(this.autoMessagesTask, 0, MathUtil.secondToMillis(autoMessagesConfig.getTime()));
+            this.timer.scheduleAtFixedRate(this.autoMessagesTask, 0, DateUtil.secondToMillis(autoMessagesConfig.getTime()));
         } else {
             this.getLogger().debug("&aAutomessages jest&c wyłączone");
         }

@@ -19,8 +19,8 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.rest.component.Info;
 import me.indian.rest.config.RestApiConfig;
@@ -192,7 +192,7 @@ public class RestWebsite extends Extension {
             }
         };
 
-        final long minute = MathUtil.minutesTo(1, TimeUnit.MILLISECONDS);
+        final long minute = DateUtil.minutesTo(1, TimeUnit.MILLISECONDS);
         new Timer("Refresh File Content", true).scheduleAtFixedRate(task, 0, minute);
     }
 
