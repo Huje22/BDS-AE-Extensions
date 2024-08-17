@@ -2,7 +2,7 @@ package me.indian.host2play;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
-import me.indian.bds.logger.Logger;
+import me.indian.util.logger.Logger;
 import me.indian.bds.util.HTTPUtil;
 import me.indian.host2play.command.DonationCommand;
 import me.indian.host2play.config.Config;

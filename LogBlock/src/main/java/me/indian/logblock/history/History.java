@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import me.indian.bds.event.Event;
-import me.indian.bds.logger.Logger;
+import me.indian.util.logger.Logger;
 import me.indian.bds.player.position.Position;
-import me.indian.bds.util.DateUtil;
+import me.indian.util.DateUtil;
 import me.indian.logblock.LogBlockExtension;
 import me.indian.logblock.util.MarkDownUtil;
 

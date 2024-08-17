@@ -7,7 +7,7 @@ import java.util.Map;
 import me.indian.bds.event.Event;
 import me.indian.bds.event.player.PlayerInteractContainerEvent;
 import me.indian.bds.player.position.Position;
-import me.indian.bds.util.DateUtil;
+import me.indian.util.DateUtil;
 import me.indian.logblock.Config;
 import me.indian.logblock.LogBlockExtension;
 

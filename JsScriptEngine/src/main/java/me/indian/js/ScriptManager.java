@@ -14,10 +14,10 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
+import me.indian.util.logger.Logger;
 import me.indian.bds.logger.impl.ExtensionLogger;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MessageUtil;
+import me.indian.util.MessageUtil;
 import org.jetbrains.annotations.Nullable;
 
 public class ScriptManager {

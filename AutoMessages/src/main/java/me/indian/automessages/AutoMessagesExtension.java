@@ -9,7 +9,7 @@ import me.indian.automessages.config.AutoMessagesConfig;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
+import me.indian.util.DateUtil;
 import me.indian.bds.util.ServerUtil;
 
 public class AutoMessagesExtension extends Extension {

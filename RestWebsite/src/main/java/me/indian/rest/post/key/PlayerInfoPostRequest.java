@@ -6,7 +6,7 @@ import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
 import java.net.HttpURLConnection;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
+import me.indian.util.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
 import me.indian.rest.HttpHandler;

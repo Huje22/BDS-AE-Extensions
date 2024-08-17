@@ -7,9 +7,9 @@ import me.indian.bds.event.Listener;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.effect.EffectsExtension;
 import me.indian.effect.config.EffectsConfig;
+import me.indian.util.ThreadUtil;
 
 public class PlayerListener implements Listener {
 

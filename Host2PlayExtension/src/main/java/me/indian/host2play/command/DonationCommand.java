@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import me.indian.bds.command.Command;
-import me.indian.bds.util.DateUtil;
+import me.indian.util.DateUtil;
 import me.indian.discord.DiscordExtension;
 import me.indian.discord.jda.manager.LinkingManager;
 import me.indian.host2play.Host2PlayExtension;

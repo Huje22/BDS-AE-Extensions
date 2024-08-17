@@ -1,8 +1,8 @@
 package me.indian.host2play.rest;
 
 import io.javalin.Javalin;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.ServerUtil;
 import me.indian.discord.DiscordExtension;

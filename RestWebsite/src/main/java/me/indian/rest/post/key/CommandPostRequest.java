@@ -5,7 +5,6 @@ import io.javalin.Javalin;
 import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
 import me.indian.rest.HttpHandler;
@@ -13,6 +12,7 @@ import me.indian.rest.RestWebsite;
 import me.indian.rest.component.CommandPostData;
 import me.indian.rest.component.Info;
 import me.indian.rest.util.APIKeyUtil;
+import me.indian.util.logger.Logger;
 
 public class CommandPostRequest extends HttpHandler {
 

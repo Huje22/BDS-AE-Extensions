@@ -5,7 +5,7 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 import java.util.UUID;
-import me.indian.bds.util.MessageUtil;
+import me.indian.util.MessageUtil;
 
 @Header("################################################################")
 @Header("#           Ustawienia Host2PlayExtension                      #")

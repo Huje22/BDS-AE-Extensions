@@ -8,7 +8,7 @@ import io.javalin.http.HttpStatus;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MessageUtil;
+import me.indian.util.MessageUtil;
 import me.indian.bds.util.geyser.GeyserUtil;
 import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;

@@ -11,7 +11,7 @@ import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MessageUtil;
+import me.indian.util.MessageUtil;
 import me.indian.rest.HttpHandler;
 import me.indian.rest.RestWebsite;
 import me.indian.rest.component.Info;
