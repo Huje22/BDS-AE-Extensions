@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.effect.EffectsExtension",
+  "mainClass": "pl.indianbartonka.effect.EffectsExtension",
   "version": "1.0",
   "name": "EffectsExtension",
   "description": "Rozszerzenie pozwalające na wykonanie danych komend po wykonaniu danego event",

@@ -14,7 +14,7 @@ pokazane poniżej
 <dependencies>
     <!--        Inne zależności     -->
     <dependency>
-        <groupId>me.indian.bds</groupId>
+        <groupId>pl.indianbartonka.bds</groupId>
         <artifactId>BDS-Auto-Enable</artifactId>
         <version>0.0.1</version>
         <scope>system</scope>

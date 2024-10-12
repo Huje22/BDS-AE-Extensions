@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.example.ExampleExtension",
+  "mainClass": "pl.indianbartonka.example.ExampleExtension",
   "version": "1.0",
   "name": "ExampleExtension",
   "description": "Przykladowe rozserzenie dla BDS-Auto-Enable",

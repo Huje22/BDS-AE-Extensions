@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.host2play.Host2PlayExtension",
+  "mainClass": "pl.indianbartonka.host2play.Host2PlayExtension",
   "version": "1.0-Beta",
   "name": "Host2PlayExtension",
   "prefix": "Host2Play",

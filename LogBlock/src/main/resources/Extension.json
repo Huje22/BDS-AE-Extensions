@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.logblock.LogBlockExtension",
+  "mainClass": "pl.indianbartonka.logblock.LogBlockExtension",
   "version": "1.0",
   "name": "LogBlockExtension",
   "prefix": "LogBlock",

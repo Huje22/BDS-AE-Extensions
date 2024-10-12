@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.js.ScriptExtension",
+  "mainClass": "pl.indianbartonka.js.ScriptExtension",
   "version": "1.0-Alpha",
   "name": "ScriptExtension",
   "prefix": "JavaScript",

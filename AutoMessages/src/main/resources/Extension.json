@@ -1,5 +1,5 @@
 {
-  "mainClass": "me.indian.automessages.AutoMessagesExtension",
+  "mainClass": "pl.indianbartonka.automessages.AutoMessagesExtension",
   "version": "1.0",
   "name": "AutoMessagesExtension",
   "prefix": "AutoMessages",

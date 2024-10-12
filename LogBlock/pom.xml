@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>me.indian.extensions</groupId>
+        <groupId>pl.indianbartonka.extensions</groupId>
         <artifactId>BDS-AE-Extensions</artifactId>
         <version>1.0</version>
     </parent>
 
-    <groupId>me.indian.logblock</groupId>
+    <groupId>pl.indianbartonka.logblock</groupId>
     <artifactId>LogBlock</artifactId>
     <version>1.0</version>
 
@@ -21,7 +21,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>me.indian.bds</groupId>
+            <groupId>pl.indianbartonka.bds</groupId>
             <artifactId>BDS-Auto-Enable</artifactId>
             <version>1.0</version>
             <scope>system</scope>
