@@ -67,7 +67,7 @@ public class ExampleExtension extends Extension {
             logger.info("&aPlayer Count:&b " + query.playerCount());
             logger.info("&aMax Players:&b " + query.maxPlayers());
             logger.info("&aMap Name:&b " + query.mapName());
-            logger.info("&aGamemode:&b " + query.gamemode());
+            logger.info("&aGamemode:&b " + query.gameMode());
             logger.info("&aEdycja:&b " + query.edition());
         }
 

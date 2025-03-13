@@ -9,15 +9,15 @@
         <module name="EffectsExtension" />
         <module name="RestWebsite" />
         <module name="XboxBroadcastExtension" />
-        <module name="Host2PlayExtension" />
         <module name="AutoMessages" />
         <module name="LogBlock" />
-        <module name="JsScriptEngine" />
         <module name="ExampleExtension" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="DiscordExtension" target="17" />
+      <module name="Host2PlayExtension" target="17" />
+      <module name="JsScriptEngine" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

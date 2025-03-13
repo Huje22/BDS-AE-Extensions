@@ -97,9 +97,9 @@ public class ScriptManager {
             return;
         }
 
-        this.logger.print();
+        this.logger.println();
         for (final ScriptEngineFactory factory : scriptEngineManager.getEngineFactories()) {
-            this.logger.print();
+            this.logger.println();
             this.logger.info("Nazwa: " + factory.getEngineName());
             this.logger.info("Wersja: " + factory.getEngineVersion());
             this.logger.info("Nazwa języka: " + factory.getLanguageName());
@@ -109,7 +109,7 @@ public class ScriptManager {
             this.logger.info("Typy MIME: " + MessageUtil.stringListToString(factory.getMimeTypes(), ", "));
             this.logger.info("-------");
         }
-        this.logger.print();
+        this.logger.println();
     }
 
     public Script loadScript(final File file) {
